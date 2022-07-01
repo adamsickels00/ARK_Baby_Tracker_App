@@ -3,4 +3,8 @@
     <string name="title_text">ARK Baby Tracker</string>
     <string name="timer_title">Time until food is needed:</string>
     <string name="timer_default">No babies</string>
+    <string name="default_dino_name">Dino Name</string>
+    <string name="foodHint">Stacks of Food</string>
+    <string name="add_dino_button_text">Add Dino</string>
+    <string name="time_remaining">Time Remaining</string>
 </resources>
