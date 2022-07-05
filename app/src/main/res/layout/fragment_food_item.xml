@@ -4,11 +4,11 @@
 
     <data>
         <variable
-            name="foodNameXml"
+            name="foodName"
             type="String" />
         <variable
-            name="numFood"
-            type="String" />
+            name="quantity"
+            type="Integer" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,10 +16,10 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/foodName"
+            android:id="@+id/foodNameTextbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{foodNameXml}"
+            android:text="@{foodName}"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,13 +31,13 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/foodHint"
-            android:text="@{numFood}"
             android:importantForAutofill="no"
             android:inputType="number"
             android:padding="32dp"
+            android:text="@{quantity.toString()}"
             android:textColorHint="#757575"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/foodNameTextbox"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

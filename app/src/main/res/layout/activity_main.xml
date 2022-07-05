@@ -94,12 +94,11 @@
                     app:layout_constraintTop_toBottomOf="@+id/dino_holder" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/food_holder"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                android:adapter="@{foodAdapter}"/>
+                android:id="@+id/foodListHolder"
+                android:orientation="vertical" />
 
         </LinearLayout>
     </ScrollView>

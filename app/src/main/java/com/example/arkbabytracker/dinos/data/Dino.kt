@@ -50,7 +50,7 @@ abstract class Dino {
 
 class Carbonemys: Dino(){
     override val name: String
-        get() = "com.example.arkbabytracker.dinos.data.Carbonemys"
+        get() = "Carbonemys"
     override val maturationHours: Int
         get() = 23
     override val maturationMinutes: Int
