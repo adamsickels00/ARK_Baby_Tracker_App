@@ -1,6 +1,7 @@
 package com.example.arkbabytracker.dinos.data
 
 import com.example.arkbabytracker.food.Food
+import java.sql.Time
 import java.util.*
 import kotlin.math.min
 import kotlin.reflect.KClass
@@ -26,6 +27,7 @@ sealed class Dino {
     abstract val ageSpeed:Double
     abstract val ageSpeedMult:Double
 
+
     var elapsedTimeSec = 0.0
     var food = 0.0
     val maturationTimeSec = 1/ageSpeed/ageSpeedMult
@@ -35,6 +37,9 @@ sealed class Dino {
     private var currentFoodRate = 0.0
     abstract val name:String
     abstract val diet: Diet
+
+    val startTime: Int = Calendar.getInstance().get(Calendar.SECOND)
+
 
     fun eat(item:Food) {
         food += item.value

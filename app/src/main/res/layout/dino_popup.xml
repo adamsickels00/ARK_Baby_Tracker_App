@@ -20,7 +20,16 @@
             android:layout_margin="32dp"
             android:contentDescription="@string/add_dino_button_text"
             android:entries="@{spinnerList}"
-            android:minHeight="32dp" />
+            android:minHeight="48dp" />
+
+        <EditText
+            android:id="@+id/percentMatureTextBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            android:text="0"
+            android:textSize="24sp" />
 
         <Button
             android:id="@+id/submitDinoButton"
@@ -28,5 +37,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="32dp"
             android:text="@string/add_dino_button_text" />
+
     </LinearLayout>
 </layout>

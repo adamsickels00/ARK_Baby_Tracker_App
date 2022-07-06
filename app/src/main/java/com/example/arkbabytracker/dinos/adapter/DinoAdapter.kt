@@ -12,18 +12,14 @@ import com.example.arkbabytracker.databinding.DinoItemBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 class DinoAdapter(val data:DinoViewModel): ListAdapter<Dino,DinoAdapter.DinoViewHolder>(DinoDiff()) {
     class DinoViewHolder(private val binding: DinoItemBinding,val data: DinoViewModel) : RecyclerView.ViewHolder(binding.root){
         fun bind(dino: Dino){
             binding.dinoName = dino.name
             binding.progressInt = (100*dino.elapsedTimeSec / dino.maturationTimeSec).toInt()
-            binding.timeRemaining = (dino.maturationTimeSec - dino.elapsedTimeSec).toString()
-            binding.percentCompleteEditText.doAfterTextChanged {
-                if(it.toString()!="") {
-                    dino.setPercentMature(it.toString().toDouble())
-                }
-            }
+            binding.timeRemaining = (dino.maturationTimeSec - dino.elapsedTimeSec).roundToInt().toString()
             binding.deleteCreatureButton.setOnClickListener {
                 val currentList = data.babyList.value!!
                 currentList.remove(dino)

@@ -31,7 +31,7 @@ class DinoViewModel:ViewModel() {
             run = processSecond(tempBabyList,time)
             time++
         }
-        return time
+        return time-1
     }
 
     fun processSecond(tempBabyList:MutableList<Dino>,time:Int):Boolean{

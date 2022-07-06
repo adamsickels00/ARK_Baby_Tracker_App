@@ -31,21 +31,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         data= ViewModelProvider(this)[DinoViewModel::class.java]
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
-        data.populateLists()
         binding.dinoAdapter = DinoAdapter(data)
         binding.dinoAdapter!!.submitList(data.babyList.value!!)
         binding.addDinoButton.setOnClickListener{
             openPopupWindow()
         }
         fillFoods(data.foodStacks.value!!)
-
-        binding.updateTimerButton.setOnClickListener{
-            data.babyList.value = data.babyList.value
-            CoroutineScope(Dispatchers.Main).launch {
-                val time = data.runSim()
-                binding.bigTimerTextView.text = time.toString()
-            }
-        }
 
         binding.executePendingBindings()
         data.foodStacks.observe(this) {
@@ -74,18 +65,22 @@ class MainActivity : AppCompatActivity() {
         popupBinding.spinnerList = allDinoList.map {
             it.simpleName
         }
+        val popup = PopupWindow(popupBinding.root,LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT,true)
+
         popupBinding.submitDinoButton.setOnClickListener{
             val newDinoString = popupBinding.dinoTypeSelect.selectedItem
             for (c in allDinoList){
                 if(c.simpleName == newDinoString){
                     val newList = data.babyList.value!!
-                    newList.add(c.createInstance())
+                    val newDino = c.createInstance()
+                    newDino.setPercentMature(popupBinding.percentMatureTextBox.text.toString().toDouble())
+                    newList.add(newDino)
                     data.babyList.value = newList
+                    popup.dismiss()
                 }
             }
         }
 
-        val popup = PopupWindow(popupBinding.root,LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT,true)
         popup.showAtLocation(binding.root,Gravity.CENTER,0,0)
     }
 
