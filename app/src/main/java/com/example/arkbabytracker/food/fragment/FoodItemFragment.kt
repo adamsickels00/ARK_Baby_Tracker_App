@@ -5,12 +5,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doAfterTextChanged
+import androidx.lifecycle.ViewModelProvider
+import com.example.arkbabytracker.MainActivity
+import com.example.arkbabytracker.data.DinoViewModel
 import com.example.arkbabytracker.databinding.FragmentFoodItemBinding
 import com.example.arkbabytracker.food.Food
+import com.example.arkbabytracker.food.Trough
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_FOODNAME = "food"
+private const val ARG_FOOD = "food"
 private const val ARG_FOODVALUE = "val"
 
 /**
@@ -20,14 +28,15 @@ private const val ARG_FOODVALUE = "val"
  */
 class FoodItemFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var food: String? = null
+    private var food: Food? = null
     private var value:Int? = null
     private lateinit var binding:FragmentFoodItemBinding
-
+    private lateinit var data:DinoViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        data = ViewModelProvider(requireActivity())[DinoViewModel::class.java]
         arguments?.let {
-            food = it.getString(ARG_FOODNAME)
+            food = it.get(ARG_FOOD) as Food?
             value = it.getInt(ARG_FOODVALUE)
         }
     }
@@ -38,11 +47,22 @@ class FoodItemFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentFoodItemBinding.inflate(inflater,container,false)
-        binding.setFoodName(food)
+        binding.foodName = food?.name ?: "No food"
         binding.quantity = value
         binding.executePendingBindings()
+        binding.numStacks.doAfterTextChanged { text ->
+            if (text.toString() != "") {
+                val newValue = text.toString().toInt()
+                val currentList = data.foodStacks.value!!
+                currentList[food as Food] = newValue
+
+                data.trough = Trough(currentList)
+                data.foodStacks.value = currentList
+            }
+        }
         return binding.root
     }
+
 
     companion object {
         /**
@@ -52,12 +72,11 @@ class FoodItemFragment : Fragment() {
          * @param param1 Parameter 1.
          * @return A new instance of fragment FoodItemFragment.
          */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(foodName:String, quantity:Int) =
+        fun newInstance(foodName:Food, quantity:Int) =
             FoodItemFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_FOODNAME,foodName)
+                    putSerializable(ARG_FOOD,foodName)
                     putInt(ARG_FOODVALUE,quantity)
                 }
             }
