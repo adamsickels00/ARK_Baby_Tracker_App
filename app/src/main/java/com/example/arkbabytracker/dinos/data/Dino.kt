@@ -3,18 +3,21 @@ package com.example.arkbabytracker.dinos.data
 import com.example.arkbabytracker.food.Food
 import java.util.*
 import kotlin.math.min
+import kotlin.reflect.KClass
 
 enum class Diet{
     HERB, OMNI, CARN
 }
 
-val BASE_MIN_FOOD_RATE = 0.000155
+const val BASE_MIN_FOOD_RATE = 0.000155
 
 val herbEatOrder = listOf(Food.Berries, Food.Mejoberries)
 val carnEatOrder = listOf(Food.RawMeat)
 val omniEatOrder = listOf(Food.Berries, Food.Mejoberries, Food.RawMeat)
 
-abstract class Dino {
+val allDinoList: List<KClass<out Dino>> = Dino::class.sealedSubclasses
+
+sealed class Dino {
     val uniqueID = UUID.randomUUID().toString()
     val minFoodDrainPerSec:Double = 0.000155
     abstract val baseFoodRate:Double
@@ -71,12 +74,32 @@ abstract class Dino {
     abstract fun newInstance():Dino
 
     fun copy():Dino{
-        var newDino = this.newInstance()
+        val newDino = this.newInstance()
         newDino.elapsedTimeSec = this.elapsedTimeSec
         newDino.food = this.food
         newDino.currentFoodRate = this.currentFoodRate
         newDino.percentComplete = this.percentComplete
         return newDino
+    }
+
+    override fun hashCode(): Int {
+        var result = uniqueID.hashCode()
+        result = 31 * result + minFoodDrainPerSec.hashCode()
+        result = 31 * result + baseFoodRate.hashCode()
+        result = 31 * result + babyFoodRate.hashCode()
+        result = 31 * result + extraBabyFoodRate.hashCode()
+        result = 31 * result + ageSpeed.hashCode()
+        result = 31 * result + ageSpeedMult.hashCode()
+        result = 31 * result + elapsedTimeSec.hashCode()
+        result = 31 * result + food.hashCode()
+        result = 31 * result + maturationTimeSec.hashCode()
+        result = 31 * result + maxFoodRate.hashCode()
+        result = 31 * result + minFoodRate.hashCode()
+        result = 31 * result + percentComplete.hashCode()
+        result = 31 * result + currentFoodRate.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + diet.hashCode()
+        return result
     }
 }
 

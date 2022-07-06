@@ -15,13 +15,13 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="396dp"
-        android:layout_height="305dp"
+        android:layout_width="match_parent"
+        android:layout_height="309dp"
         app:strokeColor="@color/cardview_shadow_start_color"
         app:strokeWidth="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="408dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <TextView
@@ -54,9 +54,9 @@
                 android:id="@+id/progressBar3"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="285dp"
-                android:max="100"
                 android:layout_height="56dp"
                 android:layout_marginTop="32dp"
+                android:max="100"
                 android:progress="@{progressInt}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -76,17 +76,27 @@
                 android:id="@+id/percentCompleteEditText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:ems="10"
+                android:hint="@string/dino_percent_complete"
+                android:importantForAutofill="no"
                 android:inputType="number"
                 android:minHeight="48dp"
                 android:text="@{progressInt.toString()}"
-                android:hint="@string/dino_percent_complete"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/progressBar3"
-                android:importantForAutofill="no" />
+                app:layout_constraintTop_toBottomOf="@+id/progressBar3" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/deleteCreatureButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@android:drawable/btn_dialog" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

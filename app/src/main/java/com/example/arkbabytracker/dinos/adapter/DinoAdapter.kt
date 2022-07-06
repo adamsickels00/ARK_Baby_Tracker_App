@@ -22,8 +22,12 @@ class DinoAdapter(val data:DinoViewModel): ListAdapter<Dino,DinoAdapter.DinoView
             binding.percentCompleteEditText.doAfterTextChanged {
                 if(it.toString()!="") {
                     dino.setPercentMature(it.toString().toDouble())
-                    data.babyList.value = data.babyList.value
                 }
+            }
+            binding.deleteCreatureButton.setOnClickListener {
+                val currentList = data.babyList.value!!
+                currentList.remove(dino)
+                data.babyList.value = currentList
             }
             binding.executePendingBindings()
         }
