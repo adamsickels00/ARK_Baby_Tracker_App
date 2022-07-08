@@ -16,7 +16,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/foodNameTextbox"
+            android:id="@+id/nameTextBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{foodName}"
@@ -26,7 +26,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/num_stacks"
+            android:id="@+id/numStacks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -37,7 +37,7 @@
             android:text="@{quantity.toString()}"
             android:textColorHint="#757575"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/foodNameTextbox"
+            app:layout_constraintStart_toEndOf="@+id/nameTextBox"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

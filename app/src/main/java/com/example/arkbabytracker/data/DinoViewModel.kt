@@ -8,6 +8,7 @@ import com.example.arkbabytracker.food.Trough
 
 
 class DinoViewModel:ViewModel() {
+
     var foodStacks:MutableLiveData<MutableMap<Food,Int>> = MutableLiveData(mutableMapOf(
         Pair(Food.RawMeat,0),
         Pair(Food.Mejoberries,0),
@@ -18,7 +19,7 @@ class DinoViewModel:ViewModel() {
 
     var trough = Trough(foodStacks.value!!)
     fun populateLists():DinoViewModel{
-        babyList.value?.add(Carbonemys())
+        babyList.value?.add(Carbonemys(100.0))
         return this
     }
 
@@ -83,12 +84,12 @@ class DinoViewModel:ViewModel() {
         return noFood
     }
     private fun removeIfSpoiled(time:Int){
-        //Simplify spoil to preserve enum model
         for (food in trough.foodSet){
             if(time%food.SpoilTime==0){
                 trough.spoilFood(food)
             }
         }
     }
+
 
 }

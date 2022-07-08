@@ -18,7 +18,7 @@ class DinoAdapter(val data:DinoViewModel): ListAdapter<Dino,DinoAdapter.DinoView
     class DinoViewHolder(private val binding: DinoItemBinding,val data: DinoViewModel) : RecyclerView.ViewHolder(binding.root){
         fun bind(dino: Dino){
             binding.dinoName = dino.name
-            binding.progressInt = (100*dino.elapsedTimeSec / dino.maturationTimeSec).toInt()
+            binding.progress = (100*dino.elapsedTimeSec / dino.maturationTimeSec)
             binding.timeRemaining = (dino.maturationTimeSec - dino.elapsedTimeSec).roundToInt().toString()
             binding.deleteCreatureButton.setOnClickListener {
                 val currentList = data.babyList.value!!
