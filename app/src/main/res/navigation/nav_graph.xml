@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph.xml"
+    app:startDestination="@id/babyTroughFragment">
+
+    <fragment
+        android:id="@+id/babyTroughFragment"
+        android:name="com.example.arkbabytracker.BabyTroughFragment"
+        android:label="Baby Tracker" >
+        <action
+            android:id="@+id/action_babyTroughFragment_to_turtleMenu"
+            app:destination="@id/turtleMenu" />
+    </fragment>
+    <fragment
+        android:id="@+id/turtleMenu"
+        android:name="com.example.arkbabytracker.TurtleMenu"
+        android:label="fragment_turtle_menu"
+        tools:layout="@layout/fragment_turtle_menu" />
+</navigation>

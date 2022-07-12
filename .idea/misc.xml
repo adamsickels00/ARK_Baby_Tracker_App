@@ -3,15 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/activity_main.xml" value="0.30277777777777776" />
+        <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/activity_main.xml" value="0.2082616179001721" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/dino_item.xml" value="0.1" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/dino_popup.xml" value="0.14666666666666667" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/food_item.xml" value="0.14130434782608695" />
+        <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/fragment_baby_trough.xml" value="0.16621376811594202" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/fragment_environment_edittable_item.xml" value="0.1796875" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/fragment_environment_options.xml" value="0.1796875" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/fragment_food_item.xml" value="0.13677536231884058" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/fragment_item.xml" value="0.1796875" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/fragment_item_list.xml" value="0.165625" />
+        <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/fragment_turtle_menu.xml" value="0.13595553655408293" />
+        <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/switch_item.xml" value="0.1" />
+        <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/menu/apps_menu.xml" value="0.14749893116716545" />
       </map>
     </option>
   </component>
