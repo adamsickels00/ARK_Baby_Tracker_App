@@ -15,11 +15,16 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 class DinoAdapter(val data:DinoViewModel): ListAdapter<Dino,DinoAdapter.DinoViewHolder>(DinoDiff()) {
-    class DinoViewHolder(private val binding: DinoItemBinding,val data: DinoViewModel) : RecyclerView.ViewHolder(binding.root){
+
+    override fun submitList(list: MutableList<Dino>?) {
+        super.submitList(list?.let{ArrayList(it)})
+    }
+
+    class DinoViewHolder(val binding: DinoItemBinding,val data: DinoViewModel) : RecyclerView.ViewHolder(binding.root){
         fun bind(dino: Dino){
             binding.dinoName = dino.name
             binding.progress = (100*dino.elapsedTimeSec / dino.maturationTimeSec)
-            binding.timeRemaining = (dino.maturationTimeSec - dino.elapsedTimeSec).roundToInt().toString()
+            binding.timeRemaining = (dino.maturationTimeSec-dino.elapsedTimeSec).roundToInt().toString()
             binding.deleteCreatureButton.setOnClickListener {
                 val currentList = data.babyList.value!!
                 currentList.remove(dino)
@@ -35,7 +40,7 @@ class DinoAdapter(val data:DinoViewModel): ListAdapter<Dino,DinoAdapter.DinoView
         }
 
         override fun areContentsTheSame(oldItem: Dino, newItem: Dino): Boolean {
-            return oldItem == newItem
+            return false
         }
 
     }

@@ -1,8 +1,14 @@
 package com.example.arkbabytracker.dinos.data
 
+import androidx.lifecycle.MutableLiveData
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.example.arkbabytracker.data.Environment
 import com.example.arkbabytracker.food.Food
 import java.sql.Time
+import java.time.Instant
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.math.min
 import kotlin.reflect.KClass
@@ -19,7 +25,7 @@ val omniEatOrder = listOf(Food.Berries, Food.Mejoberries, Food.RawMeat)
 val allDinoList: List<KClass<out Dino>> = Dino::class.sealedSubclasses
 
 sealed class Dino(val maxFood: Double) {
-    val uniqueID = UUID.randomUUID().toString()
+    var uniqueID = UUID.randomUUID().toString()
     val minFoodDrainPerSec:Double = 0.000155
     abstract val baseFoodRate:Double
     abstract val babyFoodRate:Double
@@ -27,15 +33,15 @@ sealed class Dino(val maxFood: Double) {
     abstract val ageSpeed:Double
     abstract val ageSpeedMult:Double
     abstract val percentMaxStarting:Double
-
     val minFood = maxFood*percentMaxStarting
     var elapsedTimeSec = 0.0
     var food = 0.0
-    var maturationTimeSec = 1/ageSpeed/ageSpeedMult/ Environment.eventMultiplier.value!!
+    var maturationTimeSec = 1/ this.ageSpeed /ageSpeedMult/ Environment.eventMultiplier.value!!
     private val maxFoodRate = baseFoodRate*extraBabyFoodRate*babyFoodRate
     private val minFoodRate = BASE_MIN_FOOD_RATE*babyFoodRate*extraBabyFoodRate
     private var percentComplete = 0.0
     private var currentFoodRate = 0.0
+    var startTime: Instant = Instant.now()
     abstract val name:String
     abstract val diet: Diet
 
@@ -76,6 +82,7 @@ sealed class Dino(val maxFood: Double) {
     fun setPercentMature(percent:Double){
         percentComplete = percent/100
         elapsedTimeSec = percent*maturationTimeSec/100
+        startTime = startTime.minusSeconds(elapsedTimeSec.toLong())
         currentFoodRate = maxFoodRate*(1-percentComplete) + minFoodRate*(percentComplete)
     }
 

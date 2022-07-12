@@ -2,6 +2,9 @@ package com.example.arkbabytracker.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.arkbabytracker.data.database.DinoDao
+import com.example.arkbabytracker.data.database.DinoDatabase
+import com.example.arkbabytracker.data.database.DinoEntity
 import com.example.arkbabytracker.dinos.data.*
 import com.example.arkbabytracker.food.Food
 import com.example.arkbabytracker.food.Trough
@@ -18,9 +21,15 @@ class DinoViewModel:ViewModel() {
     var babyList : MutableLiveData<MutableList<Dino>> = MutableLiveData(mutableListOf())
 
     var trough = Trough(foodStacks.value!!)
-    fun populateLists():DinoViewModel{
-        babyList.value?.add(Carbonemys(100.0))
+
+    fun getFromDatabase(db:DinoDatabase):DinoViewModel{
+        babyList.postValue(db.dinoDao().getAll().map { DinoEntity.toDino(it)!! }.toMutableList())
         return this
+    }
+
+    fun saveToDatabase(db:DinoDatabase){
+        db.dinoDao().deleteAll()
+        db.dinoDao().addAll(babyList.value!!.map{DinoEntity.fromDino (it)})
     }
 
     suspend fun runSim():Int{
@@ -55,7 +64,6 @@ class DinoViewModel:ViewModel() {
                             Diet.OMNI -> {
                                 feedIfHungry(dino, omniEatOrder)
                             }
-                            else -> {true}
                         }
                     ) {
 

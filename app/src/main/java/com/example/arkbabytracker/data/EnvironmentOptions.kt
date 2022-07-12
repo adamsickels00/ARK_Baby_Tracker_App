@@ -54,7 +54,6 @@ class EnvironmentOptions : Fragment() {
         @JvmStatic
         fun newInstance() =
             EnvironmentOptions().apply {
-
             }
     }
 }
