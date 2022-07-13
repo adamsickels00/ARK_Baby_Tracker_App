@@ -2,9 +2,9 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/babyTrackerMenuItem"
+        android:id="@+id/babyTroughFragment"
         android:title="Baby Tracker" />
     <item
-        android:id="@+id/turtleMenuItem"
+        android:id="@+id/turtleMenu"
         android:title="Turtle Menu" />
 </menu>

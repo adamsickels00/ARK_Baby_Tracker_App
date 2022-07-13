@@ -1,8 +1,9 @@
 package com.example.arkbabytracker.data
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 
-object Environment{
+class EnvironmentViewModel : ViewModel(){
     var eventMultiplier = MutableLiveData(1.0)
     var maewingFoodMultiplier = MutableLiveData(1.0)
 }

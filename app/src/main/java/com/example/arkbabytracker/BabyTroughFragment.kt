@@ -10,16 +10,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupWindow
-import androidx.activity.viewModels
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.room.Room
 import com.example.arkbabytracker.data.DinoViewModel
-import com.example.arkbabytracker.data.Environment
+import com.example.arkbabytracker.data.EnvironmentViewModel
 import com.example.arkbabytracker.data.database.DinoDatabase
-import com.example.arkbabytracker.databinding.ActivityMainBinding
 import com.example.arkbabytracker.databinding.DinoPopupBinding
 import com.example.arkbabytracker.databinding.FragmentBabyTroughBinding
 import com.example.arkbabytracker.dinos.adapter.DinoAdapter
@@ -49,6 +46,7 @@ class BabyTroughFragment : Fragment() {
     var currentId = 0
     private lateinit var dinoAdapter: DinoAdapter
     private val data by viewModels<DinoViewModel>()
+    private val env by viewModels<EnvironmentViewModel>()
     private lateinit var db: DinoDatabase
 
     override fun onCreateView(
@@ -66,8 +64,8 @@ class BabyTroughFragment : Fragment() {
             activity,
             DinoDatabase::class.java, "dino-database"
         ).build()
-        Environment.maewingFoodMultiplier.value = maeMult.toDouble()
-        Environment.eventMultiplier.value = evMult.toDouble()
+        env.maewingFoodMultiplier.value = maeMult.toDouble()
+        env.eventMultiplier.value = evMult.toDouble()
         dinoAdapter = DinoAdapter(data)
         binding.dinoAdapter = dinoAdapter
         (binding.dinoHolder.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
@@ -75,7 +73,8 @@ class BabyTroughFragment : Fragment() {
         binding.addDinoButton.setOnClickListener{
             openPopupWindow()
         }
-        fillFoods(data.foodStacks.value!!)
+        if(savedInstanceState == null)
+            fillFoods(data.foodStacks.value!!)
 
         binding.executePendingBindings()
         data.foodStacks.observe(requireActivity()) {
@@ -96,7 +95,7 @@ class BabyTroughFragment : Fragment() {
                 }
         }
 
-        Environment.eventMultiplier.observe(requireActivity()){ newVal ->
+        env.eventMultiplier.observe(requireActivity()){ newVal ->
             val tempList: MutableList<Dino> = data.babyList.value!!
             with(pref.edit()){
                 putFloat(EVENT_MULT_KEY,newVal.toFloat())
@@ -108,7 +107,7 @@ class BabyTroughFragment : Fragment() {
             data.babyList.value = tempList
         }
 
-        Environment.maewingFoodMultiplier.observe(requireActivity()){
+        env.maewingFoodMultiplier.observe(requireActivity()){
             with(pref.edit()){
                 putFloat(MAE_MULT_KEY,it.toFloat())
                 apply()
@@ -136,7 +135,7 @@ class BabyTroughFragment : Fragment() {
         dinoList.forEach{
             it.elapsedTimeSec = (Instant.now().epochSecond-it.startTime.epochSecond).toDouble()
         }
-        dinoList = dinoList.filter { it.elapsedTimeSec < it.maturationTimeSec }.toMutableList()
+        dinoList = dinoList.filter { (it.elapsedTimeSec < it.maturationTimeSec) }.toMutableList()
         data.babyList.postValue(dinoList)
     }
 
@@ -157,7 +156,8 @@ class BabyTroughFragment : Fragment() {
                 if(c.simpleName == newDinoString){
                     val newList = data.babyList.value!!
                     val newDino = c.primaryConstructor!!.call(
-                        maxFood?:0.0
+                        maxFood?:0.0,
+                        env
                     )
                     newDino.setPercentMature(popupBinding.percentMatureTextBox.text.toString().toDoubleOrNull()?:0.0)
                     newList.add(newDino)
@@ -172,15 +172,11 @@ class BabyTroughFragment : Fragment() {
 
     private fun fillFoods(foodMap:Map<Food,Int>){
         for(pair in foodMap) {
-            val ll = LinearLayout(requireActivity().baseContext)
-            ll.orientation = LinearLayout.HORIZONTAL
-            ll.id = ++currentId
-
             requireActivity().supportFragmentManager.commit {
+                val frag = FoodItemFragment.newInstance(pair.key, pair.value)
                 setReorderingAllowed(true)
-                add(ll.id, FoodItemFragment.newInstance(pair.key, pair.value))
+                add(binding.foodListHolder.id,frag)
             }
-            binding.foodListHolder.addView(ll)
         }
         binding.executePendingBindings()
     }

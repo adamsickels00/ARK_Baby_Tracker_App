@@ -22,6 +22,7 @@ class DinoViewModel:ViewModel() {
 
     var trough = Trough(foodStacks.value!!)
 
+
     fun getFromDatabase(db:DinoDatabase):DinoViewModel{
         babyList.postValue(db.dinoDao().getAll().map { DinoEntity.toDino(it)!! }.toMutableList())
         return this

@@ -6,9 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.commit
-import androidx.lifecycle.LiveData
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
 import com.example.arkbabytracker.databinding.FragmentEnvironmentOptionsBinding
 
 /**
@@ -19,12 +18,8 @@ import com.example.arkbabytracker.databinding.FragmentEnvironmentOptionsBinding
 class EnvironmentOptions : Fragment() {
 
     lateinit var data:DinoViewModel
-
     //Keep this in sync with EnvironmentViewModel.kt properties
-    var envVariables:Map<String,MutableLiveData<Double>> = mapOf(
-        Pair("Event Multiplier",Environment.eventMultiplier),
-        Pair("Maewing Effectiveness",Environment.maewingFoodMultiplier),
-    )
+    lateinit var envVariables:Map<String,MutableLiveData<Double>>
 
     lateinit var binding:FragmentEnvironmentOptionsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,11 +30,18 @@ class EnvironmentOptions : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val env : EnvironmentViewModel by viewModels()
+        envVariables = mapOf(
+            Pair("Event Multiplier",env.eventMultiplier),
+            Pair("Maewing Effectiveness",env.maewingFoodMultiplier),
+        )
         binding = FragmentEnvironmentOptionsBinding.inflate(inflater, container, false)
-        envVariables.forEach{
-            requireActivity().supportFragmentManager.commit {
-                setReorderingAllowed(true)
-                add(binding.fragmentContainer.id,createEnvFrag(it.key,it.value))
+        if(savedInstanceState == null) {
+            envVariables.forEach {
+                requireActivity().supportFragmentManager.commit {
+                    setReorderingAllowed(true)
+                    add(binding.fragmentContainer.id, createEnvFrag(it.key, it.value))
+                }
             }
         }
 

@@ -1,16 +1,9 @@
 package com.example.arkbabytracker.dinos.data
 
-import androidx.lifecycle.MutableLiveData
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.example.arkbabytracker.data.Environment
+import com.example.arkbabytracker.data.EnvironmentViewModel
 import com.example.arkbabytracker.food.Food
-import java.sql.Time
 import java.time.Instant
-import java.time.LocalDateTime
 import java.util.*
-import kotlin.math.min
 import kotlin.reflect.KClass
 
 enum class Diet{
@@ -24,7 +17,7 @@ val carnEatOrder = listOf(Food.RawMeat)
 val omniEatOrder = listOf(Food.Berries, Food.Mejoberries, Food.RawMeat)
 val allDinoList: List<KClass<out Dino>> = Dino::class.sealedSubclasses
 
-sealed class Dino(val maxFood: Double) {
+sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
     var uniqueID = UUID.randomUUID().toString()
     val minFoodDrainPerSec:Double = 0.000155
     abstract val baseFoodRate:Double
@@ -36,7 +29,7 @@ sealed class Dino(val maxFood: Double) {
     val minFood = maxFood*percentMaxStarting
     var elapsedTimeSec = 0.0
     var food = 0.0
-    var maturationTimeSec = 1/ this.ageSpeed /ageSpeedMult/ Environment.eventMultiplier.value!!
+    var maturationTimeSec = 1/ this.ageSpeed /ageSpeedMult/env.eventMultiplier.value!!
     private val maxFoodRate = baseFoodRate*extraBabyFoodRate*babyFoodRate
     private val minFoodRate = BASE_MIN_FOOD_RATE*babyFoodRate*extraBabyFoodRate
     private var percentComplete = 0.0
@@ -50,7 +43,7 @@ sealed class Dino(val maxFood: Double) {
     }
 
     fun eat(item:Food) {
-        food += item.value * Environment.maewingFoodMultiplier.value!!
+        food += item.value * env.maewingFoodMultiplier.value!!
     }
     fun processSec(){
         currentFoodRate =maxFoodRate*(1-percentComplete) + minFoodRate*(percentComplete)
@@ -62,7 +55,7 @@ sealed class Dino(val maxFood: Double) {
     }
 
     fun canEat(food:Food):Boolean{
-        return (this.food + food.value*Environment.maewingFoodMultiplier.value!!) < 0
+        return (this.food + food.value*env.maewingFoodMultiplier.value!!) < 0
     }
 
     override fun equals(other: Any?): Boolean {
@@ -118,7 +111,7 @@ sealed class Dino(val maxFood: Double) {
     }
 }
 
-class Carbonemys(maxFood: Double): Dino(maxFood){
+class Carbonemys(maxFood: Double,env:EnvironmentViewModel): Dino(maxFood,env){
     override val baseFoodRate: Double
         get() = 0.003156
     override val babyFoodRate: Double
@@ -137,6 +130,6 @@ class Carbonemys(maxFood: Double): Dino(maxFood){
         get() = 0.10
 
     override fun newInstance():Dino {
-        return Carbonemys(maxFood)
+        return Carbonemys(maxFood,env)
     }
 }
