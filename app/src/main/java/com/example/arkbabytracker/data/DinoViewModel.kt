@@ -51,7 +51,7 @@ class DinoViewModel:ViewModel() {
                 if (dino.elapsedTimeSec >= dino.maturationTimeSec) {
                     removeDinos.add(dino)
                 } else {
-                    if (feedIfHungry(dino)) {
+                    if (!feedIfHungry(dino)) {
                         return false
                     }
                     removeIfSpoiled(time)

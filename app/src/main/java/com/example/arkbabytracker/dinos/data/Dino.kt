@@ -18,7 +18,6 @@ enum class Diet(val eatOrder:List<Food>){
     MAGMASAUR(listOf(Food.Ambergris)),
     MICRORAPTOR(listOf(Food.RawMeat,Food.RareFlower)),
     ROCKDRAKE(listOf(Food.NamelessVenom)),
-    VOIDWYRM(listOf(Food.Mutagen)),
     WYVERN(listOf(Food.WyvernMilk))
 }
 
@@ -2556,7 +2555,7 @@ class Voidwyrm(maxFood: Double,env:EnvironmentViewModel): Dino(maxFood,env){
     override val name: String
         get() = "Voidwyrm"
     override val diet: Diet
-        get() = Diet.VOIDWYRM
+        get() = Diet.CARN
     override val percentMaxStarting: Double
         get() = .1
 
