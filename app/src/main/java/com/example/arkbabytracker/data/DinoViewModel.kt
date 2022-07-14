@@ -12,11 +12,7 @@ import com.example.arkbabytracker.food.Trough
 
 class DinoViewModel:ViewModel() {
 
-    var foodStacks:MutableLiveData<MutableMap<Food,Int>> = MutableLiveData(mutableMapOf(
-        Pair(Food.RawMeat,0),
-        Pair(Food.Mejoberries,0),
-        Pair(Food.Berries,0))
-    )
+    var foodStacks:MutableLiveData<MutableMap<Food,Int>> = MutableLiveData(mutableMapOf())
 
     var babyList : MutableLiveData<MutableList<Dino>> = MutableLiveData(mutableListOf())
 
@@ -49,36 +45,26 @@ class DinoViewModel:ViewModel() {
         if(tempBabyList.size == 0){
             return false
         } else {
+            val removeDinos = mutableSetOf<Dino>()
             for (dino in tempBabyList) {
                 dino.processSec()
                 if (dino.elapsedTimeSec >= dino.maturationTimeSec) {
-                    tempBabyList.remove(dino)
+                    removeDinos.add(dino)
                 } else {
-                    if (
-                        !when (dino.diet) {
-                            Diet.CARN -> {
-                                feedIfHungry(dino, carnEatOrder)
-                            }
-                            Diet.HERB -> {
-                                feedIfHungry(dino, herbEatOrder)
-                            }
-                            Diet.OMNI -> {
-                                feedIfHungry(dino, omniEatOrder)
-                            }
-                        }
-                    ) {
-
+                    if (feedIfHungry(dino)) {
                         return false
                     }
                     removeIfSpoiled(time)
                 }
             }
+            removeDinos.forEach{tempBabyList.remove(it)}
         }
         return true
     }
 
-    private fun feedIfHungry(d: Dino, foodList:List<Food>):Boolean{
+    private fun feedIfHungry(d: Dino):Boolean{
         var noFood = false
+        val foodList = d.diet.eatOrder
         for (f in foodList){
             if(d.canEat(f)){
                 if((trough.hasFood(f))>=0){

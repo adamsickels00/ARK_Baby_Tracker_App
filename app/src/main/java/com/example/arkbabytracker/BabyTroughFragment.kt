@@ -11,7 +11,9 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import androidx.fragment.app.commit
+import androidx.fragment.app.findFragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.room.Room
 import com.example.arkbabytracker.data.DinoViewModel
@@ -41,18 +43,27 @@ const val MAE_MULT_KEY = "com.example.arkbabycalculator.maewingMultiplier"
  */
 class BabyTroughFragment : Fragment() {
 
+    class FoodViewModel: ViewModel(){
+        val listedFoods = mutableListOf<Food>()
+        val currentOnScreenFoodId = mutableSetOf<Int>()
+        var currentId = 0
+    }
+
     private var _binding: FragmentBabyTroughBinding? = null
     private val binding get() = _binding!!
-    var currentId = 0
     private lateinit var dinoAdapter: DinoAdapter
     private val data by viewModels<DinoViewModel>()
     private val env by viewModels<EnvironmentViewModel>()
+    private val foodData by viewModels<FoodViewModel>()
     private lateinit var db: DinoDatabase
     private var needFoodFragment = true
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         needFoodFragment = savedInstanceState == null
+
     }
 
     override fun onCreateView(
@@ -81,7 +92,7 @@ class BabyTroughFragment : Fragment() {
             openPopupWindow()
         }
         if(needFoodFragment)
-            fillFoods(data.foodStacks.value!!)
+            fillFoods()
 
         binding.executePendingBindings()
         data.foodStacks.observe(requireActivity()) {
@@ -94,7 +105,8 @@ class BabyTroughFragment : Fragment() {
             val runSim = dinoAdapter.currentList.size != it.size
             dinoAdapter.submitList(it)
             binding.executePendingBindings()
-
+            removeUneededFoods()
+            fillFoods()
             if(runSim)
                 CoroutineScope(Dispatchers.Main).launch {
                     val time = data.runSim()
@@ -177,13 +189,43 @@ class BabyTroughFragment : Fragment() {
         popup.showAtLocation(binding.root, Gravity.CENTER,0,0)
     }
 
-    private fun fillFoods(foodMap:Map<Food,Int>){
+    private fun removeUneededFoods(){
+        val badId = mutableSetOf<Int>()
+        foodData.currentOnScreenFoodId.forEach{ id ->
+            val frag = childFragmentManager.findFragmentByTag(id.toString())
+            if(frag!=null) {
+                val foodFrag=frag as FoodItemFragment
+                val food = foodFrag.food
+                var stillGood = false
+                data.babyList.value!!.forEach {
+                    stillGood = stillGood || (it.diet.eatOrder.contains(food))
+                }
+                if (!stillGood) {
+                    childFragmentManager.commit { remove(foodFrag) }
+                    badId.add(id)
+                    foodData.listedFoods.remove(food)
+                }
+            }
+        }
+        badId.forEach{
+            foodData.currentOnScreenFoodId.remove(it)
+        }
+    }
 
-        for(pair in foodMap) {
-            childFragmentManager.commit {
-                val frag = FoodItemFragment.newInstance(pair.key, pair.value)
-                setReorderingAllowed(true)
-                add(binding.foodListHolder.id,frag)
+    private fun fillFoods(){
+
+        data.babyList.value!!.forEach {
+            for (food in it.diet.eatOrder) {
+                if(!foodData.listedFoods.contains(food)) {
+                    childFragmentManager.commit {
+                        setReorderingAllowed(true)
+                        val frag = FoodItemFragment.newInstance(food, 0)
+                        add(binding.foodListHolder.id, frag,(foodData.currentId).toString())
+                    }
+                    foodData.listedFoods.add(food)
+                    foodData.currentOnScreenFoodId.add(foodData.currentId)
+                    foodData.currentId++
+                }
             }
         }
         needFoodFragment = false

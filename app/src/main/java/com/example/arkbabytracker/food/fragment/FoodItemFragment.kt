@@ -29,7 +29,7 @@ private const val ARG_FOODVALUE = "val"
  */
 class FoodItemFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var food: Food? = null
+    var food: Food? = null
     private var value:Int? = null
     private lateinit var binding:FragmentFoodItemBinding
     private val data:DinoViewModel by viewModels({requireParentFragment()})
