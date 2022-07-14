@@ -48,6 +48,12 @@ class BabyTroughFragment : Fragment() {
     private val data by viewModels<DinoViewModel>()
     private val env by viewModels<EnvironmentViewModel>()
     private lateinit var db: DinoDatabase
+    private var needFoodFragment = true
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        needFoodFragment = savedInstanceState == null
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,6 +61,7 @@ class BabyTroughFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentBabyTroughBinding.inflate(inflater,container,false)
+
         val activity = requireActivity()
         val pref = activity.getPreferences(Context.MODE_PRIVATE)
         val maeMult = pref.getFloat(MAE_MULT_KEY,1f)
@@ -73,7 +80,7 @@ class BabyTroughFragment : Fragment() {
         binding.addDinoButton.setOnClickListener{
             openPopupWindow()
         }
-        if(savedInstanceState == null)
+        if(needFoodFragment)
             fillFoods(data.foodStacks.value!!)
 
         binding.executePendingBindings()
@@ -113,7 +120,7 @@ class BabyTroughFragment : Fragment() {
                 apply()
             }
             CoroutineScope(Dispatchers.IO).launch {
-                data.getFromDatabase(db)
+                data.getFromDatabase(db,env)
                 val time = data.runSim()
                 binding.bigTimerTextView.text = time.toString()
             }
@@ -171,13 +178,15 @@ class BabyTroughFragment : Fragment() {
     }
 
     private fun fillFoods(foodMap:Map<Food,Int>){
+
         for(pair in foodMap) {
-            requireActivity().supportFragmentManager.commit {
+            childFragmentManager.commit {
                 val frag = FoodItemFragment.newInstance(pair.key, pair.value)
                 setReorderingAllowed(true)
                 add(binding.foodListHolder.id,frag)
             }
         }
+        needFoodFragment = false
         binding.executePendingBindings()
     }
 

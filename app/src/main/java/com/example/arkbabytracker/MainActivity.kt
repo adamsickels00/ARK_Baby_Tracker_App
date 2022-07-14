@@ -7,13 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.onNavDestinationSelected
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.*
 import com.example.arkbabytracker.databinding.ActivityMainBinding
 
-// TODO figure out why the env variables are lost on screen rotate
+// TODO figure out why the hamburger button does nothing
 
 // TODO add a menu to different apps (eg. colors tracker)
 
@@ -22,9 +19,10 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding:ActivityMainBinding
     private lateinit var navController: NavController
+    lateinit var appBarConfiguration:AppBarConfiguration
 
     override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onSupportNavigateUp()
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
 
@@ -37,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
         navController = (supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
-        val appBarConfiguration = AppBarConfiguration(navController.graph,binding.drawerLayout)
+        appBarConfiguration = AppBarConfiguration(navController.graph,binding.drawerLayout)
         setSupportActionBar(binding.toolbar)
         binding.navView.setupWithNavController(navController)
         setupActionBarWithNavController(navController,appBarConfiguration)

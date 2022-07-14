@@ -1,12 +1,13 @@
 package com.example.arkbabytracker.data
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.commit
-import androidx.fragment.app.viewModels
+import android.widget.LinearLayout
+import androidx.core.view.children
+import androidx.fragment.app.*
 import androidx.lifecycle.MutableLiveData
 import com.example.arkbabytracker.databinding.FragmentEnvironmentOptionsBinding
 
@@ -17,38 +18,57 @@ import com.example.arkbabytracker.databinding.FragmentEnvironmentOptionsBinding
  */
 class EnvironmentOptions : Fragment() {
 
-    lateinit var data:DinoViewModel
+    val data:DinoViewModel by viewModels({requireParentFragment()})
+    val env : EnvironmentViewModel by viewModels({requireParentFragment()})
+    private var fragmentNeeded = true
+
+
+
     //Keep this in sync with EnvironmentViewModel.kt properties
     lateinit var envVariables:Map<String,MutableLiveData<Double>>
-
     lateinit var binding:FragmentEnvironmentOptionsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        fragmentNeeded = savedInstanceState == null
+        envVariables = mapOf(
+            Pair("Event Multiplier",env.eventMultiplier),
+            Pair("Maewing Effectiveness",env.maewingFoodMultiplier),
+        )
+        childFragmentManager.setFragmentResultListener("newValue",requireActivity()){ _: String, bundle: Bundle ->
+            val newDouble = bundle.getDouble("value")
+            val name = bundle.getString("name")
+            val liveData = envVariables[name]!!
+            liveData.value = newDouble
+        }
+
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val env : EnvironmentViewModel by viewModels()
-        envVariables = mapOf(
-            Pair("Event Multiplier",env.eventMultiplier),
-            Pair("Maewing Effectiveness",env.maewingFoodMultiplier),
-        )
+
         binding = FragmentEnvironmentOptionsBinding.inflate(inflater, container, false)
-        if(savedInstanceState == null) {
+        val ll = LinearLayout(context)
+        ll.id = 1
+        ll.layoutParams = binding.fragmentContainer.layoutParams
+        if(fragmentNeeded) {
             envVariables.forEach {
-                requireActivity().supportFragmentManager.commit {
+                childFragmentManager.commit {
                     setReorderingAllowed(true)
-                    add(binding.fragmentContainer.id, createEnvFrag(it.key, it.value))
+                    val frag = createEnvFrag(it.key, it.value.value!!)
+                    add(binding.fragmentContainer.id, frag)
                 }
             }
+            fragmentNeeded = false
         }
+        binding.fragmentContainer.addView(ll,0)
 
         return binding.root
     }
-    fun createEnvFrag(name:String, data: MutableLiveData<Double>):EnvironmentEditableItem{
-        return EnvironmentEditableItem.newInstance().registerParams(name,data)
+    fun createEnvFrag(name:String,value:Double):EnvironmentEditableItem{
+        return EnvironmentEditableItem.newInstance(name,value)
     }
 
     companion object {
@@ -56,6 +76,7 @@ class EnvironmentOptions : Fragment() {
         @JvmStatic
         fun newInstance() =
             EnvironmentOptions().apply {
+
             }
     }
 }

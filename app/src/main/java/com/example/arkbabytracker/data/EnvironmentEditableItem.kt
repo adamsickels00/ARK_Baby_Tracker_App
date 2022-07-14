@@ -7,10 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.core.os.bundleOf
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.databinding.Bindable
 import androidx.databinding.BindingAdapter
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.arkbabytracker.R
@@ -18,8 +21,8 @@ import com.example.arkbabytracker.databinding.FragmentEnvironmentEdittableItemBi
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_NAME = "param1"
-private const val ARG_VALUE = "param2"
+private const val ARG_NAME = "name"
+private const val ARG_VAL = "value"
 
 /**
  * A simple [Fragment] subclass.
@@ -29,8 +32,7 @@ private const val ARG_VALUE = "param2"
 class EnvironmentEditableItem : Fragment() {
 
     var name:String? = null
-    var value:Double? = null
-    var saveTo: MutableLiveData<Double>? = null
+    private val viewModel: EnvironmentViewModel by viewModels({requireParentFragment()})
     lateinit var binding:FragmentEnvironmentEdittableItemBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,25 +47,21 @@ class EnvironmentEditableItem : Fragment() {
         binding = FragmentEnvironmentEdittableItemBinding.inflate(
             inflater,container,false
         )
+        val itemName = arguments?.getString(ARG_NAME)
+        val initialValue = arguments?.getDouble(ARG_VAL)
         // Inflate the layout for this fragment
-        binding.item = name
-        binding.quantity = value
+        binding.item = itemName
+        binding.quantity = initialValue
 
         binding.valueTextBox.doAfterTextChanged{
             if(it.toString() != "") {
                 val newValue = it.toString().toDouble()
-                saveTo?.value = newValue
+                val bundle = bundleOf("name" to itemName, "value" to newValue)
+                setFragmentResult("newValue",bundle)
             }
         }
 
         return binding.root
-    }
-
-    fun registerParams(initName:String, initSaveTo : MutableLiveData<Double>):EnvironmentEditableItem{
-        name = initName
-        value = initSaveTo.value
-        saveTo = initSaveTo
-        return  this
     }
 
 
@@ -76,8 +74,12 @@ class EnvironmentEditableItem : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance() =
+        fun newInstance(name:String, initialValue:Double) =
             EnvironmentEditableItem().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_NAME,name)
+                    putDouble(ARG_VAL,initialValue)
+                }
             }
     }
 }

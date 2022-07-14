@@ -1,6 +1,7 @@
 package com.example.arkbabytracker.data.database
 
 import androidx.room.*
+import com.example.arkbabytracker.data.EnvironmentViewModel
 import com.example.arkbabytracker.dinos.data.Diet
 import com.example.arkbabytracker.dinos.data.Dino
 import com.example.arkbabytracker.dinos.data.allDinoList
@@ -53,11 +54,12 @@ data class DinoEntity(
             )
         }
 
-        fun toDino(entity:DinoEntity):Dino?{
+        fun toDino(entity:DinoEntity,env:EnvironmentViewModel):Dino?{
             allDinoList.forEach{
                 if(entity.name == it.simpleName){
                     val newDino = it.primaryConstructor!!.call(
-                        entity.maxFood
+                        entity.maxFood,
+                        env
                     )
                     newDino.uniqueID = entity.id
                     newDino.startTime = entity.startTime
