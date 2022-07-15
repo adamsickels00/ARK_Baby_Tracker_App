@@ -17,5 +17,13 @@
         android:id="@+id/turtleMenu"
         android:name="com.example.arkbabytracker.TurtleMenu"
         android:label="fragment_turtle_menu"
-        tools:layout="@layout/fragment_turtle_menu" />
+        tools:layout="@layout/fragment_turtle_menu" >
+        <action
+            android:id="@+id/action_turtleMenu_to_troughFragment"
+            app:destination="@id/troughFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/troughFragment"
+        android:name="com.example.arkbabytracker.food.trough.TroughFragment"
+        android:label="TroughFragment" />
 </navigation>

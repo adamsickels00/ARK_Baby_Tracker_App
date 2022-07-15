@@ -36,7 +36,7 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
     abstract val percentMaxStarting:Double
     val minFood = maxFood*percentMaxStarting
     var elapsedTimeSec = 0.0
-    var food = 0.0
+    var food = minFood
     var maturationTimeSec = 1/ this.ageSpeed /ageSpeedMult/env.eventMultiplier.value!!
     private val maxFoodRate = baseFoodRate*extraBabyFoodRate*babyFoodRate
     private val minFoodRate = BASE_MIN_FOOD_RATE*babyFoodRate*extraBabyFoodRate
@@ -63,7 +63,7 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
     }
 
     fun canEat(food:Food):Boolean{
-        return (this.food + food.value*env.maewingFoodMultiplier.value!!) < 0
+        return (this.food + food.value*env.maewingFoodMultiplier.value!!) < (minFood * (1-percentComplete))+ (maxFood * percentComplete)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -1301,7 +1301,7 @@ class Maewing(maxFood: Double,env:EnvironmentViewModel): Dino(maxFood,env){
     override val name: String
         get() = "Maewing"
     override val diet: Diet
-        get() = Diet.CARN
+        get() = Diet.OMNI
     override val percentMaxStarting: Double
         get() = .1
 

@@ -2,12 +2,13 @@ package com.example.arkbabytracker.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.arkbabytracker.data.database.DinoDao
 import com.example.arkbabytracker.data.database.DinoDatabase
 import com.example.arkbabytracker.data.database.DinoEntity
 import com.example.arkbabytracker.dinos.data.*
 import com.example.arkbabytracker.food.Food
-import com.example.arkbabytracker.food.Trough
+import com.example.arkbabytracker.food.trough.Trough
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 class DinoViewModel:ViewModel() {
@@ -34,14 +35,17 @@ class DinoViewModel:ViewModel() {
         var run = true
         trough = Trough(foodStacks.value!!)
         var tempBabyList:MutableList<Dino> = babyList.value?.map { it.copy() } as MutableList<Dino>
-        while(run){
-            run = processSecond(tempBabyList,time)
-            time++
+        synchronized(this) {
+            while (run) {
+                run = processSecond(tempBabyList, time)
+                time++
+            }
         }
         return time-1
     }
 
     fun processSecond(tempBabyList:MutableList<Dino>,time:Int):Boolean{
+        var allGood = true
         if(tempBabyList.size == 0){
             return false
         } else {
@@ -51,15 +55,14 @@ class DinoViewModel:ViewModel() {
                 if (dino.elapsedTimeSec >= dino.maturationTimeSec) {
                     removeDinos.add(dino)
                 } else {
-                    if (!feedIfHungry(dino)) {
-                        return false
-                    }
+                    feedIfHungry(dino)
                     removeIfSpoiled(time)
                 }
+                allGood = allGood && dino.food>0
             }
             removeDinos.forEach{tempBabyList.remove(it)}
         }
-        return true
+        return allGood
     }
 
     private fun feedIfHungry(d: Dino):Boolean{

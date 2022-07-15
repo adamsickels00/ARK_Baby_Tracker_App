@@ -7,15 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import com.example.arkbabytracker.MainActivity
 import com.example.arkbabytracker.data.DinoViewModel
 import com.example.arkbabytracker.databinding.FragmentFoodItemBinding
 import com.example.arkbabytracker.food.Food
-import com.example.arkbabytracker.food.Trough
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.example.arkbabytracker.food.trough.Trough
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

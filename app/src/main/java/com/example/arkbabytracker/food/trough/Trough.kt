@@ -1,7 +1,11 @@
-package com.example.arkbabytracker.food
+package com.example.arkbabytracker.food.trough
+
+import com.example.arkbabytracker.food.Food
 
 class Trough(foodMap: MutableMap<Food,Int>) {
     private var troughContents : MutableList<Pair<Food, Int>> = mutableListOf()
+    val size: Int
+        get() = troughContents.size
     var foodSet:MutableSet<Food> = mutableSetOf()
     init {
         foodMap.forEach{
@@ -11,7 +15,7 @@ class Trough(foodMap: MutableMap<Food,Int>) {
             }
         }
     }
-    fun hasFood(f:Food):Int{
+    fun hasFood(f: Food):Int{
         for((i,pair) in troughContents.withIndex()){
             if((pair.first == f) && (pair.second > 0)){
                 return i
@@ -27,7 +31,7 @@ class Trough(foodMap: MutableMap<Food,Int>) {
         }
     }
 
-    fun spoilFood(f:Food){
+    fun spoilFood(f: Food){
 
         val decList:MutableList<Int> = mutableListOf()
         for((i,pair) in troughContents.withIndex()){
@@ -47,6 +51,10 @@ class Trough(foodMap: MutableMap<Food,Int>) {
         } else{
             troughContents.removeAt(index)
         }
+    }
+
+    fun get(index:Int):Pair<Food,Int>{
+        return troughContents[index]
     }
 
     operator fun iterator():Iterator<Pair<Food,Int>>{
