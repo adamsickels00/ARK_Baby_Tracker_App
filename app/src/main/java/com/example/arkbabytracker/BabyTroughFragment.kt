@@ -10,8 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
-import androidx.fragment.app.findFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -26,6 +26,7 @@ import com.example.arkbabytracker.dinos.data.Dino
 import com.example.arkbabytracker.dinos.data.allDinoList
 import com.example.arkbabytracker.food.Food
 import com.example.arkbabytracker.food.fragment.FoodItemFragment
+import com.example.arkbabytracker.food.trough.Trough
 import com.example.arkbabytracker.utils.TimeDisplayUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,25 +46,25 @@ const val MAE_MULT_KEY = "com.example.arkbabycalculator.maewingMultiplier"
 class BabyTroughFragment : Fragment() {
 
     class FoodViewModel: ViewModel(){
-        val listedFoods = mutableListOf<Food>()
-        val currentOnScreenFoodId = mutableSetOf<Int>()
         var currentId = 0
     }
 
     private var _binding: FragmentBabyTroughBinding? = null
     private val binding get() = _binding!!
     private lateinit var dinoAdapter: DinoAdapter
-    private val data by viewModels<DinoViewModel>()
-    private val env by viewModels<EnvironmentViewModel>()
-    private val foodData by viewModels<FoodViewModel>()
+    private val data by activityViewModels<DinoViewModel>()
+    private val env by activityViewModels<EnvironmentViewModel>()
+    private val foodData by activityViewModels<FoodViewModel>()
     private lateinit var db: DinoDatabase
     private var needFoodFragment = true
+    private var foodCache = mutableSetOf<Food>()
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         needFoodFragment = savedInstanceState == null
+        foodCache.clear()
         Log.d("LifecycleTests","Create")
 
     }
@@ -88,8 +89,12 @@ class BabyTroughFragment : Fragment() {
 
         val activity = requireActivity()
         val pref = activity.getPreferences(Context.MODE_PRIVATE)
+        for(food in Food.values()){
+            data.foodStacks.value!![food] = pref.getInt(food.name,0)
+        }
         val maeMult = pref.getFloat(MAE_MULT_KEY,1f)
         val evMult = pref.getFloat(EVENT_MULT_KEY,1f)
+
 
         db = Room.databaseBuilder(
             activity,
@@ -105,35 +110,38 @@ class BabyTroughFragment : Fragment() {
             openPopupWindow()
         }
         if(needFoodFragment)
-            fillFoods()
+            updateFoods()
 
         binding.executePendingBindings()
-        data.foodStacks.observe(requireActivity()) {
+        data.foodStacks.observe(viewLifecycleOwner) {
+            for(food in Food.values()){
+                with(pref.edit()){
+                    putInt(food.name,it[food]?:0)
+                    apply()
+                }
+            }
             updateTime()
         }
-        data.babyList.observe(requireActivity()) {
+        data.babyList.observe(viewLifecycleOwner) {
             val runSim = dinoAdapter.currentList.size != it.size
             dinoAdapter.submitList(it)
             binding.executePendingBindings()
-            removeUneededFoods()
-            fillFoods()
-            if(runSim)
+            if(runSim) {
+                updateFoods()
                 updateTime()
+            }
         }
 
-        env.eventMultiplier.observe(requireActivity()){ newVal ->
+        env.eventMultiplier.observe(viewLifecycleOwner){ newVal ->
             val tempList: MutableList<Dino> = data.babyList.value!!
             with(pref.edit()){
                 putFloat(EVENT_MULT_KEY,newVal.toFloat())
                 apply()
             }
-            tempList.forEach{
-                it.setEventMultiplier(newVal)
-            }
             data.babyList.value = tempList
         }
 
-        env.maewingFoodMultiplier.observe(requireActivity()){
+        env.maewingFoodMultiplier.observe(viewLifecycleOwner){
             with(pref.edit()){
                 putFloat(MAE_MULT_KEY,it.toFloat())
                 apply()
@@ -142,23 +150,31 @@ class BabyTroughFragment : Fragment() {
 
         }
 
+        data.currentSimBabyList.observe(viewLifecycleOwner){ simResults ->
+
+            // Get the list we display on the recyclerview
+            val dinoList = data.babyList.value!!
+
+            //Set the food of each one to the sim value and the elapsed time to current elapsed time
+            dinoList.forEach{
+
+                simResults.forEach { simDino ->
+                    if(simDino.uniqueID == it.uniqueID){
+                        it.food = simDino.food
+                        it.elapsedTimeSec = simDino.elapsedTimeSec
+                    }
+                }
+            }
+            //Post the list containing the dinos that are not yet finished
+            dinoAdapter.submitList(dinoList.filter { (it.elapsedTimeSec < it.maturationTimeSec) }.toMutableList())
+
+        }
+
         CoroutineScope(Dispatchers.IO).launch {
             data.getFromDatabase(db,env)
-
         }
-        fixedRateTimer("Dino time left",true, period = 1000){
-            updateDinoTimer()
-        }
+        data.launchUpdateThread()
         return binding.root
-    }
-
-    private fun updateDinoTimer(){
-        var dinoList = data.babyList.value!!
-        dinoList.forEach{
-            it.elapsedTimeSec = (Instant.now().epochSecond-it.startTime.epochSecond).toDouble()
-        }
-        dinoList = dinoList.filter { (it.elapsedTimeSec < it.maturationTimeSec) }.toMutableList()
-        data.babyList.postValue(dinoList)
     }
 
     private fun openPopupWindow(){
@@ -178,7 +194,7 @@ class BabyTroughFragment : Fragment() {
                 if(c.simpleName == newDinoString){
                     val newList = data.babyList.value!!
                     val newDino = c.primaryConstructor!!.call(
-                        maxFood?:0.0,
+                        maxFood?:1000.0,
                         env
                     )
                     newDino.setPercentMature(popupBinding.percentMatureTextBox.text.toString().toDoubleOrNull()?:0.0)
@@ -192,49 +208,46 @@ class BabyTroughFragment : Fragment() {
         popup.showAtLocation(binding.root, Gravity.CENTER,0,0)
     }
 
-    private fun removeUneededFoods(){
-        val badId = mutableSetOf<Int>()
+    private fun updateFoods(){
         if(isAdded) {
-            foodData.currentOnScreenFoodId.forEach { id ->
-                val frag = childFragmentManager.findFragmentByTag(id.toString())
-                if (frag != null) {
-                    val foodFrag = frag as FoodItemFragment
-                    val food = foodFrag.food
-                    var stillGood = false
-                    data.babyList.value!!.forEach {
-                        stillGood = stillGood || (it.diet.eatOrder.contains(food))
-                    }
-                    if (!stillGood) {
-                        childFragmentManager.commit { remove(foodFrag) }
-                        badId.add(id)
-                        foodData.listedFoods.remove(food)
+            var foodSet = mutableSetOf<Food>()
+            for (food in Food.values()) {
+                data.babyList.value!!.forEach {
+                    if(it.diet.eatOrder.contains(food)) {
+                        addIfDoesNotExist(food)
+                        foodSet.add(food)
                     }
                 }
             }
+            for(food in Food.values()){
+                if(food !in foodSet){
+                    removeIfExists(food)
+                }
+            }
         }
-        badId.forEach{
-            foodData.currentOnScreenFoodId.remove(it)
+            needFoodFragment = false
+            binding.executePendingBindings()
+    }
+
+    private fun addIfDoesNotExist(food:Food){
+        if(childFragmentManager.findFragmentByTag(food.name) == null && food !in foodCache) {
+            childFragmentManager.commit {
+                setReorderingAllowed(true)
+                val frag = FoodItemFragment.newInstance(
+                    food,
+                    data.foodStacks.value!![food] ?: 0
+                )
+                add(binding.foodListHolder.id, frag, food.name)
+                foodCache.add(food)
+            }
         }
     }
 
-    private fun fillFoods(){
-
-        data.babyList.value!!.forEach {
-            for (food in it.diet.eatOrder) {
-                if(!foodData.listedFoods.contains(food)) {
-                    childFragmentManager.commit {
-                        setReorderingAllowed(true)
-                        val frag = FoodItemFragment.newInstance(food, data.foodStacks.value!![food]?:0)
-                        add(binding.foodListHolder.id, frag,(foodData.currentId).toString())
-                    }
-                    foodData.listedFoods.add(food)
-                    foodData.currentOnScreenFoodId.add(foodData.currentId)
-                    foodData.currentId++
-                }
-            }
+    private fun removeIfExists(food:Food){
+        childFragmentManager.findFragmentByTag(food.name)?.let{
+            childFragmentManager.commit { remove(it)}
+            foodCache.remove(food)
         }
-        needFoodFragment = false
-        binding.executePendingBindings()
     }
 
     override fun onPause() {
@@ -249,12 +262,13 @@ class BabyTroughFragment : Fragment() {
         Log.d("LifecycleTests","Stop")
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.d("LifecycleTests","On Save Instance State")
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        CoroutineScope(Dispatchers.IO).launch {
-            data.saveToDatabase(db)
-        }
-
         Log.d("LifecycleTests","Destroy")
     }
 

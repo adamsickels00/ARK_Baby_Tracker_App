@@ -7,4 +7,7 @@
     <item
         android:id="@+id/turtleMenu"
         android:title="Turtle Menu" />
+    <item
+        android:id="@+id/troughFragment"
+        android:title="Trough" />
 </menu>

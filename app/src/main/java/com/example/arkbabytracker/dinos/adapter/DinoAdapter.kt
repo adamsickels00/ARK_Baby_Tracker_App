@@ -26,6 +26,7 @@ class DinoAdapter(val data:DinoViewModel): ListAdapter<Dino,DinoAdapter.DinoView
             binding.dinoName = dino.name
             binding.progress = (100*dino.elapsedTimeSec / dino.maturationTimeSec)
             binding.timeRemaining = TimeDisplayUtil.secondsToString((dino.maturationTimeSec-dino.elapsedTimeSec).roundToInt())
+            binding.food = "%.2f/%.2f".format(dino.food,dino.maxFood)
             binding.deleteCreatureButton.setOnClickListener {
                 val currentList = data.babyList.value!!
                 currentList.remove(dino)

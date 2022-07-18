@@ -18,8 +18,8 @@ import com.example.arkbabytracker.databinding.FragmentEnvironmentOptionsBinding
  */
 class EnvironmentOptions : Fragment() {
 
-    val data:DinoViewModel by viewModels({requireParentFragment()})
-    val env : EnvironmentViewModel by viewModels({requireParentFragment()})
+    val data:DinoViewModel by activityViewModels()
+    val env : EnvironmentViewModel by activityViewModels()
     private var fragmentNeeded = true
 
 
@@ -38,6 +38,7 @@ class EnvironmentOptions : Fragment() {
             val newDouble = bundle.getDouble("value")
             val name = bundle.getString("name")
             val liveData = envVariables[name]!!
+            val temp = data.foodStacks.value
             liveData.value = newDouble
         }
 

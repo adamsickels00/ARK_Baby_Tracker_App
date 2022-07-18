@@ -5,10 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.example.arkbabytracker.R
 import com.example.arkbabytracker.data.DinoViewModel
 import com.example.arkbabytracker.databinding.FragmentTroughBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * A simple [Fragment] subclass.
@@ -21,7 +26,7 @@ class TroughFragment : Fragment() {
     private lateinit var _binding:FragmentTroughBinding
     private val binding:FragmentTroughBinding
         get() = _binding
-    private val data by viewModels<DinoViewModel>()
+    private val data by activityViewModels<DinoViewModel>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +40,12 @@ class TroughFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentTroughBinding.inflate(inflater,container,false)
-        binding.adapter = TroughAdapter(data)
+        binding.adapter.hasStableIds()
+        binding.adapter = TroughAdapter(data.trough)
+        data.simTrough.observe(viewLifecycleOwner){
+            binding.adapter = TroughAdapter(it)
+            binding.executePendingBindings()
+        }
 
         return binding.root
     }

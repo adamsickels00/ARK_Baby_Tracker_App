@@ -27,28 +27,23 @@ val allDinoList: List<KClass<out Dino>> = Dino::class.sealedSubclasses
 
 sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
     var uniqueID = UUID.randomUUID().toString()
-    val minFoodDrainPerSec:Double = 0.000155
     abstract val baseFoodRate:Double
     abstract val babyFoodRate:Double
     abstract val extraBabyFoodRate:Double
     abstract val ageSpeed:Double
     abstract val ageSpeedMult:Double
     abstract val percentMaxStarting:Double
-    val minFood = maxFood*percentMaxStarting
+    val minFood get() = maxFood*percentMaxStarting
     var elapsedTimeSec = 0.0
     var food = minFood
-    var maturationTimeSec = 1/ this.ageSpeed /ageSpeedMult/env.eventMultiplier.value!!
-    private val maxFoodRate = baseFoodRate*extraBabyFoodRate*babyFoodRate
-    private val minFoodRate = BASE_MIN_FOOD_RATE*babyFoodRate*extraBabyFoodRate
+    val maturationTimeSec get() = 1/ this.ageSpeed /ageSpeedMult/env.eventMultiplier.value!!
+    private val maxFoodRate get() = baseFoodRate*extraBabyFoodRate*babyFoodRate
+    private val minFoodRate get() = BASE_MIN_FOOD_RATE*babyFoodRate*extraBabyFoodRate
     private var percentComplete = 0.0
     private var currentFoodRate = 0.0
     var startTime: Instant = Instant.now()
     abstract val name:String
     abstract val diet: Diet
-
-    fun setEventMultiplier(mult:Double){
-        maturationTimeSec = 1/ageSpeed/ageSpeedMult/mult
-    }
 
     fun eat(item:Food) {
         food += item.value * env.maewingFoodMultiplier.value!!
@@ -95,12 +90,18 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
         newDino.food = this.food
         newDino.currentFoodRate = this.currentFoodRate
         newDino.percentComplete = this.percentComplete
+
+        return newDino
+    }
+
+    fun blankCopy():Dino{
+        val newDino = newInstance()
+        newDino.uniqueID = this.uniqueID
         return newDino
     }
 
     override fun hashCode(): Int {
         var result = uniqueID.hashCode()
-        result = 31 * result + minFoodDrainPerSec.hashCode()
         result = 31 * result + baseFoodRate.hashCode()
         result = 31 * result + babyFoodRate.hashCode()
         result = 31 * result + extraBabyFoodRate.hashCode()

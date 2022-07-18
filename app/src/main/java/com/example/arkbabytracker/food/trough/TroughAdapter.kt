@@ -8,7 +8,7 @@ import com.example.arkbabytracker.data.DinoViewModel
 import com.example.arkbabytracker.databinding.TroughItemBinding
 import com.example.arkbabytracker.food.Food
 
-class TroughAdapter(val data:DinoViewModel) : RecyclerView.Adapter<TroughAdapter.TroughViewHolder>() {
+class TroughAdapter(val trough:Trough) : RecyclerView.Adapter<TroughAdapter.TroughViewHolder>() {
     class TroughViewHolder(val binding:TroughItemBinding) :RecyclerView.ViewHolder(binding.root){
         fun bind(item:Pair<Food,Int>){
             binding.foodName = item.first.name
@@ -23,10 +23,10 @@ class TroughAdapter(val data:DinoViewModel) : RecyclerView.Adapter<TroughAdapter
     }
 
     override fun onBindViewHolder(holder: TroughViewHolder, position: Int) {
-        holder.bind(data.trough.get(position))
+        holder.bind(trough.get(position))
     }
 
     override fun getItemCount(): Int {
-        return data.trough.size
+        return trough.size
     }
 }

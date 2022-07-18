@@ -32,7 +32,6 @@ private const val ARG_VAL = "value"
 class EnvironmentEditableItem : Fragment() {
 
     var name:String? = null
-    private val viewModel: EnvironmentViewModel by viewModels({requireParentFragment()})
     lateinit var binding:FragmentEnvironmentEdittableItemBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

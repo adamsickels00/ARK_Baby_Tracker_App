@@ -7,8 +7,11 @@ import com.example.arkbabytracker.data.database.DinoEntity
 import com.example.arkbabytracker.dinos.data.*
 import com.example.arkbabytracker.food.Food
 import com.example.arkbabytracker.food.trough.Trough
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
+import java.time.Instant
+import kotlin.concurrent.fixedRateTimer
 
 
 class DinoViewModel:ViewModel() {
@@ -17,8 +20,13 @@ class DinoViewModel:ViewModel() {
 
     var babyList : MutableLiveData<MutableList<Dino>> = MutableLiveData(mutableListOf())
 
+    var currentSimBabyList = MutableLiveData(mutableListOf<Dino>())
+
     var trough = Trough(foodStacks.value!!)
 
+    var simTrough = MutableLiveData(Trough(foodStacks.value!!))
+
+    private var noTimer=true
 
     fun getFromDatabase(db:DinoDatabase,env:EnvironmentViewModel):DinoViewModel{
         babyList.postValue(db.dinoDao().getAll().map { DinoEntity.toDino(it,env)!! }.toMutableList())
@@ -33,18 +41,70 @@ class DinoViewModel:ViewModel() {
     suspend fun runSim():Int{
         var time = 0
         var run = true
-        trough = Trough(foodStacks.value!!)
+
         var tempBabyList:MutableList<Dino> = babyList.value?.map { it.copy() } as MutableList<Dino>
         synchronized(this) {
+            trough = Trough(foodStacks.value!!)
             while (run) {
-                run = processSecond(tempBabyList, time)
+                run = processSecond(tempBabyList, time,trough)
                 time++
             }
         }
         return time-1
     }
 
-    fun processSecond(tempBabyList:MutableList<Dino>,time:Int):Boolean{
+    private suspend fun runSimFromStartToNow():Int{
+        var time = 0
+        var run = true
+        var dinoList = mutableListOf<Dino>()
+        val babyAddTimesPair = getBabyAddTimes()
+        val maxElapsedTime = babyAddTimesPair.second
+        var babyAddTimes = babyAddTimesPair.first
+        val tempTrough = Trough(foodStacks.value!!)
+
+        synchronized(this) {
+            //While we have food and are not yet to now
+            while (run && time<=maxElapsedTime) {
+
+                //Add the dinos that exist at this time
+                babyAddTimes.forEach {
+                    if(it.second <= time){
+                        //Add dino as if it started from 0 maturation
+                        dinoList.add(it.first.blankCopy())
+                    }
+                }
+                //Remove the dinos just added from the queue
+                babyAddTimes = babyAddTimes.filter { it.second > time }
+
+                //Run one second on each dino
+                run = processSecond(dinoList, time,tempTrough)
+
+                //Count that second
+                time++
+            }
+        }
+
+        currentSimBabyList.postValue(dinoList)
+        simTrough.postValue(tempTrough)
+        return time-1
+    }
+
+    private fun getBabyAddTimes(): Pair<List<Pair<Dino,Double>>,Double> {
+        if (babyList.value!!.size <= 0)
+            return listOf<Pair<Dino,Double>>() to 0.0
+        val nnList = babyList.value!!
+        var maxElapsedTime = nnList[0].elapsedTimeSec
+
+        nnList.forEach {
+            it.elapsedTimeSec = (Instant.now().epochSecond-it.startTime.epochSecond).toDouble()
+            if (it.elapsedTimeSec > maxElapsedTime) {
+                maxElapsedTime = it.elapsedTimeSec
+            }
+        }
+        return nnList.map { it to maxElapsedTime - it.elapsedTimeSec } to maxElapsedTime
+    }
+
+    fun processSecond(tempBabyList:MutableList<Dino>,time:Int,trough:Trough):Boolean{
         var allGood = true
         if(tempBabyList.size == 0){
             return false
@@ -55,17 +115,18 @@ class DinoViewModel:ViewModel() {
                 if (dino.elapsedTimeSec >= dino.maturationTimeSec) {
                     removeDinos.add(dino)
                 } else {
-                    feedIfHungry(dino)
-                    removeIfSpoiled(time)
+                    feedIfHungry(dino,trough)
+                    removeIfSpoiled(time,trough)
                 }
                 allGood = allGood && dino.food>0
             }
             removeDinos.forEach{tempBabyList.remove(it)}
+            allGood = allGood && tempBabyList.size>0
         }
         return allGood
     }
 
-    private fun feedIfHungry(d: Dino):Boolean{
+    private fun feedIfHungry(d: Dino,trough: Trough):Boolean{
         var noFood = false
         val foodList = d.diet.eatOrder
         for (f in foodList){
@@ -81,7 +142,7 @@ class DinoViewModel:ViewModel() {
         }
         return noFood
     }
-    private fun removeIfSpoiled(time:Int){
+    private fun removeIfSpoiled(time:Int,trough: Trough){
         for (food in trough.foodSet){
             if(time%food.SpoilTime==0){
                 trough.spoilFood(food)
@@ -89,5 +150,20 @@ class DinoViewModel:ViewModel() {
         }
     }
 
+
+
+    fun launchUpdateThread(){
+        if(noTimer) {
+            noTimer = false
+            fixedRateTimer("Dino time left", true, period = 1000) {
+                CoroutineScope(Dispatchers.Default).launch {
+
+                    runSimFromStartToNow()
+
+                }
+            }
+        }
+
+    }
 
 }

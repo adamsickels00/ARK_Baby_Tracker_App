@@ -36,21 +36,18 @@ class Trough(foodMap: MutableMap<Food,Int>) {
         val decList:MutableList<Int> = mutableListOf()
         for((i,pair) in troughContents.withIndex()){
             if(pair.first == f){
-                decList.add(i-decList.size)
+                decList.add(i)
             }
         }
         for (index in decList){
             decrementAt(index)
         }
+        troughContents = troughContents.filter { it.second>0 } as MutableList<Pair<Food, Int>>
     }
 
     private fun decrementAt(index:Int){
         val newVal = troughContents[index].second-1
-        if(newVal>0){
-            troughContents[index] = Pair(troughContents[index].first,newVal)
-        } else{
-            troughContents.removeAt(index)
-        }
+        troughContents[index] = Pair(troughContents[index].first,newVal)
     }
 
     fun get(index:Int):Pair<Food,Int>{
