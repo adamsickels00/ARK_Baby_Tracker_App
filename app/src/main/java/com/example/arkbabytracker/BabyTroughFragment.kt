@@ -1,6 +1,7 @@
 package com.example.arkbabytracker
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -12,7 +13,6 @@ import android.widget.LinearLayout
 import android.widget.PopupWindow
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.room.Room
@@ -26,13 +26,12 @@ import com.example.arkbabytracker.dinos.data.Dino
 import com.example.arkbabytracker.dinos.data.allDinoList
 import com.example.arkbabytracker.food.Food
 import com.example.arkbabytracker.food.fragment.FoodItemFragment
-import com.example.arkbabytracker.food.trough.Trough
 import com.example.arkbabytracker.utils.TimeDisplayUtil
+import com.example.arkbabytracker.utils.TimerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.Instant
-import kotlin.concurrent.fixedRateTimer
 import kotlin.reflect.full.primaryConstructor
 
 const val EVENT_MULT_KEY = "com.example.arkbabycalculator.eventMultiplier"
@@ -95,6 +94,13 @@ class BabyTroughFragment : Fragment() {
         val maeMult = pref.getFloat(MAE_MULT_KEY,1f)
         val evMult = pref.getFloat(EVENT_MULT_KEY,1f)
 
+        binding.bigTimerTextView.setOnClickListener {
+            Log.d("Touch","Timer touched")
+            Intent(context, TimerService::class.java).also {
+                it.putExtra("seconds",data.remainingTime.value!!)
+                requireActivity().startService(it)
+            }
+        }
 
         db = Room.databaseBuilder(
             activity,
@@ -148,6 +154,10 @@ class BabyTroughFragment : Fragment() {
             }
             updateTime()
 
+        }
+
+        data.remainingTime.observe(viewLifecycleOwner){
+            binding.bigTimerTextView.text = TimeDisplayUtil.secondsToString(it)
         }
 
         data.currentSimBabyList.observe(viewLifecycleOwner){ simResults ->
@@ -274,9 +284,9 @@ class BabyTroughFragment : Fragment() {
 
     private fun updateTime(){
         CoroutineScope(Dispatchers.Default).launch {
-            val time = data.runSim()
-
-            binding.bigTimerTextView.text = TimeDisplayUtil.secondsToString(time)
+            val fullTime = data.runSim()
+            data.timerEndTime = Instant.now().epochSecond + fullTime
+            data.remainingTime.postValue(fullTime)
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.arkbabytracker.dinos.adapter
 
+import android.graphics.Color
 import com.example.arkbabytracker.dinos.data.Dino
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -27,6 +28,10 @@ class DinoAdapter(val data:DinoViewModel): ListAdapter<Dino,DinoAdapter.DinoView
             binding.progress = (100*dino.elapsedTimeSec / dino.maturationTimeSec)
             binding.timeRemaining = TimeDisplayUtil.secondsToString((dino.maturationTimeSec-dino.elapsedTimeSec).roundToInt())
             binding.food = "%.2f/%.2f".format(dino.food,dino.maxFood)
+            if(dino.food<=0){
+                //Make the box red
+                binding.dinoNameTextbox.setTextColor(Color.RED)
+            }
             binding.deleteCreatureButton.setOnClickListener {
                 val currentList = data.babyList.value!!
                 currentList.remove(dino)

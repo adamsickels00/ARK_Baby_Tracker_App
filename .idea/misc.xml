@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/drawable/notification_image.xml" value="0.1" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/activity_main.xml" value="0.2082616179001721" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/dino_item.xml" value="0.14666666666666667" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/dino_popup.xml" value="0.14666666666666667" />
@@ -18,6 +20,7 @@
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/switch_item.xml" value="0.1" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/trough_item.xml" value="0.1466438648995297" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/menu/apps_menu.xml" value="0.14749893116716545" />
+        <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1" />
       </map>
     </option>
   </component>

@@ -30,7 +30,10 @@ class DinoViewModel:ViewModel() {
 
     var simTrough = MutableLiveData(Trough(foodStacks.value!!))
 
+    var remainingTime = MutableLiveData(0)
+    var timerEndTime = 0L
     private var noTimer=true
+
 
     fun getFromDatabase(db:DinoDatabase,env:EnvironmentViewModel):DinoViewModel{
         babyList.postValue(db.dinoDao().getAll().map { DinoEntity.toDino(it,env)!! }.toMutableList())
@@ -47,6 +50,7 @@ class DinoViewModel:ViewModel() {
         var run = true
 
         var tempBabyList:MutableList<Dino> = babyList.value?.map { it.copy() } as MutableList<Dino>
+        tempBabyList.forEach { it.food = it.currentMaxFood }
         synchronized(this) {
             trough = Trough(foodStacks.value!!)
             while (run) {
@@ -65,6 +69,7 @@ class DinoViewModel:ViewModel() {
         val maxElapsedTime = babyAddTimesPair.second
         var babyAddTimes = babyAddTimesPair.first
         var tempTrough = Trough(foodStacks.value!!)
+        babyAddTimes.forEach { it.first.food = it.first.currentMaxFood }
 
 
         synchronized(this) {
@@ -126,7 +131,6 @@ class DinoViewModel:ViewModel() {
                 allGood = allGood && dino.food>0
             }
             removeDinos.forEach{tempBabyList.remove(it)}
-            allGood = allGood && tempBabyList.size>0
         }
         return allGood
     }
@@ -158,11 +162,16 @@ class DinoViewModel:ViewModel() {
 
 
     fun launchUpdateThread(){
-        if(noTimer) {
-            noTimer = false
-            fixedRateTimer("Dino time left", true, period = 1000) {
-                CoroutineScope(Dispatchers.Default).launch {
-                    runSimFromStartToNow()
+        synchronized(this) {
+            if (noTimer) {
+                noTimer = false
+                fixedRateTimer("Dino time left", true, period = 1000) {
+                    CoroutineScope(Dispatchers.Default).launch {
+                        if(remainingTime.value!! > 0) {
+                            remainingTime.postValue((timerEndTime - Instant.now().epochSecond).toInt())
+                            runSimFromStartToNow()
+                        }
+                    }
                 }
             }
         }

@@ -40,7 +40,8 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
     private val maxFoodRate get() = baseFoodRate*extraBabyFoodRate*babyFoodRate
     private val minFoodRate get() = BASE_MIN_FOOD_RATE*babyFoodRate*extraBabyFoodRate
     private var percentComplete = 0.0
-    private var currentFoodRate = 0.0
+    val currentFoodRate get() = maxFoodRate*(1-percentComplete) + minFoodRate*(percentComplete)
+    val currentMaxFood get() = (minFood * (1-percentComplete))+ (maxFood * percentComplete)
     var startTime: Instant = Instant.now()
     abstract val name:String
     abstract val diet: Diet
@@ -49,7 +50,6 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
         food += item.value * env.maewingFoodMultiplier.value!!
     }
     fun processSec(){
-        currentFoodRate =maxFoodRate*(1-percentComplete) + minFoodRate*(percentComplete)
         elapsedTimeSec+=1
         food -= currentFoodRate
         percentComplete = elapsedTimeSec/maturationTimeSec
@@ -58,7 +58,7 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
     }
 
     fun canEat(food:Food):Boolean{
-        return (this.food + food.value*env.maewingFoodMultiplier.value!!) < (minFood * (1-percentComplete))+ (maxFood * percentComplete)
+        return (this.food + food.value*env.maewingFoodMultiplier.value!!) < currentMaxFood
     }
 
     override fun equals(other: Any?): Boolean {
@@ -79,7 +79,6 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
         percentComplete = percent/100
         elapsedTimeSec = percent*maturationTimeSec/100
         startTime = startTime.minusSeconds(elapsedTimeSec.toLong())
-        currentFoodRate = maxFoodRate*(1-percentComplete) + minFoodRate*(percentComplete)
     }
 
     abstract fun newInstance():Dino
@@ -88,7 +87,6 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
         val newDino = this.newInstance()
         newDino.elapsedTimeSec = this.elapsedTimeSec
         newDino.food = this.food
-        newDino.currentFoodRate = this.currentFoodRate
         newDino.percentComplete = this.percentComplete
 
         return newDino
