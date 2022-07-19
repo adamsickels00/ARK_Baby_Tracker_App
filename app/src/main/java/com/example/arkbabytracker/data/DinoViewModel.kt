@@ -157,9 +157,7 @@ class DinoViewModel:ViewModel() {
             noTimer = false
             fixedRateTimer("Dino time left", true, period = 1000) {
                 CoroutineScope(Dispatchers.Default).launch {
-
                     runSimFromStartToNow()
-
                 }
             }
         }

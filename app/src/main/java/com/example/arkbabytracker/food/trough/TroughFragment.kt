@@ -40,10 +40,9 @@ class TroughFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentTroughBinding.inflate(inflater,container,false)
-        binding.adapter.hasStableIds()
         binding.adapter = TroughAdapter(data.trough)
         data.simTrough.observe(viewLifecycleOwner){
-            binding.adapter = TroughAdapter(it)
+            binding.adapter!!.setData(it)
             binding.executePendingBindings()
         }
 

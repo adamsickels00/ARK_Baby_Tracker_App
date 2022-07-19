@@ -3,12 +3,15 @@ package com.example.arkbabytracker.food.trough
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.arkbabytracker.data.DinoViewModel
 import com.example.arkbabytracker.databinding.TroughItemBinding
 import com.example.arkbabytracker.food.Food
 
-class TroughAdapter(val trough:Trough) : RecyclerView.Adapter<TroughAdapter.TroughViewHolder>() {
+class TroughAdapter(var trough:Trough) : RecyclerView.Adapter<TroughAdapter.TroughViewHolder>() {
+
+
     class TroughViewHolder(val binding:TroughItemBinding) :RecyclerView.ViewHolder(binding.root){
         fun bind(item:Pair<Food,Int>){
             binding.foodName = item.first.name
@@ -28,5 +31,21 @@ class TroughAdapter(val trough:Trough) : RecyclerView.Adapter<TroughAdapter.Trou
 
     override fun getItemCount(): Int {
         return trough.size
+    }
+
+    fun setData(newTrough : Trough){
+        val oldTrough = trough
+        trough = newTrough
+        var index=0
+        if(newTrough.size != oldTrough.size) {
+            notifyDataSetChanged()
+        } else {
+            for (p in newTrough) {
+                if (p.second != oldTrough.get(index).second) {
+                    notifyItemChanged(index)
+                }
+                index++
+            }
+        }
     }
 }
