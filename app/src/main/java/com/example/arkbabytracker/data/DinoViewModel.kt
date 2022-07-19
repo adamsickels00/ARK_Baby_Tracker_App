@@ -87,8 +87,8 @@ class DinoViewModel:ViewModel() {
                 babyAddTimes = babyAddTimes.filter { it.second > time }
 
                 //Run one second on each dino
-                run = processSecond(dinoList, time,tempTrough)
-
+                processSecond(dinoList, time,tempTrough)
+                run = dinoList.size>0
                 //Count that second
                 time++
             }

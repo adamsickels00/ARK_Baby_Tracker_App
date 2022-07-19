@@ -58,7 +58,7 @@ class TimerService : Service() {
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
 
-        val timer = CoroutineScope(Dispatchers.IO).launch{
+        timer = CoroutineScope(Dispatchers.IO).launch{
             delay(seconds.toLong() * 1000)
             with(NotificationManagerCompat.from(scope)){
                 notify(0,builder.build())
@@ -74,7 +74,6 @@ class TimerService : Service() {
     }
 
     override fun onDestroy() {
-        timer.cancel()
     }
 
     companion object {
