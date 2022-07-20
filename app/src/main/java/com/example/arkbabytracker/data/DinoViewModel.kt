@@ -95,10 +95,9 @@ class DinoViewModel:ViewModel() {
                 babyAddTimes = babyAddTimes.filter { it.second > time }
 
                 //Run one second on each dino, preventing them from being removed
-                val preDinoList = dinoList
+
                 processSecond(dinoList, time,tempTrough)
-                preDinoList.forEach { if(it.food<=0) it.food = 0.01 }
-                dinoList = preDinoList
+                dinoList.forEach { if(it.food<=0) it.food = 0.0 }
                         //Count that second
                 time++
             }

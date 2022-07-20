@@ -27,10 +27,9 @@ class DinoAdapter(val data:DinoViewModel): ListAdapter<Dino,DinoAdapter.DinoView
             binding.dinoName = dino.name
             binding.progress = (100*dino.elapsedTimeSec / dino.maturationTimeSec)
             binding.timeRemaining = TimeDisplayUtil.secondsToString((dino.maturationTimeSec-dino.elapsedTimeSec).roundToInt())
-            if(dino.food>0)
-                binding.food = "%.2f/%.2f".format(dino.food,dino.maxFood)
+            binding.food = "%.2f/%.2f".format(dino.food,dino.maxFood)
 
-            if(dino.food==0.01){
+            if(dino.food<=0){
                 //Make the box red
                 binding.dinoNameTextbox.setTextColor(Color.RED)
             } else{
