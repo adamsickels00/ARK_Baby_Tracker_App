@@ -26,6 +26,7 @@ import com.example.arkbabytracker.dinos.data.Dino
 import com.example.arkbabytracker.dinos.data.allDinoList
 import com.example.arkbabytracker.food.Food
 import com.example.arkbabytracker.food.fragment.FoodItemFragment
+import com.example.arkbabytracker.food.trough.Trough
 import com.example.arkbabytracker.utils.TimeDisplayUtil
 import com.example.arkbabytracker.utils.TimerService
 import kotlinx.coroutines.CoroutineScope
@@ -126,6 +127,9 @@ class BabyTroughFragment : Fragment() {
                     apply()
                 }
             }
+            val newMap = mutableMapOf<Food,Int>()
+            it.forEach{ oldMap -> newMap[oldMap.key] = oldMap.value}
+            data.troughRefill[Instant.now().epochSecond] = newMap
             updateTime()
         }
         data.babyList.observe(viewLifecycleOwner) {
@@ -207,7 +211,7 @@ class BabyTroughFragment : Fragment() {
                         maxFood?:1000.0,
                         env
                     )
-                    newDino.setPercentMature(popupBinding.percentMatureTextBox.text.toString().toDoubleOrNull()?:0.0)
+                    newDino.percentComplete = (popupBinding.percentMatureTextBox.text.toString().toDoubleOrNull()?:0.0)/100
                     newList.add(newDino)
                     data.babyList.value = newList
                     popup.dismiss()

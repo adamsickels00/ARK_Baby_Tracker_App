@@ -39,7 +39,13 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
     val maturationTimeSec get() = 1/ this.ageSpeed /ageSpeedMult/env.eventMultiplier.value!!
     private val maxFoodRate get() = baseFoodRate*extraBabyFoodRate*babyFoodRate
     private val minFoodRate get() = BASE_MIN_FOOD_RATE*babyFoodRate*extraBabyFoodRate
-    private var percentComplete = 0.0
+    var percentComplete
+        get() = elapsedTimeSec / maturationTimeSec
+        set(value) {
+            elapsedTimeSec = value*maturationTimeSec
+            startTime = startTime.minusSeconds(elapsedTimeSec.toLong())
+        }
+
     val currentFoodRate get() = maxFoodRate*(1-percentComplete) + minFoodRate*(percentComplete)
     val currentMaxFood get() = (minFood * (1-percentComplete))+ (maxFood * percentComplete)
     var startTime: Instant = Instant.now()
@@ -52,7 +58,6 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
     fun processSec(){
         elapsedTimeSec+=1
         food -= currentFoodRate
-        percentComplete = elapsedTimeSec/maturationTimeSec
         val foodChange = (1/maturationTimeSec)*(maxFood-minFood)
         food -= foodChange
     }
@@ -75,19 +80,12 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
         }
     }
 
-    fun setPercentMature(percent:Double){
-        percentComplete = percent/100
-        elapsedTimeSec = percent*maturationTimeSec/100
-        startTime = startTime.minusSeconds(elapsedTimeSec.toLong())
-    }
-
     abstract fun newInstance():Dino
 
     fun copy():Dino{
         val newDino = this.newInstance()
         newDino.elapsedTimeSec = this.elapsedTimeSec
         newDino.food = this.food
-        newDino.percentComplete = this.percentComplete
 
         return newDino
     }

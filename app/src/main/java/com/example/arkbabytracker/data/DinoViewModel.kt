@@ -30,6 +30,8 @@ class DinoViewModel:ViewModel() {
 
     var simTrough = MutableLiveData(Trough(foodStacks.value!!))
 
+    val troughRefill = mutableMapOf<Long,Map<Food,Int>>()
+
     var remainingTime = MutableLiveData(0)
     var timerEndTime = 0L
     private var noTimer=true
@@ -74,7 +76,13 @@ class DinoViewModel:ViewModel() {
 
         synchronized(this) {
             //While we have food and are not yet to now
-            while (run && time<=maxElapsedTime) {
+            while (time<=maxElapsedTime) {
+
+                val simStartTime = Instant.now().epochSecond - maxElapsedTime.toInt()
+
+                troughRefill[simStartTime + time]?.let {
+                    tempTrough = Trough(it.toMutableMap())
+                }
 
                 //Add the dinos that exist at this time
                 babyAddTimes.forEach {
@@ -86,10 +94,12 @@ class DinoViewModel:ViewModel() {
                 //Remove the dinos just added from the queue
                 babyAddTimes = babyAddTimes.filter { it.second > time }
 
-                //Run one second on each dino
+                //Run one second on each dino, preventing them from being removed
+                val preDinoList = dinoList
                 processSecond(dinoList, time,tempTrough)
-                run = dinoList.size>0
-                //Count that second
+                preDinoList.forEach { if(it.food<=0) it.food = 0.01 }
+                dinoList = preDinoList
+                        //Count that second
                 time++
             }
         }
