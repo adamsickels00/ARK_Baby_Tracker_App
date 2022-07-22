@@ -1,20 +1,16 @@
-package com.example.arkbabytracker.data
+package com.example.arkbabytracker.troughtracker.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.arkbabytracker.data.database.DinoDatabase
-import com.example.arkbabytracker.data.database.DinoEntity
-import com.example.arkbabytracker.dinos.data.*
-import com.example.arkbabytracker.food.Food
-import com.example.arkbabytracker.food.trough.Trough
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.subjects.Subject
+import com.example.arkbabytracker.troughtracker.data.database.DinoDatabase
+import com.example.arkbabytracker.troughtracker.data.database.DinoEntity
+import com.example.arkbabytracker.troughtracker.dinos.data.*
+import com.example.arkbabytracker.troughtracker.food.Food
+import com.example.arkbabytracker.troughtracker.food.trough.Trough
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.Instant
-import java.util.*
 import kotlin.concurrent.fixedRateTimer
 
 

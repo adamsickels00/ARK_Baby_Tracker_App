@@ -1,6 +1,6 @@
-package com.example.arkbabytracker.food.trough
+package com.example.arkbabytracker.troughtracker.food.trough
 
-import com.example.arkbabytracker.food.Food
+import com.example.arkbabytracker.troughtracker.food.Food
 
 class Trough(foodMap: MutableMap<Food,Int>) {
     private var troughContents : MutableList<Pair<Food, Int>> = mutableListOf()

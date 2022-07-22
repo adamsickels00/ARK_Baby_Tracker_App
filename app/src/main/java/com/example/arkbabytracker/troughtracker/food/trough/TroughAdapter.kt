@@ -1,13 +1,10 @@
-package com.example.arkbabytracker.food.trough
+package com.example.arkbabytracker.troughtracker.food.trough
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.arkbabytracker.data.DinoViewModel
 import com.example.arkbabytracker.databinding.TroughItemBinding
-import com.example.arkbabytracker.food.Food
+import com.example.arkbabytracker.troughtracker.food.Food
 
 class TroughAdapter(var trough:Trough) : RecyclerView.Adapter<TroughAdapter.TroughViewHolder>() {
 

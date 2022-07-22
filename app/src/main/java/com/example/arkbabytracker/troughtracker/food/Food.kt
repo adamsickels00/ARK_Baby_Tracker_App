@@ -1,4 +1,4 @@
-package com.example.arkbabytracker.food
+package com.example.arkbabytracker.troughtracker.food
 
 enum class Food(var value: Int, val stackSize:Int, val SpoilTime:Int){
     RawMeat(50,40,2400),

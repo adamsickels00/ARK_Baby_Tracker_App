@@ -1,4 +1,4 @@
-package com.example.arkbabytracker.data
+package com.example.arkbabytracker.troughtracker.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

@@ -5,8 +5,8 @@
         android:id="@+id/babyTroughFragment"
         android:title="Baby Tracker" />
     <item
-        android:id="@+id/turtleMenu"
-        android:title="Turtle Menu" />
+        android:id="@+id/dino_stats_fragment"
+        android:title="Saved Dinos" />
     <item
         android:id="@+id/troughFragment"
         android:title="Trough" />

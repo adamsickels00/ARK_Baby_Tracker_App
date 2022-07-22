@@ -1,12 +1,10 @@
-package com.example.arkbabytracker.data
+package com.example.arkbabytracker.troughtracker.data
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.core.view.children
 import androidx.fragment.app.*
 import androidx.lifecycle.MutableLiveData
 import com.example.arkbabytracker.databinding.FragmentEnvironmentOptionsBinding

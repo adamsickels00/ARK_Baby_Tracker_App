@@ -6,7 +6,7 @@
     <data>
         <variable
             name="dinoAdapter"
-            type="com.example.arkbabytracker.dinos.adapter.DinoAdapter" />
+            type="com.example.arkbabytracker.troughtracker.dinos.adapter.DinoAdapter" />
         <variable
             name="foodAdapter"
             type="androidx.recyclerview.widget.RecyclerView.Adapter" />
@@ -108,7 +108,7 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/fragmentContainerView"
-                android:name="com.example.arkbabytracker.data.EnvironmentOptions"
+                android:name="com.example.arkbabytracker.troughtracker.data.EnvironmentOptions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

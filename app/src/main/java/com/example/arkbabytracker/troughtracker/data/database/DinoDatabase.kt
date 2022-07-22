@@ -1,11 +1,10 @@
-package com.example.arkbabytracker.data.database
+package com.example.arkbabytracker.troughtracker.data.database
 
 import androidx.room.*
-import com.example.arkbabytracker.data.EnvironmentViewModel
-import com.example.arkbabytracker.dinos.data.Diet
-import com.example.arkbabytracker.dinos.data.Dino
-import com.example.arkbabytracker.dinos.data.allDinoList
-import java.sql.Time
+import com.example.arkbabytracker.troughtracker.data.EnvironmentViewModel
+import com.example.arkbabytracker.troughtracker.dinos.data.Diet
+import com.example.arkbabytracker.troughtracker.dinos.data.Dino
+import com.example.arkbabytracker.troughtracker.dinos.data.allDinoList
 import java.time.Instant
 import kotlin.reflect.full.primaryConstructor
 

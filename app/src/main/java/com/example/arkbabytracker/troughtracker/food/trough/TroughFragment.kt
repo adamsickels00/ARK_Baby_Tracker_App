@@ -1,4 +1,4 @@
-package com.example.arkbabytracker.food.trough
+package com.example.arkbabytracker.troughtracker.food.trough
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,14 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.SimpleItemAnimator
-import com.example.arkbabytracker.R
-import com.example.arkbabytracker.data.DinoViewModel
+import com.example.arkbabytracker.troughtracker.data.DinoViewModel
 import com.example.arkbabytracker.databinding.FragmentTroughBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 /**
  * A simple [Fragment] subclass.

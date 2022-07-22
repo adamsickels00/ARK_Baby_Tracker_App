@@ -1,7 +1,7 @@
-package com.example.arkbabytracker.dinos.data
+package com.example.arkbabytracker.troughtracker.dinos.data
 //Values here are inspired by Crumplecorn (https://github.com/Crumplecorn/ARK-Breeding-Calculator/blob/master/controller.js)
-import com.example.arkbabytracker.data.EnvironmentViewModel
-import com.example.arkbabytracker.food.Food
+import com.example.arkbabytracker.troughtracker.data.EnvironmentViewModel
+import com.example.arkbabytracker.troughtracker.food.Food
 import java.time.Instant
 import java.util.*
 import kotlin.reflect.KClass

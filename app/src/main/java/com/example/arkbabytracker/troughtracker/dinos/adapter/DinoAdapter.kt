@@ -1,19 +1,15 @@
-package com.example.arkbabytracker.dinos.adapter
+package com.example.arkbabytracker.troughtracker.dinos.adapter
 
 import android.graphics.Color
-import com.example.arkbabytracker.dinos.data.Dino
+import com.example.arkbabytracker.troughtracker.dinos.data.Dino
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.arkbabytracker.data.DinoViewModel
+import com.example.arkbabytracker.troughtracker.data.DinoViewModel
 import com.example.arkbabytracker.databinding.DinoItemBinding
 import com.example.arkbabytracker.utils.TimeDisplayUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 class DinoAdapter(val data:DinoViewModel): ListAdapter<Dino,DinoAdapter.DinoViewHolder>(DinoDiff()) {

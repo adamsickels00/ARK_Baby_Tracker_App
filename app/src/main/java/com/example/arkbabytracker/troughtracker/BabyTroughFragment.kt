@@ -1,4 +1,4 @@
-package com.example.arkbabytracker
+package com.example.arkbabytracker.troughtracker
 
 import android.content.Context
 import android.content.Intent
@@ -16,17 +16,16 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.room.Room
-import com.example.arkbabytracker.data.DinoViewModel
-import com.example.arkbabytracker.data.EnvironmentViewModel
-import com.example.arkbabytracker.data.database.DinoDatabase
+import com.example.arkbabytracker.troughtracker.data.DinoViewModel
+import com.example.arkbabytracker.troughtracker.data.EnvironmentViewModel
+import com.example.arkbabytracker.troughtracker.data.database.DinoDatabase
 import com.example.arkbabytracker.databinding.DinoPopupBinding
 import com.example.arkbabytracker.databinding.FragmentBabyTroughBinding
-import com.example.arkbabytracker.dinos.adapter.DinoAdapter
-import com.example.arkbabytracker.dinos.data.Dino
-import com.example.arkbabytracker.dinos.data.allDinoList
-import com.example.arkbabytracker.food.Food
-import com.example.arkbabytracker.food.fragment.FoodItemFragment
-import com.example.arkbabytracker.food.trough.Trough
+import com.example.arkbabytracker.troughtracker.dinos.adapter.DinoAdapter
+import com.example.arkbabytracker.troughtracker.dinos.data.Dino
+import com.example.arkbabytracker.troughtracker.dinos.data.allDinoList
+import com.example.arkbabytracker.troughtracker.food.Food
+import com.example.arkbabytracker.troughtracker.food.fragment.FoodItemFragment
 import com.example.arkbabytracker.utils.TimeDisplayUtil
 import com.example.arkbabytracker.utils.TimerService
 import kotlinx.coroutines.CoroutineScope

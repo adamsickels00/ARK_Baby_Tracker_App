@@ -1,4 +1,4 @@
-package com.example.arkbabytracker.food.fragment
+package com.example.arkbabytracker.troughtracker.food.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,11 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import com.example.arkbabytracker.data.DinoViewModel
+import com.example.arkbabytracker.troughtracker.data.DinoViewModel
 import com.example.arkbabytracker.databinding.FragmentFoodItemBinding
-import com.example.arkbabytracker.food.Food
-import com.example.arkbabytracker.food.trough.Trough
+import com.example.arkbabytracker.troughtracker.food.Food
+import com.example.arkbabytracker.troughtracker.food.trough.Trough
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

@@ -7,23 +7,15 @@
 
     <fragment
         android:id="@+id/babyTroughFragment"
-        android:name="com.example.arkbabytracker.BabyTroughFragment"
-        android:label="Baby Tracker" >
-        <action
-            android:id="@+id/action_babyTroughFragment_to_turtleMenu"
-            app:destination="@id/turtleMenu" />
-    </fragment>
-    <fragment
-        android:id="@+id/turtleMenu"
-        android:name="com.example.arkbabytracker.TurtleMenu"
-        android:label="fragment_turtle_menu"
-        tools:layout="@layout/fragment_turtle_menu" >
-        <action
-            android:id="@+id/action_turtleMenu_to_troughFragment"
-            app:destination="@id/troughFragment" />
-    </fragment>
+        android:name="com.example.arkbabytracker.troughtracker.BabyTroughFragment"
+        android:label="Baby Tracker" />
     <fragment
         android:id="@+id/troughFragment"
-        android:name="com.example.arkbabytracker.food.trough.TroughFragment"
+        android:name="com.example.arkbabytracker.troughtracker.food.trough.TroughFragment"
         android:label="TroughFragment" />
+    <fragment
+        android:id="@+id/dino_stats_fragment"
+        android:name="com.example.arkbabytracker.statstracker.DinoStatsFragment"
+        android:label="Dino Stats"
+        tools:layout="@layout/fragment_dino_stats" />
 </navigation>

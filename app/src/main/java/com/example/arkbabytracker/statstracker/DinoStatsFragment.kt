@@ -1,12 +1,11 @@
-package com.example.arkbabytracker
+package com.example.arkbabytracker.statstracker
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.navigation.fragment.findNavController
+import com.example.arkbabytracker.databinding.FragmentDinoStatsBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -15,33 +14,29 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [TurtleMenu.newInstance] factory method to
+ * Use the [DinoStatsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class TurtleMenu : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class DinoStatsFragment : Fragment() {
 
+    private var _binding:FragmentDinoStatsBinding? = null
+    val binding : FragmentDinoStatsBinding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        var clicks = 0
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_turtle_menu, container, false)
-        view.findViewById<Button>(R.id.button2).setOnClickListener{
-            val action = TurtleMenuDirections.actionTurtleMenuToTroughFragment()
-            findNavController().navigate(action)
-        }
-        return view
+        _binding = FragmentDinoStatsBinding.inflate(inflater, container, false)
+
+
+
+        return binding.root
     }
 
     companion object {
@@ -56,11 +51,6 @@ class TurtleMenu : Fragment() {
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            TurtleMenu().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+            DinoStatsFragment()
     }
 }
