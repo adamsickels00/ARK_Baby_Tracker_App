@@ -1,11 +1,19 @@
 package com.example.arkbabytracker.statstracker
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.room.Room
 import com.example.arkbabytracker.databinding.FragmentDinoStatsBinding
+import com.example.arkbabytracker.statstracker.adapter.DinoGroupStatsAdapter
+import com.example.arkbabytracker.statstracker.adapter.DinoStatsAdapter
+import com.example.arkbabytracker.statstracker.data.DinoMenuViewModel
+import com.example.arkbabytracker.statstracker.data.DinoStatsDatabase
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,8 +29,12 @@ class DinoStatsFragment : Fragment() {
 
     private var _binding:FragmentDinoStatsBinding? = null
     val binding : FragmentDinoStatsBinding get() = _binding!!
+
+    val dinoStatsViewModel by viewModels<DinoMenuViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
     }
 
@@ -30,16 +42,37 @@ class DinoStatsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var clicks = 0
         // Inflate the layout for this fragment
         _binding = FragmentDinoStatsBinding.inflate(inflater, container, false)
 
+        db = Room.databaseBuilder(
+            requireActivity(),
+            DinoStatsDatabase::class.java, "dino-stats-database"
+        ).fallbackToDestructiveMigration().build()
 
+        dinoStatsViewModel.liveDinoList.observe(viewLifecycleOwner){
+            binding.adapter = DinoGroupStatsAdapter(dinoStatsViewModel.dinoByType,dinoStatsViewModel)
+        }
+        dinoStatsViewModel.db = db
+        dinoStatsViewModel.getFromDatabase()
+
+        binding.addDinoStatsButton.setOnClickListener {
+            val action = DinoStatsFragmentDirections.actionDinoStatsFragmentToAddDinoStatsFragment()
+            findNavController().navigate(action)
+        }
 
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+//        dinoStatsViewModel.clearDb(db)
+    }
+
     companion object {
+
+        lateinit var db:DinoStatsDatabase
+
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.

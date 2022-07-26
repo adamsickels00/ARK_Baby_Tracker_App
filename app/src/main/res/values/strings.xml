@@ -12,4 +12,5 @@
     <string name="dino_percent_complete">Dino Percent Complete</string>
     <string name="decimal_format">%.1f%%</string>
     <string name="delete_dino">Delete dino</string>
+    <string name="health">Health</string>
 </resources>

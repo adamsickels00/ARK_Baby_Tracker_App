@@ -17,5 +17,13 @@
         android:id="@+id/dino_stats_fragment"
         android:name="com.example.arkbabytracker.statstracker.DinoStatsFragment"
         android:label="Dino Stats"
-        tools:layout="@layout/fragment_dino_stats" />
+        tools:layout="@layout/fragment_dino_stats" >
+        <action
+            android:id="@+id/action_dino_stats_fragment_to_addDinoStatsFragment"
+            app:destination="@id/addDinoStatsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addDinoStatsFragment"
+        android:name="com.example.arkbabytracker.statstracker.AddDinoStatsFragment"
+        android:label="Add New Dino" />
 </navigation>

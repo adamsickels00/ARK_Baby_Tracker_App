@@ -6,6 +6,8 @@ plugins {
     id 'androidx.navigation.safeargs.kotlin'
 }
 
+
+
 android {
     compileSdk 32
 
@@ -49,7 +51,7 @@ dependencies {
 
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:2.4.2")
-    implementation("io.reactivex.rxjava3:rxjava:3.0.0")
+    implementation("io.reactivex.rxjava3:rxjava:3.0.2")
     implementation("io.reactivex.rxjava3:rxkotlin:3.0.0")
     implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
