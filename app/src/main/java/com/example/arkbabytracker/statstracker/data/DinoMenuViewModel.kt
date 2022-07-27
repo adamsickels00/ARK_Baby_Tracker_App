@@ -4,11 +4,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.arkbabytracker.troughtracker.dinos.data.Dino
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DinoMenuViewModel() : ViewModel() {
+@HiltViewModel
+class DinoMenuViewModel @Inject constructor(val dinoStatsDao: DinoStatsDao) : ViewModel() {
     var liveDinoList = MutableLiveData<MutableList<DinoStats>>(mutableListOf())
     val dinoList get() = liveDinoList.value!!
     val dinoByType:Map<String,List<DinoStats>> get() {
@@ -19,11 +22,9 @@ class DinoMenuViewModel() : ViewModel() {
         return result
     }
 
-    var db:DinoStatsDatabase? = null
-
     fun getFromDatabase(){
         CoroutineScope(Dispatchers.IO).launch {
-            liveDinoList.postValue(db?.dinoStatsDao()?.getAllDinos()?.toMutableList())
+            liveDinoList.postValue(dinoStatsDao.getAllDinos()?.toMutableList())
         }
     }
 
@@ -32,9 +33,8 @@ class DinoMenuViewModel() : ViewModel() {
         tempList.remove(d)
         liveDinoList.value = tempList
         CoroutineScope(Dispatchers.IO).launch {
-            db?.let {
-                it.dinoStatsDao().delete(d)
-            }
+            dinoStatsDao.delete(d)
+
         }
     }
 

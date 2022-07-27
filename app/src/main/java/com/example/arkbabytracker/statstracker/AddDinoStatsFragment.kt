@@ -9,18 +9,23 @@ import androidx.room.Room
 import com.example.arkbabytracker.R
 import com.example.arkbabytracker.databinding.FragmentAddDinoStatsBinding
 import com.example.arkbabytracker.statstracker.data.DinoStats
+import com.example.arkbabytracker.statstracker.data.DinoStatsDao
 import com.example.arkbabytracker.statstracker.data.DinoStatsDatabase
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass.
  * Use the [AddDinoStatsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AddDinoStatsFragment : Fragment() {
+@AndroidEntryPoint
+class AddDinoStatsFragment () : Fragment() {
 
+    @Inject lateinit var dinoStatsDao: DinoStatsDao
     private var _binding: FragmentAddDinoStatsBinding? = null
     val binding get()=_binding!!
 
@@ -58,7 +63,7 @@ class AddDinoStatsFragment : Fragment() {
         val dino = DinoStats(type,health,stamina,oxygen,food,weight,move,torpor,damage)
 
         CoroutineScope(Dispatchers.IO).launch {
-            DinoStatsFragment.db.dinoStatsDao().insert(dino)
+            dinoStatsDao.insert(dino)
         }
 
     }

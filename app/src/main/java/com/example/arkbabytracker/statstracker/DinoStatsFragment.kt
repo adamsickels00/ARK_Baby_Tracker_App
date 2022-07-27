@@ -14,6 +14,7 @@ import com.example.arkbabytracker.statstracker.adapter.DinoGroupStatsAdapter
 import com.example.arkbabytracker.statstracker.adapter.DinoStatsAdapter
 import com.example.arkbabytracker.statstracker.data.DinoMenuViewModel
 import com.example.arkbabytracker.statstracker.data.DinoStatsDatabase
+import dagger.hilt.android.AndroidEntryPoint
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,6 +26,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [DinoStatsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class DinoStatsFragment : Fragment() {
 
     private var _binding:FragmentDinoStatsBinding? = null
@@ -45,15 +47,12 @@ class DinoStatsFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentDinoStatsBinding.inflate(inflater, container, false)
 
-        db = Room.databaseBuilder(
-            requireActivity(),
-            DinoStatsDatabase::class.java, "dino-stats-database"
-        ).fallbackToDestructiveMigration().build()
+
 
         dinoStatsViewModel.liveDinoList.observe(viewLifecycleOwner){
             binding.adapter = DinoGroupStatsAdapter(dinoStatsViewModel.dinoByType,dinoStatsViewModel)
         }
-        dinoStatsViewModel.db = db
+
         dinoStatsViewModel.getFromDatabase()
 
         binding.addDinoStatsButton.setOnClickListener {
@@ -70,8 +69,6 @@ class DinoStatsFragment : Fragment() {
     }
 
     companion object {
-
-        lateinit var db:DinoStatsDatabase
 
         /**
          * Use this factory method to create a new instance of
