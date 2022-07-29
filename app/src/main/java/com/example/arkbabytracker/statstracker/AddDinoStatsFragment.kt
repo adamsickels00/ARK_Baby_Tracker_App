@@ -60,7 +60,7 @@ class AddDinoStatsFragment () : Fragment() {
         val move = binding.moveSpeedEditText.text.toString().toInt()
         val torpor = binding.torporEditText.text.toString().toInt()
 
-        val dino = DinoStats(type,health,stamina,oxygen,food,weight,move,torpor,damage)
+        val dino = DinoStats(type,health,stamina,oxygen,food,weight,move,torpor,damage,listOf(1,2,56,4,1,1))
 
         CoroutineScope(Dispatchers.IO).launch {
             dinoStatsDao.insert(dino)

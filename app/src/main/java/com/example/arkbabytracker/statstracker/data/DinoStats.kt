@@ -14,11 +14,26 @@ data class DinoStats(
     val movementSpeed:Int,
     val torpor:Int,
     val damage:Int,
+    val colorList: List<Int>
 ){
     @PrimaryKey(autoGenerate = true)
     var id:Int? = null
 }
+class Converters {
+    @TypeConverter
+    fun listToString(list: List<Int>): String {
+        var str = ""
+        list.forEach {
+            str += "$it "
+        }
+        return str.trimEnd()
+    }
 
+    @TypeConverter
+    fun stringToList(string: String): List<Int> {
+        return string.split(' ').map { it.toInt() }
+    }
+}
 @Dao
 interface DinoStatsDao{
     @Insert
@@ -38,7 +53,8 @@ interface DinoStatsDao{
     fun getDinosByType():Map<String,List<DinoStats>>
 }
 
-@Database(entities = [DinoStats::class], version = 2)
+@Database(entities = [DinoStats::class], version = 3)
+@TypeConverters(Converters::class)
 abstract class DinoStatsDatabase : RoomDatabase(){
     abstract fun dinoStatsDao(): DinoStatsDao
 }

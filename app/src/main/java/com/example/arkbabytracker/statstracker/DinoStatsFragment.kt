@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.room.Room
+import com.example.arkbabytracker.R
 import com.example.arkbabytracker.databinding.FragmentDinoStatsBinding
 import com.example.arkbabytracker.statstracker.adapter.DinoGroupStatsAdapter
 import com.example.arkbabytracker.statstracker.adapter.DinoStatsAdapter
@@ -36,7 +37,6 @@ class DinoStatsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
     }
 
