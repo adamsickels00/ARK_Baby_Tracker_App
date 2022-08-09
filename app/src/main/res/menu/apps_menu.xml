@@ -12,5 +12,5 @@
         android:title="Trough" />
     <item
         android:id="@+id/composeTestFragment"
-        android:title="Compose"/>
+        android:title="Last Login"/>
 </menu>

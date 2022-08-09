@@ -63,35 +63,33 @@ class AddDinoStatsFragment () : Fragment() {
     }
 
     fun addDino(){
-
-
             val type = binding.typeEditText.text.toString()
-            val health = binding.healthEditText.text.toString().toInt()
-            val stamina = binding.staminaEditText.text.toString().toInt()
-            val weight = binding.weightEditText.text.toString().toInt()
-            val damage = binding.damageEditText.text.toString().toInt()
-            val oxygen = binding.oxygenEditText.text.toString().toInt()
-            val food = binding.foodEditText.text.toString().toInt()
-            val move = binding.moveSpeedEditText.text.toString().toInt()
-            val torpor = binding.torporEditText.text.toString().toInt()
+            val name = binding.nameEditText.text.toString()
+            val health = binding.healthEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
+            val stamina = binding.staminaEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
+            val weight = binding.weightEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
+            val damage = binding.damageEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
+            val oxygen = binding.oxygenEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
+            val food = binding.foodEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
+            val move = binding.moveSpeedEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
             val colorList = listOf(
-                binding.color0EditText.text.toString().toInt(),
-                binding.color1EditText.text.toString().toInt(),
-                binding.color2EditText.text.toString().toInt(),
-                binding.color3EditText.text.toString().toInt(),
-                binding.color4EditText.text.toString().toInt(),
-                binding.color5EditText.text.toString().toInt(),
+                binding.color0EditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0},
+                binding.color1EditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0},
+                binding.color2EditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0},
+                binding.color3EditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0},
+                binding.color4EditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0},
+                binding.color5EditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0},
             )
 
             val dino = DinoStats(
                 type,
+                name,
                 health,
                 stamina,
                 oxygen,
                 food,
                 weight,
                 move,
-                torpor,
                 damage,
                 colorList
             )
