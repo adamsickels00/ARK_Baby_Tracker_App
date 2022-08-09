@@ -18,21 +18,6 @@ class Converters {
     fun dateToLong(date: Instant): Long {
         return date.epochSecond
     }
-
-    @TypeConverter
-    fun dietToString(diet:Diet):String{
-        return diet.name
-    }
-
-    @TypeConverter
-    fun stringToDiet(diet:String):Diet{
-        return when(diet){
-            "HERB"->Diet.HERB
-            "CARN"->Diet.CARN
-            "OMNI"->Diet.OMNI
-            else-> Diet.OMNI
-        }
-    }
 }
 
 @Entity(tableName = "Dino")

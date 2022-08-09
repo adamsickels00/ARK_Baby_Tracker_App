@@ -1,11 +1,17 @@
 package com.example.arkbabytracker.utils
 
+import android.content.Context
+import android.graphics.Color
+import android.util.Log
+import android.util.TypedValue
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.graphics.luminance
 import androidx.databinding.BindingAdapter
 import androidx.databinding.BindingMethod
 import androidx.databinding.BindingMethods
 import com.example.arkbabytracker.R
+import kotlin.math.pow
 
 object DinoColorUtils {
     // From https://ark.fandom.com/wiki/Color_IDs
@@ -141,10 +147,30 @@ object DinoColorUtils {
     fun getColorOfIdIfExists(id:Int): Int? {
         return idToColorIdMap[id]
     }
+
+    fun getTextColorForBackgroundHex(hex:Int,context: Context):Int{
+        var blackContrast = (context.getColor(R.color.text_on_light).luminance + .05)/(hex.luminance+.05)
+        var whiteContrast = (context.getColor(R.color.text_on_dark).luminance + .05)/(hex.luminance+.05)
+        if(blackContrast < 1) blackContrast = blackContrast.pow(-1)
+        if(whiteContrast < 1) whiteContrast = whiteContrast.pow(-1)
+        return if(blackContrast>=whiteContrast) context.getColor(R.color.text_on_light)
+        else context.getColor(R.color.text_on_dark)
+    }
+
 }
 @BindingAdapter("dinoColor")
 fun setDinoColor(view:TextView,id:Int){
     view.text = id.toString()
-    DinoColorUtils.getColorOfIdIfExists(id)?.also { view.setBackgroundResource(it) }
-
+    val colorResId = DinoColorUtils.getColorOfIdIfExists(id)
+    if(colorResId != null) {
+        view.setBackgroundResource(colorResId)
+        view.setTextColor(DinoColorUtils.getTextColorForBackgroundHex(view.context.getColor(colorResId),view.context))
+    } else{
+        view.setBackgroundColor(Color.TRANSPARENT)
+        view.context?.let {
+            val x = TypedValue()
+            it.theme.resolveAttribute(com.google.android.material.R.attr.colorOnBackground, x, true)
+            view.setTextColor(x.data)
+        }
+    }
 }

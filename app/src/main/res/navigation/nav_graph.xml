@@ -26,4 +26,9 @@
         android:id="@+id/addDinoStatsFragment"
         android:name="com.example.arkbabytracker.statstracker.AddDinoStatsFragment"
         android:label="Add New Dino" />
+    <fragment
+        android:id="@+id/composeTestFragment"
+        android:name="com.example.arkbabytracker.ComposeTestFragment"
+        android:label="fragment_compose_test"
+        tools:layout="@layout/fragment_compose_test" />
 </navigation>

@@ -9,5 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="popup_background_light">#F8FFFFFF</color>
     <color name="popup_background_dark">#F8222222</color>
+    <color name="text_on_light">#F8222222</color>
+    <color name="text_on_dark">#F8EEEEEE</color>
 
 </resources>

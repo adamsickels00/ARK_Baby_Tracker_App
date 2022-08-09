@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
 
 
-        appBarConfiguration = AppBarConfiguration(setOf(R.id.babyTroughFragment,R.id.dino_stats_fragment,R.id.troughFragment),binding.drawerLayout)
+        appBarConfiguration = AppBarConfiguration(setOf(R.id.babyTroughFragment,R.id.dino_stats_fragment,R.id.troughFragment,R.id.composeTestFragment),binding.drawerLayout)
         setSupportActionBar(binding.toolbar)
         binding.navView.setupWithNavController(navController)
         setupActionBarWithNavController(navController,appBarConfiguration)
