@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.arkbabytracker.troughtracker.data.DinoViewModel
 import com.example.arkbabytracker.databinding.DinoItemBinding
 import com.example.arkbabytracker.utils.TimeDisplayUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 class DinoAdapter(val data:DinoViewModel): ListAdapter<Dino,DinoAdapter.DinoViewHolder>(DinoDiff()) {
@@ -24,6 +27,7 @@ class DinoAdapter(val data:DinoViewModel): ListAdapter<Dino,DinoAdapter.DinoView
             binding.progress = (100*dino.elapsedTimeSec / dino.maturationTimeSec)
             binding.timeRemaining = TimeDisplayUtil.secondsToString((dino.maturationTimeSec-dino.elapsedTimeSec).roundToInt())
             binding.food = "%.2f/%.2f".format(dino.food,dino.maxFood)
+            binding.group = dino.groupName
 
             if(dino.food<=0){
                 //Make the box red
@@ -34,6 +38,7 @@ class DinoAdapter(val data:DinoViewModel): ListAdapter<Dino,DinoAdapter.DinoView
             binding.deleteCreatureButton.setOnClickListener {
                 val currentList = data.babyList.value!!
                 currentList.remove(dino)
+                CoroutineScope(Dispatchers.IO).launch { data.deleteDino(dino) }
                 data.babyList.value = currentList
             }
             binding.executePendingBindings()

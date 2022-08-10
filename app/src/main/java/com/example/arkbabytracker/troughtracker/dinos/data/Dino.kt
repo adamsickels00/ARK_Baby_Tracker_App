@@ -34,6 +34,7 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
     abstract val ageSpeedMult:Double
     abstract val percentMaxStarting:Double
     val minFood get() = maxFood*percentMaxStarting
+    var groupName = "Default"
     var elapsedTimeSec = 0.0
     var food = minFood
     val maturationTimeSec get() = 1/ this.ageSpeed /ageSpeedMult/env.eventMultiplier.value!!

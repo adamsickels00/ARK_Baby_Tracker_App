@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.PopupWindow
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.room.Room
@@ -21,6 +22,7 @@ import com.example.arkbabytracker.troughtracker.data.EnvironmentViewModel
 import com.example.arkbabytracker.troughtracker.data.database.DinoDatabase
 import com.example.arkbabytracker.databinding.DinoPopupBinding
 import com.example.arkbabytracker.databinding.FragmentBabyTroughBinding
+import com.example.arkbabytracker.troughtracker.data.database.DinoEntity
 import com.example.arkbabytracker.troughtracker.dinos.adapter.DinoAdapter
 import com.example.arkbabytracker.troughtracker.dinos.data.Dino
 import com.example.arkbabytracker.troughtracker.dinos.data.allDinoList
@@ -37,6 +39,8 @@ import kotlin.reflect.full.primaryConstructor
 const val EVENT_MULT_KEY = "com.example.arkbabycalculator.eventMultiplier"
 const val MAE_MULT_KEY = "com.example.arkbabycalculator.maewingMultiplier"
 
+const val TIMER_THRESHOLD = 0.9
+
 /**
  * A simple [Fragment] subclass.
  * Use the [BabyTroughFragment.newInstance] factory method to
@@ -44,24 +48,21 @@ const val MAE_MULT_KEY = "com.example.arkbabycalculator.maewingMultiplier"
  */
 class BabyTroughFragment : Fragment() {
 
-    class FoodViewModel: ViewModel(){
-        var currentId = 0
-    }
-
     private var _binding: FragmentBabyTroughBinding? = null
     private val binding get() = _binding!!
     private lateinit var dinoAdapter: DinoAdapter
-    private val data by activityViewModels<DinoViewModel>()
+    private val data by viewModels<DinoViewModel>()
     private val env by activityViewModels<EnvironmentViewModel>()
-    private val foodData by activityViewModels<FoodViewModel>()
     private lateinit var db: DinoDatabase
     private var needFoodFragment = true
     private var foodCache = mutableSetOf<Food>()
 
+    lateinit var group:String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let { group = it.getString("Group").toString() }
         needFoodFragment = savedInstanceState == null
         foodCache.clear()
         Log.d("LifecycleTests","Create")
@@ -97,7 +98,7 @@ class BabyTroughFragment : Fragment() {
         binding.bigTimerTextView.setOnClickListener {
             Log.d("Touch","Timer touched")
             Intent(context, TimerService::class.java).also {
-                it.putExtra("seconds",data.remainingTime.value!!)
+                it.putExtra("seconds",(data.remainingTime.value!!*TIMER_THRESHOLD).toInt())
                 requireActivity().startService(it)
             }
         }
@@ -106,6 +107,7 @@ class BabyTroughFragment : Fragment() {
             activity,
             DinoDatabase::class.java, "dino-database"
         ).build()
+        data.dinoDao = db.dinoDao()
         env.maewingFoodMultiplier.value = maeMult.toDouble()
         env.eventMultiplier.value = evMult.toDouble()
         dinoAdapter = DinoAdapter(data)
@@ -184,7 +186,7 @@ class BabyTroughFragment : Fragment() {
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            data.getFromDatabase(db,env)
+            data.getFromDatabase(db,env,group)
         }
         data.launchUpdateThread()
         return binding.root
@@ -211,7 +213,11 @@ class BabyTroughFragment : Fragment() {
                         env
                     )
                     newDino.percentComplete = (popupBinding.percentMatureTextBox.text.toString().toDoubleOrNull()?:0.0)/100
+                    newDino.groupName = group
                     newList.add(newDino)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        db.dinoDao().add(DinoEntity.fromDino(newDino))
+                    }
                     data.babyList.value = newList
                     popup.dismiss()
                 }
@@ -269,9 +275,7 @@ class BabyTroughFragment : Fragment() {
     }
     override fun onStop() {
         super.onStop()
-        CoroutineScope(Dispatchers.IO).launch {
-            data.saveToDatabase(db)
-        }
+
         Log.d("LifecycleTests","Stop")
     }
 
@@ -296,9 +300,11 @@ class BabyTroughFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() =
+        fun newInstance(group:String) =
             BabyTroughFragment().apply {
-
+                arguments = Bundle().apply {
+                    putString("Group", group)
+                }
             }
     }
 }

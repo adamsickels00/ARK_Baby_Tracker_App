@@ -26,7 +26,9 @@ data class DinoEntity(
     val id:String,
     val name:String,
     val startTime:Instant,
-    val maxFood:Double
+    val maxFood:Double,
+    @ColumnInfo(defaultValue = "Default")
+    val groupName:String
 ){
     companion object{
         fun fromDino(dino:Dino):DinoEntity{
@@ -34,7 +36,8 @@ data class DinoEntity(
                 dino.uniqueID,
                 dino.name,
                 dino.startTime,
-                dino.maxFood
+                dino.maxFood,
+                dino.groupName
             )
         }
 
@@ -47,6 +50,7 @@ data class DinoEntity(
                     )
                     newDino.uniqueID = entity.id
                     newDino.startTime = entity.startTime
+                    newDino.groupName = entity.groupName
                     return newDino
                 }
             }
@@ -74,7 +78,7 @@ interface DinoDao{
 
 }
 
-@Database(entities = [DinoEntity::class], version = 1)
+@Database(entities = [DinoEntity::class], version = 2, autoMigrations = [AutoMigration(from = 1, to = 2)])
 @TypeConverters(Converters::class)
 abstract class DinoDatabase : RoomDatabase() {
     abstract fun dinoDao(): DinoDao

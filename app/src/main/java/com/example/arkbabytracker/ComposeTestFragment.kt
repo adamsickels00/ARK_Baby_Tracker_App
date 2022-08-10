@@ -8,24 +8,30 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.ColorInt
 import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode.Companion.Color
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
+import androidx.core.content.edit
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.arkbabytracker.compose.ColoredTextBox
 import com.example.arkbabytracker.compose.LastLoginScreenCompose
 import com.example.arkbabytracker.lastlogin.LastLoginScreen
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.time.Instant
 import java.time.format.TextStyle
 
@@ -57,7 +63,6 @@ class ComposeTestFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val servers = listOf("Island","Lost Isles")
         // Inflate the layout for this fragment
         return ComposeView(requireActivity()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -65,10 +70,39 @@ class ComposeTestFragment : Fragment() {
                 MaterialTheme(
                     colors = if(isSystemInDarkTheme()) darkColors() else lightColors()
                 ){
-                    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                        for (name in servers)
-                            LastLoginScreenCompose(name)
+
+                    val servers = remember() { mutableStateListOf<String>()}
+                    var text by remember() { mutableStateOf("")}
+
+                    val context = LocalContext.current
+                    val serverJson = context.getSharedPreferences("Servers",0).getString("ServerList","")
+                    val type = object : TypeToken<List<String>>(){}.type
+                    val serverListInit = Gson().fromJson<List<String>>(serverJson,type)?:listOf()
+                    servers.addAll(serverListInit)
+
+
+                    LazyColumn() {
+                        items(servers) { LastLoginScreenCompose(it) {
+                            servers.remove(it)
+                            context.getSharedPreferences("Servers",0).edit(){
+                                putString("ServerList", Gson().toJson(servers))
+                                commit()
+                            }
+                        } }
+                        item{TextField(value = text, onValueChange = { text = it })}
+                        item {
+                            Button(onClick = {
+                                servers.add(text)
+                                context.getSharedPreferences("Servers",0).edit(){
+                                    putString("ServerList", Gson().toJson(servers))
+                                    commit()
+                                }
+                            }) {
+                                Text("Add Server")
+                            }
+                        }
                     }
+
                 }
             }
         }

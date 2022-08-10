@@ -36,7 +36,7 @@ class LastLoginScreenState(
 
 
 @Composable
-fun LastLoginScreenCompose(server:String){
+fun LastLoginScreenCompose(server:String, onDeletePressed : ()->Unit){
 
     val pref = LocalContext.current.getSharedPreferences("Log",0)
     var lastLogin by remember {
@@ -47,30 +47,43 @@ fun LastLoginScreenCompose(server:String){
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Column(Modifier.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(server, color = MaterialTheme.colors.onBackground, fontSize = 32.sp, modifier = Modifier.padding(16.dp))
-            Text(
-                "Time since last login: ${lastLogin?.let { LastLoginScreen.timeFromNowTo(it) }}",
-                color = MaterialTheme.colors.onBackground,
-                fontSize = 24.sp
-            )
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .padding(48.dp)
-                    .fillMaxWidth()
-            ) {
-                Button(onClick = {
-                    val time = Instant.now().epochSecond
-                    pref.edit{
-                        putLong("StartTime$server",time)
-                        apply()
-                    }
-                    lastLogin = time
+        Box() {
+            Column(Modifier.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    server,
+                    color = MaterialTheme.colors.onBackground,
+                    fontSize = 32.sp,
+                    modifier = Modifier.padding(16.dp)
+                )
+                Text(
+                    "Time since last login: ${lastLogin?.let { LastLoginScreen.timeFromNowTo(it) }}",
+                    color = MaterialTheme.colors.onBackground,
+                    fontSize = 24.sp
+                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .padding(48.dp)
+                        .fillMaxWidth()
+                ) {
+                    Button(onClick = {
+                        val time = Instant.now().epochSecond
+                        pref.edit {
+                            putLong("StartTime$server", time)
+                            apply()
+                        }
+                        lastLogin = time
 
-                }) {
-                    Text("Login")
+                    }) {
+                        Text("Login")
+                    }
                 }
+            }
+            FloatingActionButton(onClick = onDeletePressed,
+                modifier = Modifier.align(Alignment.TopEnd),
+                backgroundColor = MaterialTheme.colors.background,
+            ) {
+                Text("X", fontSize = 20.sp)
             }
         }
     }
@@ -83,7 +96,7 @@ fun LastLoginScreenPreview(){
         colors = darkColors()
     ) {
 
-        LastLoginScreenCompose("Test")
+        LastLoginScreenCompose("Test",{})
     }
 
 }

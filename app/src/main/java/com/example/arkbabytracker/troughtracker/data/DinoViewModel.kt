@@ -2,6 +2,7 @@ package com.example.arkbabytracker.troughtracker.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.arkbabytracker.troughtracker.data.database.DinoDao
 import com.example.arkbabytracker.troughtracker.data.database.DinoDatabase
 import com.example.arkbabytracker.troughtracker.data.database.DinoEntity
 import com.example.arkbabytracker.troughtracker.dinos.data.*
@@ -24,6 +25,8 @@ class DinoViewModel:ViewModel() {
 
     var trough = Trough(foodStacks.value!!)
 
+
+
     var simTrough = MutableLiveData(Trough(foodStacks.value!!))
 
     val troughRefill = mutableMapOf<Long,Map<Food,Int>>()
@@ -31,16 +34,16 @@ class DinoViewModel:ViewModel() {
     var remainingTime = MutableLiveData(0)
     var timerEndTime = 0L
     private var noTimer=true
+    lateinit var dinoDao:DinoDao
 
 
-    fun getFromDatabase(db:DinoDatabase,env:EnvironmentViewModel):DinoViewModel{
-        babyList.postValue(db.dinoDao().getAll().map { DinoEntity.toDino(it,env)!! }.toMutableList())
+    fun getFromDatabase(db:DinoDatabase,env:EnvironmentViewModel,group:String):DinoViewModel{
+        babyList.postValue(db.dinoDao().getAll().filter { it.groupName == group }.map { DinoEntity.toDino(it,env)!! }.toMutableList())
         return this
     }
 
-    fun saveToDatabase(db:DinoDatabase){
-        db.dinoDao().deleteAll()
-        db.dinoDao().addAll(babyList.value!!.map{DinoEntity.fromDino (it)})
+    fun deleteDino(d:Dino){
+        dinoDao.delete(d.uniqueID)
     }
 
     suspend fun runSim():Int{
@@ -49,6 +52,8 @@ class DinoViewModel:ViewModel() {
 
         var tempBabyList:MutableList<Dino> = babyList.value?.map { it.copy() } as MutableList<Dino>
         tempBabyList.forEach { it.food = it.currentMaxFood }
+        runSimFromStartToNow()
+        tempBabyList.zip(currentSimBabyList.value!!){a:Dino,b:Dino-> a.food = b.food}
         synchronized(this) {
             trough = Trough(foodStacks.value!!)
             while (run) {

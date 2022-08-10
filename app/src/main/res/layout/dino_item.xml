@@ -16,6 +16,9 @@
         <variable
             name="progress"
             type="Double" />
+        <variable
+            name="group"
+            type="String" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -33,12 +36,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/time_remaining"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.22"
+                app:layout_constraintHorizontal_bias="0.185"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dinoNameTextbox"
-                app:layout_constraintVertical_bias="0.73" />
+                app:layout_constraintTop_toBottomOf="@id/textView14" />
 
             <TextView
                 android:id="@+id/dinoNameTextbox"
@@ -96,11 +97,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
+                android:contentDescription="@string/delete_dino"
+                android:focusable="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/btn_dialog"
-                android:contentDescription="@string/delete_dino"
-                android:focusable="true" />
+                app:srcCompat="@android:drawable/btn_dialog" />
 
             <TextView
                 android:id="@+id/FoodLabelTextBox"
@@ -122,6 +123,27 @@
                 app:layout_constraintEnd_toEndOf="@+id/textView3"
                 app:layout_constraintStart_toStartOf="@+id/textView3"
                 app:layout_constraintTop_toTopOf="@+id/FoodLabelTextBox" />
+
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Group"
+                app:layout_constraintBottom_toTopOf="@+id/textView2"
+                app:layout_constraintEnd_toEndOf="@+id/FoodLabelTextBox"
+                app:layout_constraintStart_toStartOf="@+id/FoodLabelTextBox"
+                app:layout_constraintTop_toBottomOf="@+id/FoodLabelTextBox" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@{group}"
+                app:layout_constraintBottom_toBottomOf="@+id/textView14"
+                app:layout_constraintEnd_toEndOf="@+id/FoodDisplayTextBox"
+                app:layout_constraintStart_toStartOf="@+id/FoodDisplayTextBox"
+                app:layout_constraintTop_toTopOf="@+id/textView14" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

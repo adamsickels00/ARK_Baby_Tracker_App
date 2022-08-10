@@ -78,6 +78,7 @@ dependencies {
     // UI Tests
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.2.0'
 
+    implementation 'com.google.code.gson:gson:2.9.0'
 
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:2.4.3")

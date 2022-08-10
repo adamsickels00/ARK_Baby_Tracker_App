@@ -3,12 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph.xml"
-    app:startDestination="@id/babyTroughFragment">
+    app:startDestination="@id/babyTrackerGroupHolder">
 
-    <fragment
-        android:id="@+id/babyTroughFragment"
-        android:name="com.example.arkbabytracker.troughtracker.BabyTroughFragment"
-        android:label="Baby Tracker" />
     <fragment
         android:id="@+id/troughFragment"
         android:name="com.example.arkbabytracker.troughtracker.food.trough.TroughFragment"
@@ -34,4 +30,9 @@
         android:id="@+id/timerComposeFragment"
         android:name="com.example.arkbabytracker.timers.TimerComposeFragment"
         android:label="Current Timers" />
+    <fragment
+        android:id="@+id/babyTrackerGroupHolder"
+        android:name="com.example.arkbabytracker.troughtracker.BabyTrackerGroupHolder"
+        android:label="fragment_baby_tracker_group_holder"
+        tools:layout="@layout/fragment_baby_tracker_group_holder" />
 </navigation>

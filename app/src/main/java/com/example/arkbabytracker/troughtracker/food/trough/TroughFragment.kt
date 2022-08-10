@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.example.arkbabytracker.troughtracker.data.DinoViewModel
 import com.example.arkbabytracker.databinding.FragmentTroughBinding
 
@@ -20,7 +21,7 @@ class TroughFragment : Fragment() {
     private lateinit var _binding:FragmentTroughBinding
     private val binding:FragmentTroughBinding
         get() = _binding
-    private val data by activityViewModels<DinoViewModel>()
+    private val data by viewModels<DinoViewModel>(ownerProducer = {requireParentFragment()})
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

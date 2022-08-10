@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.example.arkbabytracker.troughtracker.data.DinoViewModel
 import com.example.arkbabytracker.databinding.FragmentFoodItemBinding
 import com.example.arkbabytracker.troughtracker.food.Food
@@ -27,7 +28,7 @@ class FoodItemFragment : Fragment() {
     var food: Food? = null
     private var value:Int? = null
     private lateinit var binding:FragmentFoodItemBinding
-    private val data:DinoViewModel by activityViewModels()
+    private val data:DinoViewModel by viewModels(ownerProducer = {requireParentFragment()})
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
