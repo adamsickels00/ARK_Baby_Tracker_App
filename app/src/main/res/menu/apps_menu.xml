@@ -13,4 +13,8 @@
     <item
         android:id="@+id/composeTestFragment"
         android:title="Last Login"/>
+    <item
+        android:id="@+id/timerComposeFragment"
+        android:title="Timers"
+        />
 </menu>

@@ -29,6 +29,9 @@
     <fragment
         android:id="@+id/composeTestFragment"
         android:name="com.example.arkbabytracker.ComposeTestFragment"
-        android:label="fragment_compose_test"
-        tools:layout="@layout/fragment_compose_test" />
+        android:label="fragment_compose_test"/>
+    <fragment
+        android:id="@+id/timerComposeFragment"
+        android:name="com.example.arkbabytracker.timers.TimerComposeFragment"
+        android:label="Current Timers" />
 </navigation>
