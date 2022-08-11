@@ -7,8 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
+import com.example.arkbabytracker.ActivityViewModel
 import com.example.arkbabytracker.troughtracker.data.DinoViewModel
 import com.example.arkbabytracker.databinding.FragmentTroughBinding
+import com.example.arkbabytracker.troughtracker.food.Food
 
 /**
  * A simple [Fragment] subclass.
@@ -21,12 +24,15 @@ class TroughFragment : Fragment() {
     private lateinit var _binding:FragmentTroughBinding
     private val binding:FragmentTroughBinding
         get() = _binding
-    private val data by viewModels<DinoViewModel>(ownerProducer = {requireParentFragment()})
+    private val activityVm by activityViewModels<ActivityViewModel>()
+    lateinit var group:String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        arguments?.let {
+            group = it.getString("Group","Default")
+        }
     }
 
     override fun onCreateView(
@@ -35,8 +41,9 @@ class TroughFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentTroughBinding.inflate(inflater,container,false)
-        binding.adapter = TroughAdapter(data.trough)
-        data.simTrough.observe(viewLifecycleOwner){
+        activityVm.troughMap.putIfAbsent(group, MutableLiveData(Trough(mutableMapOf())))
+        binding.adapter = TroughAdapter(activityVm.troughMap[group]?.value!!)
+        activityVm.troughMap[group]?.observe(viewLifecycleOwner){
             binding.adapter!!.setData(it)
             binding.executePendingBindings()
         }
@@ -53,9 +60,11 @@ class TroughFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance() =
+        fun newInstance(group:String) =
             TroughFragment().apply {
-
+                arguments = Bundle().apply {
+                    putString("Group",group)
+                }
             }
     }
 }

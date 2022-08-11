@@ -6,10 +6,6 @@
     app:startDestination="@id/babyTrackerGroupHolder">
 
     <fragment
-        android:id="@+id/troughFragment"
-        android:name="com.example.arkbabytracker.troughtracker.food.trough.TroughFragment"
-        android:label="TroughFragment" />
-    <fragment
         android:id="@+id/dino_stats_fragment"
         android:name="com.example.arkbabytracker.statstracker.DinoStatsFragment"
         android:label="Dino Stats"
@@ -35,4 +31,14 @@
         android:name="com.example.arkbabytracker.troughtracker.BabyTrackerGroupHolder"
         android:label="fragment_baby_tracker_group_holder"
         tools:layout="@layout/fragment_baby_tracker_group_holder" />
+    <fragment
+        android:id="@+id/troughFragment"
+        android:name="com.example.arkbabytracker.troughtracker.food.trough.TroughPageHolderFragment"
+        android:label="fragment_trough_page_holder"
+        tools:layout="@layout/fragment_trough_page_holder" />
+    <fragment
+        android:id="@+id/userDefiedGroupsFragment"
+        android:name="com.example.arkbabytracker.usergroups.UserDefiedGroupsFragment"
+        android:label="Groups"
+        tools:layout="@layout/fragment_user_defied_groups" />
 </navigation>

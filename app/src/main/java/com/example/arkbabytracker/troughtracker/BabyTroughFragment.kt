@@ -14,9 +14,11 @@ import android.widget.PopupWindow
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.room.Room
+import com.example.arkbabytracker.ActivityViewModel
 import com.example.arkbabytracker.troughtracker.data.DinoViewModel
 import com.example.arkbabytracker.troughtracker.data.EnvironmentViewModel
 import com.example.arkbabytracker.troughtracker.data.database.DinoDatabase
@@ -28,6 +30,7 @@ import com.example.arkbabytracker.troughtracker.dinos.data.Dino
 import com.example.arkbabytracker.troughtracker.dinos.data.allDinoList
 import com.example.arkbabytracker.troughtracker.food.Food
 import com.example.arkbabytracker.troughtracker.food.fragment.FoodItemFragment
+import com.example.arkbabytracker.troughtracker.food.trough.Trough
 import com.example.arkbabytracker.utils.TimeDisplayUtil
 import com.example.arkbabytracker.utils.TimerService
 import kotlinx.coroutines.CoroutineScope
@@ -52,6 +55,7 @@ class BabyTroughFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var dinoAdapter: DinoAdapter
     private val data by viewModels<DinoViewModel>()
+    private val activityVm by activityViewModels<ActivityViewModel>()
     private val env by activityViewModels<EnvironmentViewModel>()
     private lateinit var db: DinoDatabase
     private var needFoodFragment = true
@@ -66,6 +70,7 @@ class BabyTroughFragment : Fragment() {
         needFoodFragment = savedInstanceState == null
         foodCache.clear()
         Log.d("LifecycleTests","Create")
+        activityVm.troughMap.putIfAbsent(group, MutableLiveData())
 
     }
 
@@ -90,7 +95,7 @@ class BabyTroughFragment : Fragment() {
         val activity = requireActivity()
         val pref = activity.getPreferences(Context.MODE_PRIVATE)
         for(food in Food.values()){
-            data.foodStacks.value!![food] = pref.getInt(food.name,0)
+            data.foodStacks.value!![food] = pref.getInt(food.name+group,0)
         }
         val maeMult = pref.getFloat(MAE_MULT_KEY,1f)
         val evMult = pref.getFloat(EVENT_MULT_KEY,1f)
@@ -124,7 +129,7 @@ class BabyTroughFragment : Fragment() {
         data.foodStacks.observe(viewLifecycleOwner) {
             for(food in Food.values()){
                 with(pref.edit()){
-                    putInt(food.name,it[food]?:0)
+                    putInt(food.name+group,it[food]?:0)
                     apply()
                 }
             }
@@ -141,6 +146,10 @@ class BabyTroughFragment : Fragment() {
                 updateFoods()
                 updateTime()
             }
+        }
+
+        data.simTrough.observe(viewLifecycleOwner){
+            activityVm.troughMap[group]?.value = it
         }
 
         env.eventMultiplier.observe(viewLifecycleOwner){ newVal ->

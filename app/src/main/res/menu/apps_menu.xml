@@ -17,4 +17,7 @@
         android:id="@+id/timerComposeFragment"
         android:title="Timers"
         />
+    <item
+        android:title="Groups"
+        android:id="@+id/userDefiedGroupsFragment"/>
 </menu>

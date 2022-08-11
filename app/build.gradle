@@ -80,6 +80,8 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.9.0'
 
+    implementation 'androidx.compose.runtime:runtime-livedata:1.2.1'
+
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:2.4.3")
     implementation("io.reactivex.rxjava3:rxjava:3.0.2")
