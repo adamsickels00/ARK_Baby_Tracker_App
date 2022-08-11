@@ -57,6 +57,7 @@ class DinoStatsFragment : Fragment() {
 
         binding.addDinoStatsButton.setOnClickListener {
             val action = DinoStatsFragmentDirections.actionDinoStatsFragmentToAddDinoStatsFragment()
+
             findNavController().navigate(action)
         }
 

@@ -4,6 +4,7 @@ import androidx.room.*
 import androidx.room.migration.AutoMigrationSpec
 import com.example.arkbabytracker.troughtracker.dinos.data.Dino
 
+
 @Entity
 data class DinoStats(
     val type:String,
@@ -39,13 +40,19 @@ class Converters {
 @Dao
 interface DinoStatsDao{
     @Insert
-    fun insert(d : DinoStats)
+    fun insert(d : DinoStats):Long
 
     @Insert
     fun insertAll(d:List<DinoStats>)
 
     @Delete
     fun delete(d:DinoStats)
+
+    @Update
+    fun update(d:DinoStats)
+
+    @Query("SELECT * FROM dinostats WHERE id=:id")
+    fun getDinoById(id:Int):DinoStats
 
     @Query("SELECT * FROM dinostats")
     fun getAllDinos():List<DinoStats>

@@ -4,8 +4,8 @@
 
     <data>
         <variable
-            name="spinnerList"
-            type="java.util.List" />
+            name="adapter"
+            type="android.widget.ArrayAdapter" />
     </data>
 
     <LinearLayout
@@ -14,13 +14,13 @@
         android:background="?attr/colorOnPrimary"
         android:orientation="vertical">
 
-        <Spinner
-            android:id="@+id/dinoTypeSelect"
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="32dp"
-            android:contentDescription="@string/add_dino_button_text"
-            android:entries="@{spinnerList}"
+            android:adapter="@{adapter}"
+            android:hint="Select Dino Type"
             android:minHeight="48dp" />
 
         <LinearLayout

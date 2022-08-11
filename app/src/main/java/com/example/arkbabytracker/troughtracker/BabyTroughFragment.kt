@@ -9,13 +9,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.room.Room
 import com.example.arkbabytracker.ActivityViewModel
@@ -204,16 +207,17 @@ class BabyTroughFragment : Fragment() {
     private fun openPopupWindow(){
 
         val popupBinding = DinoPopupBinding.inflate(layoutInflater,null,false)
-        popupBinding.spinnerList = allDinoList.map {
-            it.simpleName
-        }
+
+        popupBinding.adapter = ArrayAdapter<String>(requireContext(),android.R.layout.select_dialog_item,allDinoList.map {it.simpleName})
+        popupBinding.autoCompleteTextView.threshold = 0
+
         val popup = PopupWindow(popupBinding.root,
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT,true)
         popup.elevation = 20f
         popupBinding.submitDinoButton.setOnClickListener{
             val maxFood = popupBinding.maxFoodTextBox.text.toString().toDoubleOrNull()
-            val newDinoString = popupBinding.dinoTypeSelect.selectedItem
+            val newDinoString = popupBinding.autoCompleteTextView.text.toString()
             for (c in allDinoList){
                 if(c.simpleName == newDinoString){
                     val newList = data.babyList.value!!
@@ -229,8 +233,10 @@ class BabyTroughFragment : Fragment() {
                     }
                     data.babyList.value = newList
                     popup.dismiss()
+                    return@setOnClickListener
                 }
             }
+            Toast.makeText(context,"Invalid Dino Type, Try Again",Toast.LENGTH_SHORT).show()
         }
 
         popup.showAtLocation(binding.root, Gravity.CENTER,0,0)

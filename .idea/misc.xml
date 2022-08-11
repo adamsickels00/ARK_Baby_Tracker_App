@@ -8,14 +8,16 @@
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/activity_main.xml" value="0.2082616179001721" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/dino_group_item.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/dino_item.xml" value="0.3333333333333333" />
-        <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/dino_popup.xml" value="0.14666666666666667" />
+        <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/dino_popup.xml" value="0.1" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/dino_stats_item.xml" value="0.1" />
+        <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/dropdown_item.xml" value="0.1" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/food_item.xml" value="0.14130434782608695" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/fragment_add_dino_stats.xml" value="0.14749893116716545" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/fragment_baby_tracker_group_holder.xml" value="0.1" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/fragment_baby_trough.xml" value="0.16621376811594202" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/fragment_compose_test.xml" value="0.1" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/fragment_dino_stats.xml" value="0.1" />
+        <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/fragment_edit_dino_stats.xml" value="0.22" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/fragment_environment_edittable_item.xml" value="0.1796875" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/fragment_environment_options.xml" value="0.1796875" />
         <entry key="..\:/Users/Asickels/AndroidStudioProjects/ARKBabyTracker/app/src/main/res/layout/fragment_food_item.xml" value="0.13677536231884058" />

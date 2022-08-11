@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_dino_stats_fragment_to_addDinoStatsFragment"
             app:destination="@id/addDinoStatsFragment" />
+        <action
+            android:id="@+id/action_dino_stats_fragment_to_editDinoStatsFragment"
+            app:destination="@id/editDinoStatsFragment" />
     </fragment>
     <fragment
         android:id="@+id/addDinoStatsFragment"
@@ -41,4 +44,13 @@
         android:name="com.example.arkbabytracker.usergroups.UserDefiedGroupsFragment"
         android:label="Groups"
         tools:layout="@layout/fragment_user_defied_groups" />
+    <fragment
+        android:id="@+id/editDinoStatsFragment"
+        android:name="com.example.arkbabytracker.statstracker.EditDinoStatsFragment"
+        android:label="EditDinoStatsFragment" >
+        <argument
+            android:name="dinoId"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
 </navigation>

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
@@ -18,6 +19,7 @@ import com.example.arkbabytracker.databinding.FragmentAddDinoStatsBinding
 import com.example.arkbabytracker.statstracker.data.DinoStats
 import com.example.arkbabytracker.statstracker.data.DinoStatsDao
 import com.example.arkbabytracker.statstracker.data.DinoStatsDatabase
+import com.example.arkbabytracker.troughtracker.dinos.data.allDinoList
 import com.example.arkbabytracker.utils.DinoColorUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -53,6 +55,9 @@ class AddDinoStatsFragment () : Fragment() {
             addDino()
             requireActivity().onBackPressed()
         }
+        val adapter = ArrayAdapter<String>(requireContext(),android.R.layout.select_dialog_item, allDinoList.map{it.simpleName})
+        binding.typeAutoComplete.setAdapter(adapter)
+        binding.typeAutoComplete.threshold = 0
         setProperColorsAfterTextChanged(binding.color0EditText)
         setProperColorsAfterTextChanged(binding.color1EditText)
         setProperColorsAfterTextChanged(binding.color2EditText)
@@ -63,7 +68,7 @@ class AddDinoStatsFragment () : Fragment() {
     }
 
     fun addDino(){
-            val type = binding.typeEditText.text.toString()
+            val type = binding.typeAutoComplete.text.toString()
             val name = binding.nameEditText.text.toString()
             val health = binding.healthEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
             val stamina = binding.staminaEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}

@@ -24,17 +24,17 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
+                android:labelFor="@id/typeAutoComplete"
                 android:text="Type"
                 android:textAlignment="center"
                 android:textSize="24sp" />
 
-            <EditText
-                android:id="@+id/typeEditText"
+            <AutoCompleteTextView
+                android:id="@+id/typeAutoComplete"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight=".5"
-                android:ems="10"
-                android:inputType="textPersonName" />
+                android:layout_weight=".5" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -48,6 +48,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
+                android:labelFor="@id/nameEditText"
                 android:text="Name"
                 android:textAlignment="center"
                 android:textSize="24sp" />
