@@ -7,8 +7,8 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
 @Composable
-fun MyTheme( block:@Composable ()->Unit){
-    MaterialTheme(if(isSystemInDarkTheme()) darkColors() else lightColors()){
+fun MyTheme( isDarkTheme:Boolean = isSystemInDarkTheme(), block:@Composable ()->Unit){
+    MaterialTheme(if(isDarkTheme) darkColors() else lightColors()){
        block ()
     }
 }

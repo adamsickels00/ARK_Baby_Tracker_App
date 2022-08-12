@@ -53,4 +53,8 @@
             app:argType="integer"
             android:defaultValue="0" />
     </fragment>
+    <fragment
+        android:id="@+id/colorSearchFragment"
+        android:name="com.example.arkbabytracker.colorsearch.ColorSearchFragment"
+        android:label="Color Search" />
 </navigation>

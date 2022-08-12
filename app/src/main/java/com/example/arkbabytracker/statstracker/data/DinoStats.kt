@@ -3,6 +3,7 @@ package com.example.arkbabytracker.statstracker.data
 import androidx.room.*
 import androidx.room.migration.AutoMigrationSpec
 import com.example.arkbabytracker.troughtracker.dinos.data.Dino
+import kotlinx.coroutines.flow.Flow
 
 
 @Entity
@@ -56,6 +57,10 @@ interface DinoStatsDao{
 
     @Query("SELECT * FROM dinostats")
     fun getAllDinos():List<DinoStats>
+
+    @Query("SELECT * FROM dinostats")
+    fun getAllDinosFlow(): Flow<List<DinoStats>>
+
 
     @MapInfo(keyColumn = "type")
     @Query("SELECT * FROM dinostats GROUP BY type")

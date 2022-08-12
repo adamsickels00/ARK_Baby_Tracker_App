@@ -59,7 +59,7 @@ class BabyTroughFragment : Fragment() {
     private lateinit var dinoAdapter: DinoAdapter
     private val data by viewModels<DinoViewModel>()
     private val activityVm by activityViewModels<ActivityViewModel>()
-    private val env by activityViewModels<EnvironmentViewModel>()
+    private val env by viewModels<EnvironmentViewModel>()
     private lateinit var db: DinoDatabase
     private var needFoodFragment = true
     private var foodCache = mutableSetOf<Food>()
@@ -100,8 +100,8 @@ class BabyTroughFragment : Fragment() {
         for(food in Food.values()){
             data.foodStacks.value!![food] = pref.getInt(food.name+group,0)
         }
-        val maeMult = pref.getFloat(MAE_MULT_KEY,1f)
-        val evMult = pref.getFloat(EVENT_MULT_KEY,1f)
+        val maeMult = pref.getFloat(MAE_MULT_KEY+group,1f)
+        val evMult = pref.getFloat(EVENT_MULT_KEY+group,1f)
 
         binding.bigTimerTextView.setOnClickListener {
             Log.d("Touch","Timer touched")
@@ -158,7 +158,7 @@ class BabyTroughFragment : Fragment() {
         env.eventMultiplier.observe(viewLifecycleOwner){ newVal ->
             val tempList: MutableList<Dino> = data.babyList.value!!
             with(pref.edit()){
-                putFloat(EVENT_MULT_KEY,newVal.toFloat())
+                putFloat(EVENT_MULT_KEY+group,newVal.toFloat())
                 apply()
             }
             data.babyList.value = tempList
@@ -166,7 +166,7 @@ class BabyTroughFragment : Fragment() {
 
         env.maewingFoodMultiplier.observe(viewLifecycleOwner){
             with(pref.edit()){
-                putFloat(MAE_MULT_KEY,it.toFloat())
+                putFloat(MAE_MULT_KEY+group,it.toFloat())
                 apply()
             }
             updateTime()

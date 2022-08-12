@@ -17,7 +17,7 @@ import com.example.arkbabytracker.databinding.FragmentEnvironmentOptionsBinding
 class EnvironmentOptions : Fragment() {
 
     val data:DinoViewModel by viewModels(ownerProducer = {requireParentFragment()})
-    val env : EnvironmentViewModel by activityViewModels()
+    val env : EnvironmentViewModel by viewModels(ownerProducer = {requireParentFragment()})
     private var fragmentNeeded = true
 
 

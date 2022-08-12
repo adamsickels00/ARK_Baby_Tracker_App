@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.arkbabytracker.utils.MyTheme
+import com.example.arkbabytracker.utils.SwipableBox
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -62,43 +63,13 @@ fun GroupList(groups:List<String>, onSwipeAction: (String) -> Unit){
     }
 }
 
-enum class SwipeDirection(val raw: Int) {
-    Left(0),
-    Initial(1),
-    Right(2),
-}
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun GroupItem(group:String, onSwipeAction:(String)->Unit, swipeableState: SwipeableState<SwipeDirection> = rememberSwipeableState(initialValue = SwipeDirection.Initial)){
-
-    if(swipeableState.currentValue == SwipeDirection.Right){
-        onSwipeAction(group)
-    }
-    BoxWithConstraints() {
-        val constraintsScope = this
-        val maxWidth = with(LocalDensity.current) {
-            constraintsScope.maxWidth.toPx()
-        }
-        Box(
-            modifier = Modifier
-                .swipeable(
-                    swipeableState,
-                    anchors = mapOf(0f to SwipeDirection.Initial, maxWidth to SwipeDirection.Right),
-                    orientation = Orientation.Horizontal
-                )
-                .offset {
-                    IntOffset(
-                        x = swipeableState.offset.value.roundToInt(),
-                        y = 0
-                    )
-                }
-                .fillMaxWidth()
-                .padding(12.dp)
-
-        ) {
-            Text(group, color = MaterialTheme.colors.onBackground, fontSize = 24.sp)
-        }
+fun GroupItem(group:String, onSwipeAction:(String)->Unit){
+    SwipableBox(onSwipeRight = {onSwipeAction(group)}) {
+        Text(group,color=MaterialTheme.colors.onBackground)
     }
 }
 

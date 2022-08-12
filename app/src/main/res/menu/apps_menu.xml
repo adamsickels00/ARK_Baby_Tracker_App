@@ -20,4 +20,7 @@
     <item
         android:title="Groups"
         android:id="@+id/userDefiedGroupsFragment"/>
+    <item
+        android:title="Color Search"
+        android:id="@+id/colorSearchFragment"/>
 </menu>
