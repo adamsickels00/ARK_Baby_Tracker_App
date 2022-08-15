@@ -182,7 +182,7 @@ fun SingleDino(dino:DinoStats){
         Row(modifier=Modifier.fillMaxWidth()){
             for(c in dino.colorList){
                 val color = getColor(id = c)
-                Text(c.toString(),modifier = Modifier.background(color).weight(1f).,color = Color(DinoColorUtils.getTextColorForBackgroundHex(color.toArgb(), LocalContext.current)))
+                Text(c.toString(),modifier = Modifier.background(color).weight(1f),color = Color(DinoColorUtils.getTextColorForBackgroundHex(color.toArgb(), LocalContext.current)))
             }
         }
     }

@@ -29,13 +29,27 @@ class ColorSearchViewModel @Inject constructor(
     val colorsFilter = mutableStateListOf(-1,-1,-1,-1,-1,-1)
     val selectedType = mutableStateOf("Rex")
 
+    private fun dinosCanProduce(d1:DinoStats,d2:DinoStats,colors:List<Int>):Boolean{
+        var canProduce = true /*set to are opposite genders*/
+        for((index,color) in d1.colorList.withIndex()){
+            canProduce = canProduce && ((color in colors || d2.colorList[index] in colors ) || colors[index] == -1)
+        }
+        return canProduce
+    }
+
     //Given a list of color ids, return only the dinos with matching colors
     fun getDinoListWithColors(currentDinoList:List<DinoStats>):List<DinoStats>{
         var filteredList = currentDinoList.filter { it.type == selectedType.value }
-        for ((index, colorId) in colorsFilter.withIndex()){
-            filteredList = filteredList.filter { colorId == -1 || it.colorList[index] == colorId}
+        val resultsSet = mutableSetOf<DinoStats>()
+        for((index,d1) in filteredList.withIndex()){
+            for(innerIndex in index until filteredList.size){
+                if(dinosCanProduce(d1,filteredList[innerIndex],colorsFilter)){
+                    resultsSet.addAll(listOf(d1,filteredList[innerIndex]))
+                }
+            }
         }
-        return filteredList
+
+        return resultsSet.toList()
     }
 
     fun getCurrentDinoTypes(currentDinoList:List<DinoStats>):Set<String>{
