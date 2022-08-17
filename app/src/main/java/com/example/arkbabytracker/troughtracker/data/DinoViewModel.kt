@@ -2,20 +2,24 @@ package com.example.arkbabytracker.troughtracker.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.arkbabytracker.timers.Timer
+import com.example.arkbabytracker.timers.TimerDao
 import com.example.arkbabytracker.troughtracker.data.database.DinoDao
 import com.example.arkbabytracker.troughtracker.data.database.DinoDatabase
 import com.example.arkbabytracker.troughtracker.data.database.DinoEntity
 import com.example.arkbabytracker.troughtracker.dinos.data.*
 import com.example.arkbabytracker.troughtracker.food.Food
 import com.example.arkbabytracker.troughtracker.food.trough.Trough
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.Instant
+import javax.inject.Inject
 import kotlin.concurrent.fixedRateTimer
 
-
-class DinoViewModel:ViewModel() {
+@HiltViewModel
+class DinoViewModel @Inject constructor(var timerDao: TimerDao):ViewModel() {
 
     var foodStacks:MutableLiveData<MutableMap<Food,Int>> = MutableLiveData(mutableMapOf())
 
@@ -24,6 +28,7 @@ class DinoViewModel:ViewModel() {
     var currentSimBabyList = MutableLiveData(mutableListOf<Dino>())
 
     var trough = Trough(foodStacks.value!!)
+
 
 
 
@@ -169,6 +174,22 @@ class DinoViewModel:ViewModel() {
         }
     }
 
+    fun clearOldTimers(){
+        CoroutineScope(Dispatchers.IO).launch {
+            for(t in timerDao.getAllTimersOnce()) {
+                if ((t.startTime + t.length) <= Instant.now().epochSecond) {
+                    timerDao.delete(t)
+                }
+            }
+        }
+    }
+
+    fun insertTimer(timer:Timer){
+        CoroutineScope(Dispatchers.IO).launch {
+            timerDao.insert(timer)
+        }
+    }
+
 
 
     fun launchUpdateThread(){
@@ -180,6 +201,7 @@ class DinoViewModel:ViewModel() {
                         if(remainingTime.value!! > 0) {
                             remainingTime.postValue((timerEndTime - Instant.now().epochSecond).toInt())
                             runSimFromStartToNow()
+                            clearOldTimers()
                         }
                     }
                 }

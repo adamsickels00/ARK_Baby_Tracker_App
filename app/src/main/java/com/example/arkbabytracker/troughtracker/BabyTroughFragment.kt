@@ -27,6 +27,9 @@ import com.example.arkbabytracker.troughtracker.data.EnvironmentViewModel
 import com.example.arkbabytracker.troughtracker.data.database.DinoDatabase
 import com.example.arkbabytracker.databinding.DinoPopupBinding
 import com.example.arkbabytracker.databinding.FragmentBabyTroughBinding
+import com.example.arkbabytracker.timers.Timer
+import com.example.arkbabytracker.timers.createNotificationChannel
+import com.example.arkbabytracker.timers.scheduleNotification
 import com.example.arkbabytracker.troughtracker.data.database.DinoEntity
 import com.example.arkbabytracker.troughtracker.dinos.adapter.DinoAdapter
 import com.example.arkbabytracker.troughtracker.dinos.data.Dino
@@ -35,7 +38,7 @@ import com.example.arkbabytracker.troughtracker.food.Food
 import com.example.arkbabytracker.troughtracker.food.fragment.FoodItemFragment
 import com.example.arkbabytracker.troughtracker.food.trough.Trough
 import com.example.arkbabytracker.utils.TimeDisplayUtil
-import com.example.arkbabytracker.utils.TimerService
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,6 +55,7 @@ const val TIMER_THRESHOLD = 0.9
  * Use the [BabyTroughFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class BabyTroughFragment : Fragment() {
 
     private var _binding: FragmentBabyTroughBinding? = null
@@ -72,6 +76,7 @@ class BabyTroughFragment : Fragment() {
         arguments?.let { group = it.getString("Group").toString() }
         needFoodFragment = savedInstanceState == null
         foodCache.clear()
+        createNotificationChannel(requireContext())
         Log.d("LifecycleTests","Create")
         activityVm.troughMap.putIfAbsent(group, MutableLiveData())
 
@@ -105,10 +110,10 @@ class BabyTroughFragment : Fragment() {
 
         binding.bigTimerTextView.setOnClickListener {
             Log.d("Touch","Timer touched")
-            Intent(context, TimerService::class.java).also {
-                it.putExtra("seconds",(data.remainingTime.value!!*TIMER_THRESHOLD).toInt())
-                requireActivity().startService(it)
-            }
+            val timerLengthInSeconds = (data.remainingTime.value!!*TIMER_THRESHOLD).toInt()
+            val timer = Timer(Instant.now().epochSecond,timerLengthInSeconds)
+            data.insertTimer(timer)
+            scheduleNotification(requireContext(),timerLengthInSeconds.toLong(),0)
         }
 
         db = Room.databaseBuilder(
@@ -321,5 +326,7 @@ class BabyTroughFragment : Fragment() {
                     putString("Group", group)
                 }
             }
+        const val CHANNEL_ID = "DinoChannel"
+
     }
 }

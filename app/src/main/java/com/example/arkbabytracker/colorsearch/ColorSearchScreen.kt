@@ -167,7 +167,7 @@ fun DropdownSelectedContent(id:Int){
 fun DinoList(dinoList : List<DinoStats>){
     LazyColumn(){
         for(x in dinoList){
-            item(key=x.type+x.name){
+            item(key=x.id){
                 SingleDino(x)
             }
         }
