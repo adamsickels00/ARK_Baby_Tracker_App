@@ -75,7 +75,7 @@ class ComposeTestFragment : Fragment() {
                     var text by remember() { mutableStateOf("")}
 
                     val context = LocalContext.current
-                    val serverJson = context.getSharedPreferences("Servers",0).getString("ServerList","")
+                    val serverJson = context.getSharedPreferences("Servers",0).getString("ServerList","[]")
                     val type = object : TypeToken<List<String>>(){}.type
                     val serverListInit = Gson().fromJson<List<String>>(serverJson,type)?:listOf()
                     servers.addAll(serverListInit)
