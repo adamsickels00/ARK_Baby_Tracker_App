@@ -13,8 +13,10 @@ import android.widget.EditText
 import androidx.core.widget.doAfterTextChanged
 import com.example.arkbabytracker.R
 import com.example.arkbabytracker.databinding.FragmentEditDinoStatsBinding
+import com.example.arkbabytracker.statstracker.data.DinoGender
 import com.example.arkbabytracker.statstracker.data.DinoStats
 import com.example.arkbabytracker.statstracker.data.DinoStatsDao
+import com.example.arkbabytracker.troughtracker.dinos.data.Dino
 import com.example.arkbabytracker.troughtracker.dinos.data.allDinoList
 import com.example.arkbabytracker.utils.DinoColorUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,7 +54,10 @@ class EditDinoStatsFragment : Fragment() {
                 updateDino(dino)
                 requireActivity().onBackPressed()
             }
+            binding.genderSpinner.setSelection(DinoGender.values().map { it.name }.indexOf(dino.gender.name))
         }
+        binding.genderSpinner.adapter = ArrayAdapter(requireContext(),android.R.layout.select_dialog_item,DinoGender.values().map { it.name })
+
         val adapter = ArrayAdapter<String>(requireContext(),android.R.layout.select_dialog_item, allDinoList.map{it.simpleName})
         binding.typeAutoComplete.setAdapter(adapter)
         binding.typeAutoComplete.threshold = 0
@@ -66,6 +71,11 @@ class EditDinoStatsFragment : Fragment() {
     }
 
     fun updateDino(d:DinoStats){
+
+        val mapping = mutableMapOf<String,DinoGender>()
+        DinoGender.values().forEach { mapping[it.name] = it }
+
+
         val type = binding.typeAutoComplete.text.toString()
         val name = binding.nameEditText.text.toString()
         val health = binding.healthEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
@@ -75,6 +85,7 @@ class EditDinoStatsFragment : Fragment() {
         val oxygen = binding.oxygenEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
         val food = binding.foodEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
         val move = binding.moveSpeedEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
+        val gender = mapping[binding.genderSpinner.selectedItem]!!
         val colorList = listOf(
             binding.color0EditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0},
             binding.color1EditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0},
@@ -94,7 +105,8 @@ class EditDinoStatsFragment : Fragment() {
             weight,
             move,
             damage,
-            colorList
+            colorList,
+            gender
         )
 
         dino.id = d.id

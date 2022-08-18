@@ -1,10 +1,23 @@
 package com.example.arkbabytracker.statstracker.data
 
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
 import androidx.room.*
 import androidx.room.migration.AutoMigrationSpec
 import com.example.arkbabytracker.troughtracker.dinos.data.Dino
 import kotlinx.coroutines.flow.Flow
+import javax.annotation.Nullable
 
+enum class DinoGender(){
+    Male,
+    Female,
+    Other
+}
+
+@BindingAdapter("dinoGender")
+fun setDinoGender(t: TextView, g:DinoGender){
+    t.text="Gender: ${g.name}"
+}
 
 @Entity
 data class DinoStats(
@@ -18,7 +31,9 @@ data class DinoStats(
     val weight:Int,
     val movementSpeed:Int,
     val damage:Int,
-    val colorList: List<Int>
+    val colorList: List<Int>,
+    @ColumnInfo(defaultValue = "Other")
+    val gender:DinoGender
 ){
     @PrimaryKey(autoGenerate = true)
     var id:Int? = null
@@ -36,6 +51,21 @@ class Converters {
     @TypeConverter
     fun stringToList(string: String): List<Int> {
         return string.split(' ').map { it.toInt() }
+    }
+
+    @TypeConverter
+    fun genderToString(g:DinoGender):String{
+        return g.name
+    }
+
+    @TypeConverter
+    fun stringToGender(s:String):DinoGender{
+        for(g in DinoGender.values()){
+            if(s==g.name){
+                return g
+            }
+        }
+        return DinoGender.Other
     }
 }
 @Dao
@@ -67,7 +97,7 @@ interface DinoStatsDao{
     fun getDinosByType():Map<String,List<DinoStats>>
 }
 
-@Database(entities = [DinoStats::class], version = 4, exportSchema = true, autoMigrations = [AutoMigration(from=3,to=4, spec = DinoStatsAutoMigration::class)])
+@Database(entities = [DinoStats::class], version = 5, exportSchema = true, autoMigrations = [AutoMigration(from=3,to=4, spec = DinoStatsAutoMigration::class),AutoMigration(from=4,to=5)])
 @TypeConverters(Converters::class)
 abstract class DinoStatsDatabase : RoomDatabase(){
     abstract fun dinoStatsDao(): DinoStatsDao

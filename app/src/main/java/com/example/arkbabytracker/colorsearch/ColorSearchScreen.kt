@@ -25,6 +25,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.arkbabytracker.statstracker.data.DinoGender
 import com.example.arkbabytracker.statstracker.data.DinoStats
 import com.example.arkbabytracker.utils.DinoColorUtils
 import com.example.arkbabytracker.utils.MyTheme
@@ -179,10 +180,13 @@ fun SingleDino(dino:DinoStats){
     /*TODO Show the color regions of the Dino*/
     Column() {
         Text(dino.name,color=MaterialTheme.colors.onBackground)
+        Text("Gender: ${dino.gender.name}",color=MaterialTheme.colors.onBackground)
         Row(modifier=Modifier.fillMaxWidth()){
             for(c in dino.colorList){
                 val color = getColor(id = c)
-                Text(c.toString(),modifier = Modifier.background(color).weight(1f),color = Color(DinoColorUtils.getTextColorForBackgroundHex(color.toArgb(), LocalContext.current)))
+                Text(c.toString(),modifier = Modifier
+                    .background(color)
+                    .weight(1f),color = Color(DinoColorUtils.getTextColorForBackgroundHex(color.toArgb(), LocalContext.current)))
             }
         }
     }
@@ -202,6 +206,6 @@ fun PreviewCSS(){
 @Composable
 fun PreviewTypeDropDown(){
     MyTheme(isDarkTheme = true) {
-        TypeDropDown(types = setOf("One","two"), selectedType = "One", saveSelectedItem = {} )
+        SingleDino(dino = DinoStats("Test","Name",1,2,3,4,5,6,7, listOf(1,2,3,4,5,6),DinoGender.Male))
     }
 }

@@ -16,6 +16,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.room.Room
 import com.example.arkbabytracker.R
 import com.example.arkbabytracker.databinding.FragmentAddDinoStatsBinding
+import com.example.arkbabytracker.statstracker.data.DinoGender
 import com.example.arkbabytracker.statstracker.data.DinoStats
 import com.example.arkbabytracker.statstracker.data.DinoStatsDao
 import com.example.arkbabytracker.statstracker.data.DinoStatsDatabase
@@ -64,10 +65,15 @@ class AddDinoStatsFragment () : Fragment() {
         setProperColorsAfterTextChanged(binding.color3EditText)
         setProperColorsAfterTextChanged(binding.color4EditText)
         setProperColorsAfterTextChanged(binding.color5EditText)
+        binding.genderSpinner.adapter = ArrayAdapter(requireContext(),android.R.layout.select_dialog_item,DinoGender.values().map { it.name })
+
         return binding.root
     }
 
     fun addDino(){
+        val mapping = mutableMapOf<String,DinoGender>()
+        DinoGender.values().forEach { mapping[it.name] = it }
+
             val type = binding.typeAutoComplete.text.toString()
             val name = binding.nameEditText.text.toString()
             val health = binding.healthEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
@@ -76,7 +82,8 @@ class AddDinoStatsFragment () : Fragment() {
             val damage = binding.damageEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
             val oxygen = binding.oxygenEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
             val food = binding.foodEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
-            val move = binding.moveSpeedEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
+        val gender = mapping[binding.genderSpinner.selectedItem]!!
+        val move = binding.moveSpeedEditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0}
             val colorList = listOf(
                 binding.color0EditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0},
                 binding.color1EditText.text.toString().let{if(it.isNotEmpty()) it.toInt() else 0},
@@ -96,7 +103,8 @@ class AddDinoStatsFragment () : Fragment() {
                 weight,
                 move,
                 damage,
-                colorList
+                colorList,
+                gender
             )
 
             CoroutineScope(Dispatchers.IO).launch {

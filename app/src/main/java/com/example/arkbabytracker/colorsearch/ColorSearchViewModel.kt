@@ -3,6 +3,7 @@ package com.example.arkbabytracker.colorsearch
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.arkbabytracker.statstracker.data.DinoGender
 import com.example.arkbabytracker.statstracker.data.DinoStats
 import com.example.arkbabytracker.statstracker.data.DinoStatsDao
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,7 +31,7 @@ class ColorSearchViewModel @Inject constructor(
     val selectedType = mutableStateOf("Rex")
 
     private fun dinosCanProduce(d1:DinoStats,d2:DinoStats,colors:List<Int>):Boolean{
-        var canProduce = true /*set to are opposite genders*/
+        var canProduce = (d1.gender != d2.gender) || (d1.gender == DinoGender.Other && d2.gender == DinoGender.Other)
         for((index,color) in d1.colorList.withIndex()){
             canProduce = canProduce && ((color in colors || d2.colorList[index] in colors ) || colors[index] == -1)
         }
