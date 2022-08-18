@@ -11,7 +11,7 @@ object UserGroupsUtils {
         if(c == null) {
             return listOf()
         }
-        val jsonString = c.getSharedPreferences(GROUP_KEY,Context.MODE_PRIVATE).getString(GROUP_KEY,"")
+        val jsonString = c.getSharedPreferences(GROUP_KEY,Context.MODE_PRIVATE).getString(GROUP_KEY,"[]")
         val type = object:TypeToken<List<String>>(){}.type
         return Gson().fromJson(jsonString,type)
     }
