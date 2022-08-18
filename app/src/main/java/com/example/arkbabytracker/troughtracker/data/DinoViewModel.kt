@@ -1,5 +1,6 @@
 package com.example.arkbabytracker.troughtracker.data
 
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.arkbabytracker.timers.Timer
@@ -43,7 +44,9 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao):ViewModel() {
 
 
     fun getFromDatabase(db:DinoDatabase,env:EnvironmentViewModel,group:String):DinoViewModel{
-        babyList.postValue(db.dinoDao().getAll().filter { it.groupName == group }.map { DinoEntity.toDino(it,env)!! }.toMutableList())
+        val dList = db.dinoDao().getAll().filter { it.groupName == group }.map { DinoEntity.toDino(it,env)!! }.toMutableList()
+        val dListWithTimes = dList.map { it.elapsedTimeSec = (Instant.now().epochSecond).toDouble() - it.startTime.epochSecond;it }
+        babyList.postValue(dListWithTimes.toMutableList())
         return this
     }
 

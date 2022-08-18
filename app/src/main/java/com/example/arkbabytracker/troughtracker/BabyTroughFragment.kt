@@ -39,6 +39,10 @@ import com.example.arkbabytracker.troughtracker.food.fragment.FoodItemFragment
 import com.example.arkbabytracker.troughtracker.food.trough.Trough
 import com.example.arkbabytracker.utils.TimeDisplayUtil
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -121,6 +125,13 @@ class BabyTroughFragment : Fragment() {
             DinoDatabase::class.java, "dino-database"
         ).build()
         data.dinoDao = db.dinoDao()
+        Single.create<List<Dino>> { data.getFromDatabase(db,env,group); it.onSuccess(data.babyList.value!!) }.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                       updateTime()
+            },{})
+
+
         env.maewingFoodMultiplier.value = maeMult.toDouble()
         env.eventMultiplier.value = evMult.toDouble()
         dinoAdapter = DinoAdapter(data)
@@ -147,13 +158,9 @@ class BabyTroughFragment : Fragment() {
             updateTime()
         }
         data.babyList.observe(viewLifecycleOwner) {
-            val runSim = dinoAdapter.currentList.size != it.size
             dinoAdapter.submitList(it)
-            binding.executePendingBindings()
-            if(runSim) {
-                updateFoods()
-                updateTime()
-            }
+            updateFoods()
+            updateTime()
         }
 
         data.simTrough.observe(viewLifecycleOwner){
@@ -202,9 +209,6 @@ class BabyTroughFragment : Fragment() {
 
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            data.getFromDatabase(db,env,group)
-        }
         data.launchUpdateThread()
         return binding.root
     }
