@@ -57,8 +57,6 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao):ViewModel() {
 
         var tempBabyList:MutableList<Dino> = babyList.value?.map { it.copy() } as MutableList<Dino>
         tempBabyList.forEach { it.food = it.currentMaxFood }
-        runSimFromStartToNow()
-        tempBabyList.zip(currentSimBabyList.value!!){a:Dino,b:Dino-> a.food = b.food}
         synchronized(this) {
             trough = Trough(foodStacks.value!!)
             while (run) {
@@ -86,8 +84,9 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao):ViewModel() {
 
                 val simStartTime = Instant.now().epochSecond - maxElapsedTime.toInt()
 
-                troughRefill[simStartTime + time]?.let {
-                    tempTrough = Trough(it.toMutableMap())
+                troughRefill[simStartTime + time]?.let { foodMap ->
+                    tempTrough = Trough(foodMap.toMutableMap())
+                    dinoList.forEach { it.food = it.currentMaxFood }
                 }
 
                 //Add the dinos that exist at this time
