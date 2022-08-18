@@ -6,6 +6,9 @@ import java.time.Instant
 import java.util.*
 import kotlin.reflect.KClass
 
+const val LAG_CORRECTION = 1.015
+const val FOOD_CORRECTION = 1.1
+
 enum class Diet(val eatOrder:List<Food>){
     HERB(listOf(Food.Berries, Food.Mejoberries)),
     OMNI(listOf(Food.Berries, Food.Mejoberries, Food.RawMeat)),
@@ -37,7 +40,8 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
     var groupName = "Default"
     var elapsedTimeSec = 0.0
     var food = minFood
-    val maturationTimeSec get() = (1/ this.ageSpeed /ageSpeedMult/env.eventMultiplier.value!!)*1.01
+    var hasEnoughFood = true
+    val maturationTimeSec get() = (1/ this.ageSpeed /ageSpeedMult/env.eventMultiplier.value!!)* LAG_CORRECTION
     private val maxFoodRate get() = baseFoodRate*extraBabyFoodRate*babyFoodRate
     private val minFoodRate get() = BASE_MIN_FOOD_RATE*babyFoodRate*extraBabyFoodRate
     var percentComplete
@@ -47,7 +51,7 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
             startTime = startTime.minusSeconds(elapsedTimeSec.toLong())
         }
 
-    val currentFoodRate get() = (maxFoodRate*(1-percentComplete) + minFoodRate*(percentComplete))*1.1
+    val currentFoodRate get() = (maxFoodRate*(1-percentComplete) + minFoodRate*(percentComplete))* FOOD_CORRECTION
     val currentMaxFood get() = (minFood * (1-percentComplete))+ (maxFood * percentComplete)
     var startTime: Instant = Instant.now()
     abstract val name:String
@@ -87,6 +91,7 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
         val newDino = this.newInstance()
         newDino.elapsedTimeSec = this.elapsedTimeSec
         newDino.food = this.food
+        newDino.uniqueID = this.uniqueID
 
         return newDino
     }

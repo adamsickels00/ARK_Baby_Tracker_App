@@ -3,7 +3,7 @@ package com.example.arkbabytracker.utils
 object TimeDisplayUtil {
     fun secondsToString(sec:Int):String{
 
-        val hours = (sec%(3600*24))/3600
+        val hours = (sec)/3600
         val minutes = (sec % 3600) / 60
         val seconds = (sec % 60)
         var string = "%02d".format(seconds)

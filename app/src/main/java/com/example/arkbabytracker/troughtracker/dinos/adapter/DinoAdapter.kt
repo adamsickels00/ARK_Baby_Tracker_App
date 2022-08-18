@@ -35,6 +35,13 @@ class DinoAdapter(val data:DinoViewModel): ListAdapter<Dino,DinoAdapter.DinoView
             } else{
                 binding.dinoNameTextbox.setTextColor(Color.WHITE)
             }
+
+            if(dino.hasEnoughFood){
+                binding.dinoNameTextbox.setTextColor(Color.GREEN)
+            } else{
+                binding.dinoNameTextbox.setTextColor(Color.YELLOW)
+            }
+
             binding.deleteCreatureButton.setOnClickListener {
                 val currentList = data.babyList.value!!
                 currentList.remove(dino)

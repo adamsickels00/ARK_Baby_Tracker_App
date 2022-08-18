@@ -67,6 +67,7 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao):ViewModel() {
                 time++
             }
         }
+        tempBabyList.forEach {t-> babyList.value!!.forEach {if(t.uniqueID == it.uniqueID) it.hasEnoughFood = t.hasEnoughFood } }
         return time-1
     }
 
@@ -145,7 +146,8 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao):ViewModel() {
                     feedIfHungry(dino,trough)
                     removeIfSpoiled(time,trough)
                 }
-                allGood = allGood && dino.food>0
+                dino.hasEnoughFood = dino.food > 0
+                allGood = allGood && dino.hasEnoughFood
             }
             removeDinos.forEach{tempBabyList.remove(it)}
         }

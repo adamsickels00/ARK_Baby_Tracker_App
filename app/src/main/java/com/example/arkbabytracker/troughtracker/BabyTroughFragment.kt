@@ -45,6 +45,7 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.time.Instant
 import kotlin.reflect.full.primaryConstructor
@@ -71,6 +72,7 @@ class BabyTroughFragment : Fragment() {
     private lateinit var db: DinoDatabase
     private var needFoodFragment = true
     private var foodCache = mutableSetOf<Food>()
+    private var thread: Job? = null
 
     lateinit var group:String
 
@@ -128,7 +130,7 @@ class BabyTroughFragment : Fragment() {
         Single.create<List<Dino>> { data.getFromDatabase(db,env,group); it.onSuccess(data.babyList.value!!) }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                       updateTime()
+
             },{})
 
 
@@ -314,11 +316,14 @@ class BabyTroughFragment : Fragment() {
     }
 
     private fun updateTime(){
-        CoroutineScope(Dispatchers.Default).launch {
-            val fullTime = data.runSim()
-            data.timerEndTime = Instant.now().epochSecond + fullTime
-            data.remainingTime.postValue(fullTime)
+        if(thread == null || !thread!!.isActive){
+            thread = CoroutineScope(Dispatchers.Default).launch {
+                val fullTime = data.runSim()
+                data.timerEndTime = Instant.now().epochSecond + fullTime
+                data.remainingTime.postValue(fullTime)
+            }
         }
+
     }
 
 

@@ -24,7 +24,7 @@
     <fragment
         android:id="@+id/composeTestFragment"
         android:name="com.example.arkbabytracker.ComposeTestFragment"
-        android:label="fragment_compose_test"/>
+        android:label="Timer Screen" />
     <fragment
         android:id="@+id/timerComposeFragment"
         android:name="com.example.arkbabytracker.timers.TimerComposeFragment"
@@ -32,12 +32,12 @@
     <fragment
         android:id="@+id/babyTrackerGroupHolder"
         android:name="com.example.arkbabytracker.troughtracker.BabyTrackerGroupHolder"
-        android:label="fragment_baby_tracker_group_holder"
+        android:label="Baby Tracker"
         tools:layout="@layout/fragment_baby_tracker_group_holder" />
     <fragment
         android:id="@+id/troughFragment"
         android:name="com.example.arkbabytracker.troughtracker.food.trough.TroughPageHolderFragment"
-        android:label="fragment_trough_page_holder"
+        android:label="Troughs"
         tools:layout="@layout/fragment_trough_page_holder" />
     <fragment
         android:id="@+id/userDefiedGroupsFragment"
@@ -47,11 +47,11 @@
     <fragment
         android:id="@+id/editDinoStatsFragment"
         android:name="com.example.arkbabytracker.statstracker.EditDinoStatsFragment"
-        android:label="EditDinoStatsFragment" >
+        android:label="Edit Dino">
         <argument
             android:name="dinoId"
-            app:argType="integer"
-            android:defaultValue="0" />
+            android:defaultValue="0"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/colorSearchFragment"
