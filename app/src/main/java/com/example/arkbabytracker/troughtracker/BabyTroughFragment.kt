@@ -1,11 +1,10 @@
 package com.example.arkbabytracker.troughtracker
 
+import android.app.Application
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,34 +12,32 @@ import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.room.Room
 import com.example.arkbabytracker.ActivityViewModel
+import com.example.arkbabytracker.DinoApplication
+import com.example.arkbabytracker.databinding.DinoPopupBinding
+import com.example.arkbabytracker.databinding.FragmentBabyTroughBinding
+import com.example.arkbabytracker.timers.NotificationScheduler
+import com.example.arkbabytracker.timers.Timer
 import com.example.arkbabytracker.troughtracker.data.DinoViewModel
 import com.example.arkbabytracker.troughtracker.data.EnvironmentViewModel
 import com.example.arkbabytracker.troughtracker.data.database.DinoDatabase
-import com.example.arkbabytracker.databinding.DinoPopupBinding
-import com.example.arkbabytracker.databinding.FragmentBabyTroughBinding
-import com.example.arkbabytracker.timers.Timer
-import com.example.arkbabytracker.timers.createNotificationChannel
-import com.example.arkbabytracker.timers.scheduleNotification
 import com.example.arkbabytracker.troughtracker.data.database.DinoEntity
 import com.example.arkbabytracker.troughtracker.dinos.adapter.DinoAdapter
 import com.example.arkbabytracker.troughtracker.dinos.data.Dino
 import com.example.arkbabytracker.troughtracker.dinos.data.allDinoList
 import com.example.arkbabytracker.troughtracker.food.Food
 import com.example.arkbabytracker.troughtracker.food.fragment.FoodItemFragment
-import com.example.arkbabytracker.troughtracker.food.trough.Trough
 import com.example.arkbabytracker.utils.TimeDisplayUtil
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
@@ -48,6 +45,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.time.Instant
+import javax.inject.Inject
 import kotlin.reflect.full.primaryConstructor
 
 const val EVENT_MULT_KEY = "com.example.arkbabycalculator.eventMultiplier"
@@ -82,7 +80,7 @@ class BabyTroughFragment : Fragment() {
         arguments?.let { group = it.getString("Group").toString() }
         needFoodFragment = savedInstanceState == null
         foodCache.clear()
-        createNotificationChannel(requireContext())
+        NotificationScheduler.createNotificationChannel(requireContext())
         Log.d("LifecycleTests","Create")
         activityVm.troughMap.putIfAbsent(group, MutableLiveData())
 
@@ -119,7 +117,11 @@ class BabyTroughFragment : Fragment() {
             val timerLengthInSeconds = (data.remainingTime.value!!*TIMER_THRESHOLD).toInt()
             val timer = Timer(Instant.now().epochSecond,timerLengthInSeconds)
             data.insertTimer(timer)
-            scheduleNotification(requireContext(),timerLengthInSeconds.toLong(),0)
+                .subscribe({
+                    NotificationScheduler.scheduleNotification(requireContext(),timerLengthInSeconds.toLong(),it.toInt())
+            },{})
+
+
         }
 
         db = Room.databaseBuilder(

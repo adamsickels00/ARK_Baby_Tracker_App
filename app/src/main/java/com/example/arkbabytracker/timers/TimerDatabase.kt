@@ -25,7 +25,7 @@ data class Timer(
 @Dao
 interface TimerDao{
     @Insert
-    suspend fun insert(t : Timer)
+    fun insert(t : Timer):Long
 
     @Insert
     suspend fun insertAll(t:List<Timer>)

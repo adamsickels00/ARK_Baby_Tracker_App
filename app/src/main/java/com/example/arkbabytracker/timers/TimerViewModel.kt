@@ -1,5 +1,6 @@
 package com.example.arkbabytracker.timers
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +20,8 @@ class TimerViewModel @Inject constructor(var timerDao: TimerDao) : ViewModel(){
         CoroutineScope(Dispatchers.IO).launch { timerDao.insert(t) }
     }
 
-    fun deleteTimer(t:Timer){
+    fun deleteTimer(context: Context, t:Timer){
         CoroutineScope(Dispatchers.IO).launch { timerDao.delete(t) }
+        NotificationScheduler.cancelNotification(context,t.id!!.toInt())
     }
 }

@@ -1,14 +1,18 @@
 package com.example.arkbabytracker.utils
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlin.math.roundToInt
 
 enum class SwipeDirection(val raw: Int) {
@@ -29,6 +33,7 @@ fun SwipableBox(modifier:Modifier = Modifier, onSwipeRight:()->Unit, content:@Co
         val maxWidth = with(LocalDensity.current) {
             constraintsScope.maxWidth.toPx()
         }
+        val color = lerp(MaterialTheme.colors.background, Color.Red,swipeableState.offset.value/maxWidth)
         Box(
             modifier = Modifier
                 .swipeable(
@@ -44,6 +49,7 @@ fun SwipableBox(modifier:Modifier = Modifier, onSwipeRight:()->Unit, content:@Co
                 }
                 .fillMaxWidth()
                 .padding(12.dp)
+                .background(color)
 
         ) {
             content()

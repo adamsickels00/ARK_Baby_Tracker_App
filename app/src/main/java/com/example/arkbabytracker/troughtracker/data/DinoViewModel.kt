@@ -12,6 +12,9 @@ import com.example.arkbabytracker.troughtracker.dinos.data.*
 import com.example.arkbabytracker.troughtracker.food.Food
 import com.example.arkbabytracker.troughtracker.food.trough.Trough
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -188,10 +191,11 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao):ViewModel() {
         }
     }
 
-    fun insertTimer(timer:Timer){
-        CoroutineScope(Dispatchers.IO).launch {
-            timerDao.insert(timer)
-        }
+    fun insertTimer(timer:Timer):Single<Long>{
+        return Single.create<Long>{
+            it.onSuccess(timerDao.insert(timer))
+        }.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
 
