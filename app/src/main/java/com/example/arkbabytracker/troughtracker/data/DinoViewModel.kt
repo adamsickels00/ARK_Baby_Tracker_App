@@ -69,8 +69,10 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao):ViewModel() {
                 run = processSecond(tempBabyList, time,trough)
                 time++
             }
+            tempBabyList.forEach {t-> babyList.value!!.forEach {if(t.uniqueID == it.uniqueID) it.hasEnoughFood = t.hasEnoughFood } }
+            babyList.value!!.forEach { dino -> if(dino.uniqueID !in tempBabyList.map { it.uniqueID }) dino.hasEnoughFood=true}
         }
-        tempBabyList.forEach {t-> babyList.value!!.forEach {if(t.uniqueID == it.uniqueID) it.hasEnoughFood = t.hasEnoughFood } }
+
         return time-1
     }
 

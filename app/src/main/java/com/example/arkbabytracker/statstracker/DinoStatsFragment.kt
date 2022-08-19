@@ -6,9 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.room.Room
+import com.example.arkbabytracker.ActivityViewModel
 import com.example.arkbabytracker.R
 import com.example.arkbabytracker.databinding.FragmentDinoStatsBinding
 import com.example.arkbabytracker.statstracker.adapter.DinoGroupStatsAdapter
@@ -34,6 +36,7 @@ class DinoStatsFragment : Fragment() {
     val binding : FragmentDinoStatsBinding get() = _binding!!
 
     val dinoStatsViewModel by viewModels<DinoMenuViewModel>()
+    val activityVm:ActivityViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +61,13 @@ class DinoStatsFragment : Fragment() {
         binding.addDinoStatsButton.setOnClickListener {
             val action = DinoStatsFragmentDirections.actionDinoStatsFragmentToAddDinoStatsFragment()
 
+            findNavController().navigate(action)
+        }
+
+        binding.shareListButton.setOnClickListener {
+            //Start qr display fragment from nav
+            activityVm.dinoStatsList.value = dinoStatsViewModel.dinoList
+            val action = DinoStatsFragmentDirections.actionDinoStatsFragmentToQrDisplayFragment()
             findNavController().navigate(action)
         }
 

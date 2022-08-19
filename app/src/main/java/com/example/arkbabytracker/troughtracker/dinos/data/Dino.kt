@@ -6,7 +6,7 @@ import java.time.Instant
 import java.util.*
 import kotlin.reflect.KClass
 
-const val LAG_CORRECTION = 1.017
+const val LAG_CORRECTION = 1.04
 const val FOOD_CORRECTION = 1.1
 
 enum class Diet(val eatOrder:List<Food>){

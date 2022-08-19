@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_dino_stats_fragment_to_editDinoStatsFragment"
             app:destination="@id/editDinoStatsFragment" />
+        <action
+            android:id="@+id/action_dino_stats_fragment_to_qrDisplayFragment"
+            app:destination="@id/qrDisplayFragment" />
     </fragment>
     <fragment
         android:id="@+id/addDinoStatsFragment"
@@ -57,4 +60,17 @@
         android:id="@+id/colorSearchFragment"
         android:name="com.example.arkbabytracker.colorsearch.ColorSearchFragment"
         android:label="Color Search" />
+    <fragment
+        android:id="@+id/qrDisplayFragment"
+        android:name="com.example.arkbabytracker.statstracker.qrcode.writer.QrDisplayFragment"
+        android:label="QrDisplayFragment" />
+    <fragment
+        android:id="@+id/readQrFragment"
+        android:name="com.example.arkbabytracker.statstracker.qrcode.reader.ReadQrFragment"
+        android:label="Import Dino">
+        <deepLink
+            android:id="@+id/deepLink"
+            app:action="ACTION_VIEW"
+            app:uri="https://arkbabytracker/dinoList/{jsonString}" />
+    </fragment>
 </navigation>
