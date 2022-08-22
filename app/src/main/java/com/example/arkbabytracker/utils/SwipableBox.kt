@@ -5,12 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
@@ -23,17 +23,20 @@ enum class SwipeDirection(val raw: Int) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SwipableBox(modifier:Modifier = Modifier, onSwipeRight:()->Unit, content:@Composable ()->Unit){
+fun SwipableBox(modifier:Modifier = Modifier, onSwipeRight:()->Unit, content:@Composable (modifier:Modifier)->Unit){
     val swipeableState = rememberSwipeableState(initialValue =SwipeDirection.Initial )
     if(swipeableState.currentValue == SwipeDirection.Right){
         onSwipeRight()
+        LaunchedEffect(Unit){swipeableState.snapTo(SwipeDirection.Initial)}
     }
-    BoxWithConstraints(modifier = modifier) {
+    val initColor = MaterialTheme.colors.background
+    var color by remember{ mutableStateOf(initColor)}
+    BoxWithConstraints(modifier = modifier.background(color)) {
         val constraintsScope = this
         val maxWidth = with(LocalDensity.current) {
             constraintsScope.maxWidth.toPx()
         }
-        val color = lerp(MaterialTheme.colors.background, Color.Red,swipeableState.offset.value/maxWidth)
+        color = lerp(MaterialTheme.colors.background, Color.Red,swipeableState.offset.value/maxWidth)
         Box(
             modifier = Modifier
                 .swipeable(
@@ -49,22 +52,22 @@ fun SwipableBox(modifier:Modifier = Modifier, onSwipeRight:()->Unit, content:@Co
                 }
                 .fillMaxWidth()
                 .padding(12.dp)
-                .background(color)
 
         ) {
-            content()
+            content(Modifier.background(color))
         }
     }
 }
 
-/*
-fun GroupItem(group:String, onSwipeAction:(String)->Unit, swipeableState: SwipeableState<SwipeDirection> = rememberSwipeableState(initialValue = SwipeDirection.Initial)){
+@Preview
+@Composable
+fun SwipableBoxPreview(){
 
-    if(swipeableState.currentValue == SwipeDirection.Right){
-        onSwipeAction(group)
-    }
-
+    MaterialTheme(colors = darkColors()) {
+        SwipableBox(onSwipeRight = { /*TODO*/ }) {
+            Card(modifier = it){
+                Text("Test", modifier = it)
+            }
+        }
     }
 }
-
- */

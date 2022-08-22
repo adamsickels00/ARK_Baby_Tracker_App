@@ -15,9 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.time.Instant
 import javax.inject.Inject
 import kotlin.concurrent.fixedRateTimer
@@ -43,6 +41,7 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao):ViewModel() {
     var remainingTime = MutableLiveData(0)
     var timerEndTime = 0L
     private var noTimer=true
+    var updateJob: Job? = null
     lateinit var dinoDao:DinoDao
 
 
@@ -204,20 +203,28 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao):ViewModel() {
 
     fun launchUpdateThread(){
         synchronized(this) {
-            if (noTimer) {
-                noTimer = false
-                fixedRateTimer("Dino time left", true, period = 1000) {
-                    CoroutineScope(Dispatchers.Default).launch {
+            if (updateJob==null){
+                updateJob = CoroutineScope(Dispatchers.Default).launch {
+                    while(true){
                         if(remainingTime.value!! > 0) {
                             remainingTime.postValue((timerEndTime - Instant.now().epochSecond).toInt())
                             runSimFromStartToNow()
                             clearOldTimers()
                         }
+                        delay(1000)
                     }
                 }
             }
         }
 
+    }
+
+    fun babyListAsString():String{
+        var s = ""
+        for(x in babyList.value?:listOf()){
+            s += "${x.name}, "
+        }
+        return s.dropLast(2)
     }
 
 }

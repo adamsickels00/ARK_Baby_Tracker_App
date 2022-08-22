@@ -45,7 +45,7 @@ class EnvironmentEditableItem : Fragment() {
 
         binding.valueTextBox.doAfterTextChanged{
             if(it.toString() != "") {
-                val newValue = it.toString().toDouble()
+                val newValue = it.toString().toDoubleOrNull()?:1.0
                 val bundle = bundleOf("name" to itemName, "value" to newValue)
                 setFragmentResult("newValue",bundle)
             }

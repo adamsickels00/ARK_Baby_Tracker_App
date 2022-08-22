@@ -22,6 +22,7 @@ class UserGroupsViewModel : ViewModel(){
         }
     }
 
+    // TODO actually delete the whole group from database. this just hides it from user
     fun removeGroup(name:String,context:Context){
         groupList.remove(name)
         updateSavedList(context)

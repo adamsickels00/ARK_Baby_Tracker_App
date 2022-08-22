@@ -115,7 +115,8 @@ class BabyTroughFragment : Fragment() {
         binding.bigTimerTextView.setOnClickListener {
             Log.d("Touch","Timer touched")
             val timerLengthInSeconds = (data.remainingTime.value!!*TIMER_THRESHOLD).toInt()
-            val timer = Timer(Instant.now().epochSecond,timerLengthInSeconds)
+            val description = "$group: ${data.babyListAsString()}"
+            val timer = Timer(Instant.now().epochSecond,timerLengthInSeconds,description)
             data.insertTimer(timer)
                 .subscribe({
                     NotificationScheduler.scheduleNotification(requireContext(),timerLengthInSeconds.toLong(),it.toInt())
@@ -185,7 +186,6 @@ class BabyTroughFragment : Fragment() {
                 putFloat(MAE_MULT_KEY+group,it.toFloat())
                 apply()
             }
-            updateTime()
 
         }
 
@@ -210,6 +210,9 @@ class BabyTroughFragment : Fragment() {
             }
             //Post the list containing the dinos that are not yet finished
             dinoAdapter.submitList(dinoList.filter { (it.elapsedTimeSec < it.maturationTimeSec) }.toMutableList())
+            CoroutineScope(Dispatchers.IO).launch {
+                dinoList.filter { it.elapsedTimeSec >= it.maturationTimeSec }.forEach { db.dinoDao().delete(it.uniqueID) }
+            }
 
         }
 

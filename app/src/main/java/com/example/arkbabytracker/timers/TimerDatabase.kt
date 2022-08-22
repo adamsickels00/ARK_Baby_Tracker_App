@@ -16,7 +16,9 @@ import javax.inject.Singleton
 @Entity
 data class Timer(
     var startTime:Long,
-    var length:Int
+    var length:Int,
+    @ColumnInfo(defaultValue = "")
+    var description:String,
 ){
     @PrimaryKey(autoGenerate = true)
     var id:Int? = null
@@ -41,7 +43,7 @@ interface TimerDao{
 
 }
 
-@Database(entities = [Timer::class], version = 1, exportSchema = true,)
+@Database(entities = [Timer::class], version = 2, exportSchema = true, autoMigrations = [AutoMigration(from=1,to=2)])
 abstract class TimerDatabase : RoomDatabase(){
     abstract fun timerDao(): TimerDao
 }

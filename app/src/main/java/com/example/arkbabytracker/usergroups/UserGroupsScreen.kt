@@ -65,11 +65,10 @@ fun GroupList(groups:List<String>, onSwipeAction: (String) -> Unit){
 
 
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun GroupItem(group:String, onSwipeAction:(String)->Unit){
     SwipableBox(onSwipeRight = {onSwipeAction(group)}) {
-        Text(group,color=MaterialTheme.colors.onBackground)
+        Text(group,color=MaterialTheme.colors.onBackground, modifier = it)
     }
 }
 
@@ -89,7 +88,6 @@ fun LightPreview(){
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Preview
 @Composable
 fun GroupItemPreview(){
@@ -98,7 +96,6 @@ fun GroupItemPreview(){
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Preview
 @Composable
 fun GroupListPreview(){
