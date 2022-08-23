@@ -16,7 +16,8 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="577dp"
+            android:layout_height="0dp"
+            android:layout_weight=".9"
             android:adapter="@{adapter}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
 
@@ -24,7 +25,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight=".2">
 
             <Button
                 android:id="@+id/addDinoStatsButton"

@@ -1,18 +1,18 @@
 package com.example.arkbabytracker.statstracker.adapter
 
-import android.util.Log
+import android.content.DialogInterface
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.example.arkbabytracker.databinding.DinoGroupItemBinding
 import com.example.arkbabytracker.statstracker.data.DinoMenuViewModel
 import com.example.arkbabytracker.statstracker.data.DinoStats
 
 class DinoGroupStatsAdapter(var groupMap:Map<String,List<DinoStats>>,val viewModel: DinoMenuViewModel) : RecyclerView.Adapter<DinoGroupStatsAdapter.DinoGroupStatsViewHolder>() {
 
+    var mExpandedPosition = -1
     class DinoGroupStatsViewHolder(val binding:DinoGroupItemBinding,val viewModel: DinoMenuViewModel):RecyclerView.ViewHolder(binding.root){
         var recyclerList = listOf<DinoStats>()
         fun bind(item : Pair<String,List<DinoStats>>){
@@ -50,6 +50,15 @@ class DinoGroupStatsAdapter(var groupMap:Map<String,List<DinoStats>>,val viewMod
     override fun onBindViewHolder(holder: DinoGroupStatsViewHolder, position: Int) {
 
         val key = groupMap.keys.toList()[position]
+        val isExpanded = position === mExpandedPosition
+        holder.binding.childRecyclerView.visibility = (if (isExpanded) View.VISIBLE else View.GONE)
+        holder.binding.labelLinearLayout.visibility = (if (isExpanded) View.VISIBLE else View.GONE)
+        holder.binding.imageView.setImageResource(if(isExpanded) android.R.drawable.arrow_up_float else android.R.drawable.arrow_down_float)
+        holder.itemView.isActivated = isExpanded
+        holder.itemView.setOnClickListener {
+            mExpandedPosition = if (isExpanded) -1 else position
+            notifyItemChanged(position)
+        }
         holder.bind(key to groupMap[key]!!)
     }
 

@@ -9,7 +9,12 @@
             type="com.example.arkbabytracker.statstracker.data.DinoStats" />
     </data>
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="20dp"
+        android:layout_margin="8dp">
+        <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -147,5 +152,7 @@
         </LinearLayout>
 
     </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
 
 </layout>
