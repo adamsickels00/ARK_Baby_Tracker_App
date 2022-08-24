@@ -6,7 +6,6 @@ import java.time.Instant
 import java.util.*
 import kotlin.reflect.KClass
 
-const val LAG_CORRECTION = 1.04
 const val FOOD_CORRECTION = 1.1
 
 enum class Diet(val eatOrder:List<Food>){
@@ -41,7 +40,7 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
     var elapsedTimeSec = 0.0
     var food = minFood
     var hasEnoughFood = true
-    val maturationTimeSec get() = (1/ this.ageSpeed /ageSpeedMult/env.eventMultiplier.value!!)* LAG_CORRECTION
+    val maturationTimeSec get() = (1/ this.ageSpeed /ageSpeedMult/env.eventMultiplier.value!!)* env.lagCorrection.value!!
     private val maxFoodRate get() = baseFoodRate*extraBabyFoodRate*babyFoodRate
     private val minFoodRate get() = BASE_MIN_FOOD_RATE*babyFoodRate*extraBabyFoodRate
     var percentComplete

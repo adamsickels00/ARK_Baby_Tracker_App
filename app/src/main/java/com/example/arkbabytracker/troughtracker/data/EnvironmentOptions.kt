@@ -1,5 +1,6 @@
 package com.example.arkbabytracker.troughtracker.data
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,7 +32,8 @@ class EnvironmentOptions : Fragment() {
         envVariables = mapOf(
             Pair("Event Multiplier",env.eventMultiplier),
             Pair("Maewing Effectiveness",env.maewingFoodMultiplier),
-            "Hunger Multiplier" to env.hungerMultiplier
+            "Hunger Multiplier" to env.hungerMultiplier,
+            "Lag Correction Multiplier" to env.lagCorrection
         )
         childFragmentManager.setFragmentResultListener("newValue",requireActivity()){ _: String, bundle: Bundle ->
             val newDouble = bundle.getDouble("value")
@@ -44,6 +46,7 @@ class EnvironmentOptions : Fragment() {
     }
 
 
+    @SuppressLint("ResourceType")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

@@ -53,6 +53,7 @@ import kotlin.reflect.full.primaryConstructor
 const val EVENT_MULT_KEY = "com.example.arkbabycalculator.eventMultiplier"
 const val MAE_MULT_KEY = "com.example.arkbabycalculator.maewingMultiplier"
 const val HUNGER_MULT_KEY = "com.example.arkbabycalculator.hungerMultiplier"
+const val LAG_MULT_KEY = "com.example.arkbabycalculator.lagMultiplier"
 
 const val TIMER_THRESHOLD = 0.9
 
@@ -285,6 +286,8 @@ class BabyTroughFragment : Fragment() {
         val evMult = pref.getFloat(EVENT_MULT_KEY,1f)
         env.maewingFoodMultiplier.value = maeMult.toDouble()
         env.eventMultiplier.value = evMult.toDouble()
+        env.hungerMultiplier.value = pref.getFloat(HUNGER_MULT_KEY,1f).toDouble()
+        env.lagCorrection.value = pref.getFloat(LAG_MULT_KEY,1.04f).toDouble()
         env.eventMultiplier.observe(viewLifecycleOwner){ newVal ->
             val tempList: MutableList<Dino> = data.babyList.value!!
             pref.edit{
@@ -305,6 +308,13 @@ class BabyTroughFragment : Fragment() {
         env.hungerMultiplier.observe(viewLifecycleOwner){
             with(pref.edit()){
                 putFloat(HUNGER_MULT_KEY,it.toFloat())
+                apply()
+            }
+        }
+
+        env.lagCorrection.observe(viewLifecycleOwner){
+            with(pref.edit()){
+                putFloat(LAG_MULT_KEY,it.toFloat())
                 apply()
             }
         }
