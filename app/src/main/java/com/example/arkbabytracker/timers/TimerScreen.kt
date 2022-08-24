@@ -12,6 +12,7 @@ import androidx.compose.material.darkColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,7 +53,7 @@ fun TimerList(timerList:List<Timer>,onSwipeRight:(t:Timer)->Unit){
 @Composable
 fun SingleTimerScreen(t:Timer, modifier: Modifier = Modifier){
     var currentTime by remember { mutableStateOf(Instant.now().epochSecond)}
-    Card(modifier=modifier.fillMaxWidth(), elevation = 10.dp) {
+    Card(modifier=modifier.fillMaxWidth().shadow(10.dp, ambientColor = MaterialTheme.colors.onBackground, spotColor = MaterialTheme.colors.onBackground )) {
         Box(modifier = modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             Column {
                 Text(
@@ -82,7 +83,7 @@ fun SingleTimerScreen(t:Timer, modifier: Modifier = Modifier){
 @Preview
 @Composable
 fun getDemoTimerList():List<Timer>{
-    val demoTimer = Timer(Instant.now().epochSecond,60,"Group 1: Rex, Anky")
+    val demoTimer = Timer(Instant.now().epochSecond,60,"Group 1: Rex, Anky","Group 1")
     return listOf(demoTimer.apply { id=0 },demoTimer.copy().apply { id=1 },demoTimer.copy().apply { id=2 })
 }
 

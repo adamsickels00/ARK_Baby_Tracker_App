@@ -63,8 +63,8 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
     fun processSec(){
         elapsedTimeSec+= 1
         food -= currentFoodRate
-        val foodChange = (1/maturationTimeSec)*(maxFood-minFood)
-        food -= foodChange
+//        val foodChange = (1/maturationTimeSec)*(maxFood-minFood)
+//        food -= foodChange
     }
 
     fun canEat(food:Food):Boolean{
@@ -558,7 +558,7 @@ class CrystalWyvern(maxFood: Double,env:EnvironmentViewModel): Dino(maxFood,env)
     override val diet: Diet
     get() = Diet.CRYSTALWYVERN
     override val percentMaxStarting: Double
-    get() = .1
+    get() = .25
 
     override fun newInstance():Dino {
         return CrystalWyvern(maxFood,env)
@@ -2604,7 +2604,7 @@ class Wyvern(maxFood: Double,env:EnvironmentViewModel): Dino(maxFood,env){
     override val diet: Diet
         get() = Diet.WYVERN
     override val percentMaxStarting: Double
-        get() = .1
+        get() = .25
 
     override fun newInstance():Dino {
         return Wyvern(maxFood,env)

@@ -38,7 +38,7 @@ class EnvironmentEditableItem : Fragment() {
             inflater,container,false
         )
         val itemName = arguments?.getString(ARG_NAME)
-        val initialValue = arguments?.getDouble(ARG_VAL)
+        val initialValue = (parentFragment as EnvironmentOptions).envVariables[itemName]!!.value!!
         // Inflate the layout for this fragment
         binding.item = itemName
         binding.quantity = initialValue

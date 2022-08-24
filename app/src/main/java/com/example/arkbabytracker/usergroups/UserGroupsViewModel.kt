@@ -9,11 +9,19 @@ import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.arkbabytracker.timers.TimerDao
+import com.example.arkbabytracker.troughtracker.data.database.DinoDao
 import com.example.arkbabytracker.usergroups.UserGroupsUtils.GROUP_KEY
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class UserGroupsViewModel : ViewModel(){
+@HiltViewModel
+class UserGroupsViewModel @Inject constructor(val dinoDao: DinoDao, val timerDao:TimerDao) : ViewModel(){
     private val groupList = mutableStateListOf<String>()
     fun addGroup(name:String,context: Context){
         if(name !in groupList) {
@@ -22,10 +30,17 @@ class UserGroupsViewModel : ViewModel(){
         }
     }
 
-    // TODO actually delete the whole group from database. this just hides it from user
     fun removeGroup(name:String,context:Context){
         groupList.remove(name)
         updateSavedList(context)
+        context.getSharedPreferences(name,Context.MODE_PRIVATE).edit{
+            clear()
+            commit()
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            dinoDao.deleteAllInGroup(name)
+            timerDao.deleteTimersForGroup(name)
+        }
     }
 
     fun getGroupsObservable(context: Context):SnapshotStateList<String> {

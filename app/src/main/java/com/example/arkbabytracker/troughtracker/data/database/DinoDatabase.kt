@@ -1,11 +1,20 @@
 package com.example.arkbabytracker.troughtracker.data.database
 
+import android.content.Context
 import androidx.room.*
+import com.example.arkbabytracker.timers.TimerDao
+import com.example.arkbabytracker.timers.TimerDatabase
 import com.example.arkbabytracker.troughtracker.data.EnvironmentViewModel
 import com.example.arkbabytracker.troughtracker.dinos.data.Diet
 import com.example.arkbabytracker.troughtracker.dinos.data.Dino
 import com.example.arkbabytracker.troughtracker.dinos.data.allDinoList
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import java.time.Instant
+import javax.inject.Singleton
 import kotlin.reflect.full.primaryConstructor
 
 class Converters {
@@ -73,6 +82,9 @@ interface DinoDao{
     @Query("DELETE FROM Dino WHERE 1=1")
     fun deleteAll()
 
+    @Query("DELETE FROM Dino WHERE Dino.groupName=:groupName")
+    fun deleteAllInGroup(groupName: String)
+
     @Query("SELECT * FROM Dino")
     fun getAll():List<DinoEntity>
 
@@ -82,6 +94,24 @@ interface DinoDao{
 @TypeConverters(Converters::class)
 abstract class DinoDatabase : RoomDatabase() {
     abstract fun dinoDao(): DinoDao
+}
+
+@InstallIn(SingletonComponent::class)
+@Module
+class DinoDatabaseModule {
+    @Provides
+    fun provideDinoDao(db: DinoDatabase): DinoDao {
+        return db.dinoDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideDinoDb(@ApplicationContext context: Context): DinoDatabase {
+        return Room.databaseBuilder(
+            context,
+            DinoDatabase::class.java, "dino-database"
+        ).fallbackToDestructiveMigration().build()
+    }
 }
 
 

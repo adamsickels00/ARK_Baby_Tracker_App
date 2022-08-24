@@ -9,12 +9,14 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.example.arkbabytracker.R
 import com.example.arkbabytracker.utils.MyTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [Fragment] subclass.
  * Use the [UserDefiedGroupsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class UserDefiedGroupsFragment : Fragment() {
 
 

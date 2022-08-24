@@ -19,6 +19,8 @@ data class Timer(
     var length:Int,
     @ColumnInfo(defaultValue = "")
     var description:String,
+    @ColumnInfo(defaultValue = "")
+    var groupName:String,
 ){
     @PrimaryKey(autoGenerate = true)
     var id:Int? = null
@@ -35,6 +37,9 @@ interface TimerDao{
     @Delete
     suspend fun delete(t:Timer)
 
+    @Query("DELETE FROM Timer WHERE Timer.groupName=:groupName")
+    fun deleteTimersForGroup(groupName: String)
+
     @Query("SELECT * FROM timer")
     fun getAllTimers(): Flow<List<Timer>>
 
@@ -43,7 +48,7 @@ interface TimerDao{
 
 }
 
-@Database(entities = [Timer::class], version = 2, exportSchema = true, autoMigrations = [AutoMigration(from=1,to=2)])
+@Database(entities = [Timer::class], version = 3, exportSchema = true, autoMigrations = [AutoMigration(from=1,to=2),AutoMigration(from=2,to=3)])
 abstract class TimerDatabase : RoomDatabase(){
     abstract fun timerDao(): TimerDao
 }

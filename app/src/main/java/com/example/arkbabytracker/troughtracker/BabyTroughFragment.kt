@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.Toast
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
@@ -105,18 +106,18 @@ class BabyTroughFragment : Fragment() {
         _binding = FragmentBabyTroughBinding.inflate(inflater,container,false)
 
         val activity = requireActivity()
-        val pref = activity.getPreferences(Context.MODE_PRIVATE)
+        val pref = activity.getSharedPreferences(group,Context.MODE_PRIVATE)
         for(food in Food.values()){
-            data.foodStacks.value!![food] = pref.getInt(food.name+group,0)
+            data.foodStacks.value!![food] = pref.getInt(food.name,0)
         }
-        val maeMult = pref.getFloat(MAE_MULT_KEY+group,1f)
-        val evMult = pref.getFloat(EVENT_MULT_KEY+group,1f)
+        val maeMult = pref.getFloat(MAE_MULT_KEY,1f)
+        val evMult = pref.getFloat(EVENT_MULT_KEY,1f)
 
         binding.bigTimerTextView.setOnClickListener {
             Log.d("Touch","Timer touched")
             val timerLengthInSeconds = (data.remainingTime.value!!*TIMER_THRESHOLD).toInt()
             val description = "$group: ${data.babyListAsString()}"
-            val timer = Timer(Instant.now().epochSecond,timerLengthInSeconds,description)
+            val timer = Timer(Instant.now().epochSecond,timerLengthInSeconds,description,group)
             data.insertTimer(timer)
                 .subscribe({
                     NotificationScheduler.scheduleNotification(requireContext(),timerLengthInSeconds.toLong(),it.toInt())
@@ -153,7 +154,7 @@ class BabyTroughFragment : Fragment() {
         data.foodStacks.observe(viewLifecycleOwner) {
             for(food in Food.values()){
                 with(pref.edit()){
-                    putInt(food.name+group,it[food]?:0)
+                    putInt(food.name,it[food]?:0)
                     apply()
                 }
             }
@@ -174,16 +175,16 @@ class BabyTroughFragment : Fragment() {
 
         env.eventMultiplier.observe(viewLifecycleOwner){ newVal ->
             val tempList: MutableList<Dino> = data.babyList.value!!
-            with(pref.edit()){
-                putFloat(EVENT_MULT_KEY+group,newVal.toFloat())
-                apply()
+            pref.edit{
+                putFloat(EVENT_MULT_KEY,newVal.toFloat())
+                commit()
             }
             data.babyList.value = tempList
         }
 
         env.maewingFoodMultiplier.observe(viewLifecycleOwner){
             with(pref.edit()){
-                putFloat(MAE_MULT_KEY+group,it.toFloat())
+                putFloat(MAE_MULT_KEY,it.toFloat())
                 apply()
             }
 
