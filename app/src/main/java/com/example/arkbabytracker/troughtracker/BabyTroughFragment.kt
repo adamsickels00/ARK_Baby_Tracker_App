@@ -2,6 +2,7 @@ package com.example.arkbabytracker.troughtracker
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -51,6 +52,7 @@ import kotlin.reflect.full.primaryConstructor
 
 const val EVENT_MULT_KEY = "com.example.arkbabycalculator.eventMultiplier"
 const val MAE_MULT_KEY = "com.example.arkbabycalculator.maewingMultiplier"
+const val HUNGER_MULT_KEY = "com.example.arkbabycalculator.hungerMultiplier"
 
 const val TIMER_THRESHOLD = 0.9
 
@@ -110,8 +112,8 @@ class BabyTroughFragment : Fragment() {
         for(food in Food.values()){
             data.foodStacks.value!![food] = pref.getInt(food.name,0)
         }
-        val maeMult = pref.getFloat(MAE_MULT_KEY,1f)
-        val evMult = pref.getFloat(EVENT_MULT_KEY,1f)
+
+        initEnvVariables(pref)
 
         binding.bigTimerTextView.setOnClickListener {
             Log.d("Touch","Timer touched")
@@ -130,16 +132,8 @@ class BabyTroughFragment : Fragment() {
             activity,
             DinoDatabase::class.java, "dino-database"
         ).build()
-        data.dinoDao = db.dinoDao()
-        Single.create<List<Dino>> { data.getFromDatabase(db,env,group); it.onSuccess(data.babyList.value!!) }.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+        CoroutineScope(Dispatchers.IO).launch { data.getFromDatabase(env,group) }
 
-            },{})
-
-
-        env.maewingFoodMultiplier.value = maeMult.toDouble()
-        env.eventMultiplier.value = evMult.toDouble()
         dinoAdapter = DinoAdapter(data)
         binding.dinoAdapter = dinoAdapter
         (binding.dinoHolder.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
@@ -173,22 +167,7 @@ class BabyTroughFragment : Fragment() {
             activityVm.troughMap[group]?.value = it
         }
 
-        env.eventMultiplier.observe(viewLifecycleOwner){ newVal ->
-            val tempList: MutableList<Dino> = data.babyList.value!!
-            pref.edit{
-                putFloat(EVENT_MULT_KEY,newVal.toFloat())
-                commit()
-            }
-            data.babyList.value = tempList
-        }
 
-        env.maewingFoodMultiplier.observe(viewLifecycleOwner){
-            with(pref.edit()){
-                putFloat(MAE_MULT_KEY,it.toFloat())
-                apply()
-            }
-
-        }
 
         data.remainingTime.observe(viewLifecycleOwner){
             binding.bigTimerTextView.text = TimeDisplayUtil.secondsToString(it)
@@ -298,6 +277,36 @@ class BabyTroughFragment : Fragment() {
         childFragmentManager.findFragmentByTag(food.name)?.let{
             childFragmentManager.commit { remove(it)}
             foodCache.remove(food)
+        }
+    }
+
+    fun initEnvVariables(pref:SharedPreferences){
+        val maeMult = pref.getFloat(MAE_MULT_KEY,1f)
+        val evMult = pref.getFloat(EVENT_MULT_KEY,1f)
+        env.maewingFoodMultiplier.value = maeMult.toDouble()
+        env.eventMultiplier.value = evMult.toDouble()
+        env.eventMultiplier.observe(viewLifecycleOwner){ newVal ->
+            val tempList: MutableList<Dino> = data.babyList.value!!
+            pref.edit{
+                putFloat(EVENT_MULT_KEY,newVal.toFloat())
+                commit()
+            }
+            data.babyList.value = tempList
+        }
+
+        env.maewingFoodMultiplier.observe(viewLifecycleOwner){
+            with(pref.edit()){
+                putFloat(MAE_MULT_KEY,it.toFloat())
+                apply()
+            }
+
+        }
+
+        env.hungerMultiplier.observe(viewLifecycleOwner){
+            with(pref.edit()){
+                putFloat(HUNGER_MULT_KEY,it.toFloat())
+                apply()
+            }
         }
     }
 

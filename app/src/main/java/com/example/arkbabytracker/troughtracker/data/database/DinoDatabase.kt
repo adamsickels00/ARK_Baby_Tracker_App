@@ -52,7 +52,7 @@ data class DinoEntity(
 
         fun toDino(entity:DinoEntity,env:EnvironmentViewModel):Dino?{
             allDinoList.forEach{
-                if(entity.name == it.simpleName){
+                if(entity.name.replace(" ","") == it.simpleName){
                     val newDino = it.primaryConstructor!!.call(
                         entity.maxFood,
                         env

@@ -31,6 +31,7 @@ class EnvironmentOptions : Fragment() {
         envVariables = mapOf(
             Pair("Event Multiplier",env.eventMultiplier),
             Pair("Maewing Effectiveness",env.maewingFoodMultiplier),
+            "Hunger Multiplier" to env.hungerMultiplier
         )
         childFragmentManager.setFragmentResultListener("newValue",requireActivity()){ _: String, bundle: Bundle ->
             val newDouble = bundle.getDouble("value")

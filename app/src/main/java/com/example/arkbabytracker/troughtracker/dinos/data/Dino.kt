@@ -51,7 +51,7 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
             startTime = startTime.minusSeconds(elapsedTimeSec.toLong())
         }
 
-    val currentFoodRate get() = (maxFoodRate*(1-percentComplete) + minFoodRate*(percentComplete))* FOOD_CORRECTION
+    val currentFoodRate get() = (maxFoodRate*(1-percentComplete) + minFoodRate*(percentComplete))* FOOD_CORRECTION * env.hungerMultiplier.value!!
     val currentMaxFood get() = (minFood * (1-percentComplete))+ (maxFood * percentComplete)
     var startTime: Instant = Instant.now()
     abstract val name:String

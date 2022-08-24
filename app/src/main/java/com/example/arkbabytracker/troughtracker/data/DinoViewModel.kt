@@ -21,7 +21,7 @@ import javax.inject.Inject
 import kotlin.concurrent.fixedRateTimer
 
 @HiltViewModel
-class DinoViewModel @Inject constructor(var timerDao: TimerDao):ViewModel() {
+class DinoViewModel @Inject constructor(var timerDao: TimerDao, val dinoDao: DinoDao):ViewModel() {
 
     var foodStacks:MutableLiveData<MutableMap<Food,Int>> = MutableLiveData(mutableMapOf())
 
@@ -42,11 +42,10 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao):ViewModel() {
     var timerEndTime = 0L
     private var noTimer=true
     var updateJob: Job? = null
-    lateinit var dinoDao:DinoDao
 
 
-    fun getFromDatabase(db:DinoDatabase,env:EnvironmentViewModel,group:String):DinoViewModel{
-        val dList = db.dinoDao().getAll().filter { it.groupName == group }.map { DinoEntity.toDino(it,env)!! }.toMutableList()
+    fun getFromDatabase(env:EnvironmentViewModel,group:String):DinoViewModel{
+        val dList = dinoDao.getAll().filter { it.groupName == group }.map { DinoEntity.toDino(it,env)!! }.toMutableList()
         val dListWithTimes = dList.map { it.elapsedTimeSec = (Instant.now().epochSecond).toDouble() - it.startTime.epochSecond;it }
         babyList.postValue(dListWithTimes.toMutableList())
         return this
