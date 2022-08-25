@@ -109,8 +109,9 @@
                 android:layout_height="wrap_content"
                 android:text="Group"
                 app:layout_constraintBottom_toTopOf="@+id/textView2"
-                app:layout_constraintTop_toBottomOf="@+id/percentCompleteEditText"
-                tools:layout_editor_absoluteX="67dp" />
+                app:layout_constraintEnd_toEndOf="@+id/textView2"
+                app:layout_constraintStart_toStartOf="@+id/textView2"
+                app:layout_constraintTop_toBottomOf="@+id/percentCompleteEditText" />
 
             <TextView
                 android:id="@+id/textView15"
@@ -119,8 +120,9 @@
                 android:layout_marginTop="2dp"
                 android:text="@{group}"
                 app:layout_constraintBottom_toBottomOf="@+id/textView14"
-                app:layout_constraintTop_toTopOf="@+id/textView14"
-                tools:layout_editor_absoluteX="213dp" />
+                app:layout_constraintEnd_toEndOf="@+id/textView3"
+                app:layout_constraintStart_toStartOf="@+id/textView3"
+                app:layout_constraintTop_toTopOf="@+id/textView14" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
