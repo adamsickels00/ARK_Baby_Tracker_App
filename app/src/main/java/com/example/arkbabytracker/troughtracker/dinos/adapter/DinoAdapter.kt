@@ -31,7 +31,6 @@ class DinoAdapter(val data:DinoViewModel,val context: Context): ListAdapter<Dino
             binding.dinoName = dino.name
             binding.progress = (100*dino.elapsedTimeSec / dino.maturationTimeSec)
             binding.timeRemaining = TimeDisplayUtil.secondsToString((dino.maturationTimeSec-dino.elapsedTimeSec).roundToInt())
-            binding.food = "%.2f/%.2f".format(dino.food,dino.maxFood)
             binding.group = dino.groupName
 
             val typedValue = TypedValue()

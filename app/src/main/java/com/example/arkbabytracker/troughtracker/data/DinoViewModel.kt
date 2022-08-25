@@ -206,8 +206,8 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao, val dinoDao: Din
                 updateJob = CoroutineScope(Dispatchers.Default).launch {
                     while(true){
                         if(remainingTime.value!! > 0) {
-                            remainingTime.postValue((timerEndTime - Instant.now().epochSecond).toInt())
-                            runSimFromStartToNow()
+//                            runSimFromStartToNow()
+                            currentSimBabyList.postValue(babyList.value!!.onEach { it.elapsedTimeSec = (Instant.now().epochSecond - it.startTime.epochSecond).toDouble() })
                             clearOldTimers()
                         }
                         delay(1000)
