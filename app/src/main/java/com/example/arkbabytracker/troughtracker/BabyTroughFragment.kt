@@ -135,7 +135,7 @@ class BabyTroughFragment : Fragment() {
         ).build()
         CoroutineScope(Dispatchers.IO).launch { data.getFromDatabase(env,group) }
 
-        dinoAdapter = DinoAdapter(data)
+        dinoAdapter = DinoAdapter(data, context = requireContext())
         binding.dinoAdapter = dinoAdapter
         (binding.dinoHolder.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         dinoAdapter.submitList(data.babyList.value!!)

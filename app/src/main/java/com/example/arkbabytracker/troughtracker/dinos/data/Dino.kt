@@ -39,7 +39,7 @@ sealed class Dino(val maxFood: Double,val env:EnvironmentViewModel) {
     var groupName = "Default"
     var elapsedTimeSec = 0.0
     var food = minFood
-    var hasEnoughFood = true
+    var hasEnoughFood:Boolean? = null
     val maturationTimeSec get() = (1/ this.ageSpeed /ageSpeedMult/env.eventMultiplier.value!!)* env.lagCorrection.value!!
     private val maxFoodRate get() = baseFoodRate*extraBabyFoodRate*babyFoodRate
     private val minFoodRate get() = BASE_MIN_FOOD_RATE*babyFoodRate*extraBabyFoodRate

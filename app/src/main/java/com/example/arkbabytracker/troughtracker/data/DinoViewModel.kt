@@ -149,8 +149,8 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao, val dinoDao: Din
                     feedIfHungry(dino,trough)
                     removeIfSpoiled(time,trough)
                 }
-                dino.hasEnoughFood = dino.food > 0
-                allGood = allGood && dino.hasEnoughFood
+                dino.hasEnoughFood = if(dino.food > 0) null else false
+                allGood = allGood && dino.food > 0
             }
             removeDinos.forEach{tempBabyList.remove(it)}
         }

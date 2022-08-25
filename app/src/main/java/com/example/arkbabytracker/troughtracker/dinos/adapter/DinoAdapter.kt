@@ -1,27 +1,32 @@
 package com.example.arkbabytracker.troughtracker.dinos.adapter
 
+import android.content.Context
 import android.graphics.Color
-import com.example.arkbabytracker.troughtracker.dinos.data.Dino
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.ColorInt
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.arkbabytracker.troughtracker.data.DinoViewModel
+import com.example.arkbabytracker.R
 import com.example.arkbabytracker.databinding.DinoItemBinding
+import com.example.arkbabytracker.troughtracker.data.DinoViewModel
+import com.example.arkbabytracker.troughtracker.dinos.data.Dino
 import com.example.arkbabytracker.utils.TimeDisplayUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-class DinoAdapter(val data:DinoViewModel): ListAdapter<Dino,DinoAdapter.DinoViewHolder>(DinoDiff()) {
+
+class DinoAdapter(val data:DinoViewModel,val context: Context): ListAdapter<Dino,DinoAdapter.DinoViewHolder>(DinoDiff()) {
 
     override fun submitList(list: MutableList<Dino>?) {
         super.submitList(list?.let{ArrayList(it)})
     }
 
-    class DinoViewHolder(val binding: DinoItemBinding,val data: DinoViewModel) : RecyclerView.ViewHolder(binding.root){
+    class DinoViewHolder(val binding: DinoItemBinding,val data: DinoViewModel, val context: Context) : RecyclerView.ViewHolder(binding.root){
         fun bind(dino: Dino){
             binding.dinoName = dino.name
             binding.progress = (100*dino.elapsedTimeSec / dino.maturationTimeSec)
@@ -29,17 +34,29 @@ class DinoAdapter(val data:DinoViewModel): ListAdapter<Dino,DinoAdapter.DinoView
             binding.food = "%.2f/%.2f".format(dino.food,dino.maxFood)
             binding.group = dino.groupName
 
+            val typedValue = TypedValue()
+            val theme = context.theme
+            theme.resolveAttribute(R.attr.customTextColor, typedValue, true)
+            @ColorInt val color = typedValue.data
+
             if(dino.food<=0){
                 //Make the box red
                 binding.dinoNameTextbox.setTextColor(Color.RED)
             } else{
-                binding.dinoNameTextbox.setTextColor(Color.WHITE)
+                binding.dinoNameTextbox.setTextColor(color)
             }
 
-            if(dino.hasEnoughFood){
-                binding.dinoNameTextbox.setTextColor(Color.GREEN)
-            } else{
-                binding.dinoNameTextbox.setTextColor(Color.YELLOW)
+
+            when (dino.hasEnoughFood) {
+                true -> {
+                    binding.dinoNameTextbox.setTextColor(Color.GREEN)
+                }
+                false -> {
+                    binding.dinoNameTextbox.setTextColor(Color.YELLOW)
+                }
+                else -> {
+                    binding.dinoNameTextbox.setTextColor(color)
+                }
             }
 
             binding.deleteCreatureButton.setOnClickListener {
@@ -65,7 +82,7 @@ class DinoAdapter(val data:DinoViewModel): ListAdapter<Dino,DinoAdapter.DinoView
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DinoViewHolder {
         val binding = DinoItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-        return DinoViewHolder(binding,data)
+        return DinoViewHolder(binding,data, context = context)
     }
 
     override fun onBindViewHolder(holder: DinoViewHolder, position: Int) {
