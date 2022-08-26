@@ -14,7 +14,7 @@ enum class Diet(val eatOrder:List<Food>){
     CARN(listOf(Food.RawMeat)),
     CARRION(listOf(Food.SpoiledMeat)),
     PISCIVORE(listOf(Food.FishMeat)),
-    ARCHAEOPTERYX(listOf(Food.Chitin)),
+    CHITINEATER(listOf(Food.Chitin)),
     BLOODSTALKER(listOf(Food.BloodPack)), // Could add raw meat carrion
     CRYSTALWYVERN(listOf(Food.PrimalCrystal)),
     MAGMASAUR(listOf(Food.Ambergris)),
@@ -247,7 +247,7 @@ class Archaeopteryx(maxFood: Double,env:EnvironmentViewModel): Dino(maxFood,env)
     override val name: String
         get() = "Archaeopteryx"
     override val diet: Diet
-        get() = Diet.ARCHAEOPTERYX
+        get() = Diet.CHITINEATER
     override val percentMaxStarting: Double
         get() = .1
 
@@ -2629,5 +2629,28 @@ class Yutyrannus(maxFood: Double,env:EnvironmentViewModel): Dino(maxFood,env){
 
     override fun newInstance():Dino {
         return Yutyrannus(maxFood,env)
+    }
+}
+
+class Sinomacrops(maxFood: Double,env:EnvironmentViewModel): Dino(maxFood,env){
+    override val baseFoodRate: Double
+        get() = 0.001302
+    override val babyFoodRate: Double
+        get() = 25.5
+    override val extraBabyFoodRate: Double
+        get() = 20.0
+    override val ageSpeed: Double
+        get() = 0.000003
+    override val ageSpeedMult: Double
+        get() = 2.5
+    override val name: String
+        get() = "Sinomacrops"
+    override val diet: Diet
+        get() = Diet.CHITINEATER
+    override val percentMaxStarting: Double
+        get() = .1
+
+    override fun newInstance():Dino {
+        return Sinomacrops(maxFood,env)
     }
 }
