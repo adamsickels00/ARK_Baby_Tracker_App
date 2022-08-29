@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
 import androidx.fragment.app.*
 import androidx.lifecycle.MutableLiveData
 import com.example.arkbabytracker.databinding.FragmentEnvironmentOptionsBinding
@@ -82,4 +85,10 @@ class EnvironmentOptions : Fragment() {
 
             }
     }
+}
+
+@BindingAdapter("quantity")
+fun setQuantityString(v:EditText,value:Double){
+    val formattedString = "%.2f".format(value)
+    v.setText(formattedString,TextView.BufferType.EDITABLE)
 }

@@ -8,9 +8,6 @@
         android:id="@+id/dino_stats_fragment"
         android:title="Saved Dinos" />
     <item
-        android:id="@+id/troughFragment"
-        android:title="Trough" />
-    <item
         android:id="@+id/composeTestFragment"
         android:title="Last Login"/>
     <item
