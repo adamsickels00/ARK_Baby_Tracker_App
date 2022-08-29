@@ -260,6 +260,7 @@
                 android:ems="10"
                 android:hint="Stat"
                 android:inputType="number"
+                android:nextFocusDown="@id/genderSpinner"
                 android:text=""
                 android:textAlignment="center" />
         </LinearLayout>
@@ -285,6 +286,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:nextFocusDown="@id/color0EditText"
                 tools:layout_height="48dp" />
 
 
