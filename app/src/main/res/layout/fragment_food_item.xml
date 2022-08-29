@@ -1,39 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
-            name="foodName"
-            type="String" />
+            name="food"
+            type="com.example.arkbabytracker.troughtracker.food.Food" />
         <variable
             name="quantity"
-            type="Integer" />
+            type="Double" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:minHeight="85dp">
 
         <TextView
             android:id="@+id/nameTextBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@{foodName}"
+            android:layout_weight="2"
+            android:text="@{food.name()}"
             android:textSize="20sp" />
 
-        <EditText
-            android:id="@+id/numStacks"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
+            android:layout_height="match_parent"
+            android:layout_weight="1.4"
             android:hint="@string/foodHint"
-            android:importantForAutofill="no"
-            android:inputType="number"
-            android:padding="32dp"
-            android:text="@{quantity.toString()}"
-            android:textColorHint="#757575" />
+            android:minHeight="32dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/numStacks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/foodHint"
+                android:importantForAutofill="no"
+                android:inputType="number|numberDecimal"
+                android:padding="32dp"
+                app:quantity="@{quantity}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.4"
+            android:hint="Total">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/totalNumEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="number"
+                android:padding="32dp"
+                tools:ignore="SpeakableTextPresentCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
     </LinearLayout>
 </layout>

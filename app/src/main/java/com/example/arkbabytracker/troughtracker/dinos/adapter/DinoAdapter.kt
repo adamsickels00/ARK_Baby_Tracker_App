@@ -53,7 +53,7 @@ class DinoAdapter(val data:DinoViewModel,val context: Context): ListAdapter<Dino
                     binding.dinoNameTextbox.setTextColor(Color.GREEN)
                 }
                 false -> {
-                    binding.dinoNameTextbox.setTextColor(Color.YELLOW)
+                    binding.dinoNameTextbox.setTextColor(Color.rgb(255,200,0))
                 }
                 else -> {
                     binding.dinoNameTextbox.setTextColor(color)

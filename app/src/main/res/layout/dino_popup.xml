@@ -36,7 +36,7 @@
                 android:ems="10"
                 android:hint="Percent Mature"
                 android:inputType="numberDecimal"
-                android:textSize="24sp" />
+                tools:textSize="24sp" />
 
             <TextView
                 android:id="@+id/textView"
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:text="%"
                 android:textAlignment="center"
-                android:textSize="34sp" />
+                tools:textSize="24sp" />
 
             <EditText
                 android:id="@+id/maxFoodTextBox"

@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
+import androidx.databinding.BindingAdapter
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.arkbabytracker.troughtracker.data.DinoViewModel
 import com.example.arkbabytracker.databinding.FragmentFoodItemBinding
 import com.example.arkbabytracker.troughtracker.food.Food
 import com.example.arkbabytracker.troughtracker.food.trough.Trough
+import com.google.android.material.textfield.TextInputEditText
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,14 +28,14 @@ private const val ARG_FOODVALUE = "val"
 class FoodItemFragment : Fragment() {
     // TODO: Rename and change types of parameters
     var food: Food? = null
-    private var value:Int? = null
+    private var value:Double? = null
     private lateinit var binding:FragmentFoodItemBinding
     private val data:DinoViewModel by viewModels(ownerProducer = {requireParentFragment()})
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             food = it.get(ARG_FOOD) as Food?
-            value = it.getInt(ARG_FOODVALUE)
+            value = it.getDouble(ARG_FOODVALUE)
         }
     }
 
@@ -43,20 +45,38 @@ class FoodItemFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentFoodItemBinding.inflate(inflater,container,false)
-        binding.foodName = food?.name ?: "No food"
-        binding.quantity = value
-        binding.executePendingBindings()
         binding.numStacks.doAfterTextChanged { text ->
-            if (text.toString() != "") {
-                val newValue = text.toString().toInt()
-                val currentList = data.foodStacks.value!!
-                currentList[food as Food] = newValue
-
-                data.trough = Trough(currentList)
-                data.foodStacks.value = currentList
+            text.toString().toDoubleOrNull()?.let {
+                if(!textBoxesAreSame()) {
+                    val newValue = it
+                    val currentList = data.foodStacks.value!!
+                    currentList[food as Food] = newValue
+                    data.trough = Trough(currentList)
+                    data.foodStacks.value = currentList
+                    binding.totalNumEditText.setText((it * food!!.stackSize).toInt().toString())
+                }
             }
         }
+        binding.totalNumEditText.doAfterTextChanged { text ->
+            text.toString().toIntOrNull()?.let {
+                if(!textBoxesAreSame())
+                    binding.numStacks.setText("%.2f".format(it/food!!.stackSize.toDouble()))
+            }
+        }
+        binding.food = food
+        binding.quantity = value
+        binding.executePendingBindings()
+
         return binding.root
+    }
+
+    private fun textBoxesAreSame():Boolean{
+        val numStacksInStackBox = (binding.numStacks.text.toString().toDoubleOrNull())?:0.0
+        val totalFoodInStackBox = (numStacksInStackBox * food!!.stackSize).toInt()
+
+        val totalFoodInTotalFoodBox = binding.totalNumEditText.text.toString().toIntOrNull()?:0
+
+        return totalFoodInStackBox == totalFoodInTotalFoodBox
     }
 
 
@@ -69,11 +89,11 @@ class FoodItemFragment : Fragment() {
          * @return A new instance of fragment FoodItemFragment.
          */
         @JvmStatic
-        fun newInstance(foodName:Food, quantity:Int) =
+        fun newInstance(foodName:Food, quantity:Double) =
             FoodItemFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(ARG_FOOD,foodName)
-                    putInt(ARG_FOODVALUE,quantity)
+                    putDouble(ARG_FOODVALUE,quantity)
                 }
             }
     }

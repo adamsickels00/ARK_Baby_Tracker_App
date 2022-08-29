@@ -2,17 +2,21 @@ package com.example.arkbabytracker.troughtracker.food.trough
 
 import com.example.arkbabytracker.troughtracker.food.Food
 
-class Trough(foodMap: MutableMap<Food,Int>) {
+class Trough(foodMap: MutableMap<Food,Double>) {
     private var troughContents : MutableList<Pair<Food, Int>> = mutableListOf()
     val size: Int
         get() = troughContents.size
     var foodSet:MutableSet<Food> = mutableSetOf()
     init {
         foodMap.forEach{
-            for (stack in 1..it.value){
+            val numFood = (it.value * it.key.stackSize).toInt()
+            val numStacks = it.value.toInt()
+            val numRemaining = numFood % it.key.stackSize
+            for (stack in 1..numStacks){
                 troughContents.add(Pair(it.key,it.key.stackSize))
                 foodSet.add(it.key)
             }
+            troughContents.add(it.key to numRemaining)
         }
     }
     fun hasFood(f: Food):Int{

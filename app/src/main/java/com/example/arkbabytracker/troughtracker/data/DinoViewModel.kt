@@ -23,7 +23,7 @@ import kotlin.concurrent.fixedRateTimer
 @HiltViewModel
 class DinoViewModel @Inject constructor(var timerDao: TimerDao, val dinoDao: DinoDao):ViewModel() {
 
-    var foodStacks:MutableLiveData<MutableMap<Food,Int>> = MutableLiveData(mutableMapOf())
+    var foodStacks:MutableLiveData<MutableMap<Food,Double>> = MutableLiveData(mutableMapOf())
 
     var babyList : MutableLiveData<MutableList<Dino>> = MutableLiveData(mutableListOf())
 
@@ -36,7 +36,7 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao, val dinoDao: Din
 
     var simTrough = MutableLiveData(Trough(foodStacks.value!!))
 
-    val troughRefill = mutableMapOf<Long,Map<Food,Int>>()
+    val troughRefill = mutableMapOf<Long,Map<Food,Double>>()
 
     var remainingTime = MutableLiveData(0)
     var timerEndTime = 0L

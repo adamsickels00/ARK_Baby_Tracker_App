@@ -111,7 +111,7 @@ class BabyTroughFragment : Fragment() {
         val activity = requireActivity()
         val pref = activity.getSharedPreferences(group,Context.MODE_PRIVATE)
         for(food in Food.values()){
-            data.foodStacks.value!![food] = pref.getInt(food.name,0)
+            data.foodStacks.value!![food] = pref.getFloat(food.name,0f).toDouble()
         }
 
         initEnvVariables(pref)
@@ -149,11 +149,11 @@ class BabyTroughFragment : Fragment() {
         data.foodStacks.observe(viewLifecycleOwner) {
             for(food in Food.values()){
                 with(pref.edit()){
-                    putInt(food.name,it[food]?:0)
+                    putFloat(food.name,(it[food]?:0f).toFloat())
                     apply()
                 }
             }
-            val newMap = mutableMapOf<Food,Int>()
+            val newMap = mutableMapOf<Food,Double>()
             it.forEach{ oldMap -> newMap[oldMap.key] = oldMap.value}
             data.troughRefill[Instant.now().epochSecond] = newMap
             updateTime()
@@ -266,7 +266,7 @@ class BabyTroughFragment : Fragment() {
                 setReorderingAllowed(true)
                 val frag = FoodItemFragment.newInstance(
                     food,
-                    data.foodStacks.value!![food] ?: 0
+                    data.foodStacks.value!![food] ?: 0.0
                 )
                 add(binding.foodListHolder.id, frag, food.name)
                 foodCache.add(food)
