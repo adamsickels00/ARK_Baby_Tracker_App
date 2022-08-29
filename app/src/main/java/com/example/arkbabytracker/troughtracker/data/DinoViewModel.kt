@@ -4,8 +4,7 @@ import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.arkbabytracker.timers.Timer
-import com.example.arkbabytracker.timers.TimerDao
-import com.example.arkbabytracker.troughtracker.data.database.DinoDao
+import com.example.arkbabytracker.timers.TimerRepository
 import com.example.arkbabytracker.troughtracker.data.database.DinoDatabase
 import com.example.arkbabytracker.troughtracker.data.database.DinoEntity
 import com.example.arkbabytracker.troughtracker.dinos.data.*
@@ -21,7 +20,7 @@ import javax.inject.Inject
 import kotlin.concurrent.fixedRateTimer
 
 @HiltViewModel
-class DinoViewModel @Inject constructor(var timerDao: TimerDao, val dinoDao: DinoDao):ViewModel() {
+class DinoViewModel @Inject constructor(val timerRepository: TimerRepository, val dinoRepo: DinoRepository):ViewModel() {
 
     var foodStacks:MutableLiveData<MutableMap<Food,Double>> = MutableLiveData(mutableMapOf())
 
@@ -45,14 +44,14 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao, val dinoDao: Din
 
 
     fun getFromDatabase(env:EnvironmentViewModel,group:String):DinoViewModel{
-        val dList = dinoDao.getAll().filter { it.groupName == group }.map { DinoEntity.toDino(it,env)!! }.toMutableList()
+        val dList = dinoRepo.getAllDinos().filter { it.groupName == group }.map { DinoEntity.toDino(it,env)!! }.toMutableList()
         val dListWithTimes = dList.map { it.elapsedTimeSec = (Instant.now().epochSecond).toDouble() - it.startTime.epochSecond;it }
         babyList.postValue(dListWithTimes.toMutableList())
         return this
     }
 
     fun deleteDino(d:Dino){
-        dinoDao.delete(d.uniqueID)
+        dinoRepo.deleteDino(d.uniqueID)
     }
 
     suspend fun runSim():Int{
@@ -199,9 +198,9 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao, val dinoDao: Din
 
     fun clearOldTimers(){
         CoroutineScope(Dispatchers.IO).launch {
-            for(t in timerDao.getAllTimersOnce()) {
+            for(t in timerRepository.getAllTimersOnce()) {
                 if ((t.startTime + t.length) <= Instant.now().epochSecond) {
-                    timerDao.delete(t)
+                    timerRepository.delete(t)
                 }
             }
         }
@@ -209,7 +208,7 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao, val dinoDao: Din
 
     fun insertTimer(timer:Timer):Single<Long>{
         return Single.create<Long>{
-            it.onSuccess(timerDao.insert(timer))
+            it.onSuccess(timerRepository.insert(timer))
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
     }

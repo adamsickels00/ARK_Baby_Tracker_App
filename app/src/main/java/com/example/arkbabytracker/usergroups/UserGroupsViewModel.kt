@@ -1,16 +1,12 @@
 package com.example.arkbabytracker.usergroups
 
 import android.content.Context
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import androidx.core.content.edit
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.arkbabytracker.timers.TimerDao
-import com.example.arkbabytracker.troughtracker.data.database.DinoDao
+import com.example.arkbabytracker.timers.TimerRepository
+import com.example.arkbabytracker.troughtracker.data.DinoRepository
 import com.example.arkbabytracker.usergroups.UserGroupsUtils.GROUP_KEY
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -21,7 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class UserGroupsViewModel @Inject constructor(val dinoDao: DinoDao, val timerDao:TimerDao) : ViewModel(){
+class UserGroupsViewModel @Inject constructor(val dinoRepository: DinoRepository, val timerRepository:TimerRepository) : ViewModel(){
     private val groupList = mutableStateListOf<String>()
     fun addGroup(name:String,context: Context){
         if(name !in groupList) {
@@ -38,8 +34,8 @@ class UserGroupsViewModel @Inject constructor(val dinoDao: DinoDao, val timerDao
             commit()
         }
         CoroutineScope(Dispatchers.IO).launch {
-            dinoDao.deleteAllInGroup(name)
-            timerDao.deleteTimersForGroup(name)
+            dinoRepository.deleteAllDinosInGroup(name)
+            timerRepository.deleteTimersForGroup(name)
         }
     }
 

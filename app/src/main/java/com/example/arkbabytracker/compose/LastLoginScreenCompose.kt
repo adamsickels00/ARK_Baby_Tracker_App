@@ -15,19 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
-import com.example.arkbabytracker.R
 import com.example.arkbabytracker.lastlogin.LastLoginScreen
-import com.example.arkbabytracker.statstracker.data.DinoStatsDao
-import com.example.arkbabytracker.utils.TimeDisplayUtil
-import dagger.hilt.android.AndroidEntryPoint
 import java.time.Instant
-import javax.inject.Inject
 
 
 class LastLoginScreenState(

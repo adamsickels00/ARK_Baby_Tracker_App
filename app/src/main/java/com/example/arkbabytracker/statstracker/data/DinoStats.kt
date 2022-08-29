@@ -91,10 +91,6 @@ interface DinoStatsDao{
     @Query("SELECT * FROM dinostats")
     fun getAllDinosFlow(): Flow<List<DinoStats>>
 
-
-    @MapInfo(keyColumn = "type")
-    @Query("SELECT * FROM dinostats GROUP BY type")
-    fun getDinosByType():Map<String,List<DinoStats>>
 }
 
 @Database(entities = [DinoStats::class], version = 5, exportSchema = true, autoMigrations = [AutoMigration(from=3,to=4, spec = DinoStatsAutoMigration::class),AutoMigration(from=4,to=5)])

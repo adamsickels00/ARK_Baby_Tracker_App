@@ -5,25 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.arkbabytracker.statstracker.data.DinoGender
 import com.example.arkbabytracker.statstracker.data.DinoStats
-import com.example.arkbabytracker.statstracker.data.DinoStatsDao
+import com.example.arkbabytracker.statstracker.data.DinoStatsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ColorSearchViewModel @Inject constructor(
-    val dinoStatsDao: DinoStatsDao
+    val dinoStatsRepository: DinoStatsRepository
 ):ViewModel() {
 
-    val dinoList: Flow<List<DinoStats>> = dinoStatsDao.getAllDinosFlow()
+    val dinoList: Flow<List<DinoStats>> = dinoStatsRepository.getAllDinosFlow()
 
     val defaultColorsFilter = listOf(-1,-1,-1,-1,-1,-1)
 

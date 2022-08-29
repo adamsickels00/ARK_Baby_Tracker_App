@@ -2,10 +2,7 @@ package com.example.arkbabytracker.troughtracker.data.database
 
 import android.content.Context
 import androidx.room.*
-import com.example.arkbabytracker.timers.TimerDao
-import com.example.arkbabytracker.timers.TimerDatabase
 import com.example.arkbabytracker.troughtracker.data.EnvironmentViewModel
-import com.example.arkbabytracker.troughtracker.dinos.data.Diet
 import com.example.arkbabytracker.troughtracker.dinos.data.Dino
 import com.example.arkbabytracker.troughtracker.dinos.data.allDinoList
 import dagger.Module

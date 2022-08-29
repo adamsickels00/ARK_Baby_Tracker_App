@@ -10,16 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
-import androidx.core.widget.doOnTextChanged
-import androidx.room.Room
-import com.example.arkbabytracker.R
 import com.example.arkbabytracker.databinding.FragmentAddDinoStatsBinding
 import com.example.arkbabytracker.statstracker.data.DinoGender
 import com.example.arkbabytracker.statstracker.data.DinoStats
-import com.example.arkbabytracker.statstracker.data.DinoStatsDao
-import com.example.arkbabytracker.statstracker.data.DinoStatsDatabase
+import com.example.arkbabytracker.statstracker.data.DinoStatsRepository
 import com.example.arkbabytracker.troughtracker.dinos.data.allDinoList
 import com.example.arkbabytracker.utils.DinoColorUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,7 +31,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class AddDinoStatsFragment () : Fragment() {
 
-    @Inject lateinit var dinoStatsDao: DinoStatsDao
+    @Inject lateinit var dinoStatsRepository: DinoStatsRepository
     private var _binding: FragmentAddDinoStatsBinding? = null
     val binding get()=_binding!!
 
@@ -108,7 +103,7 @@ class AddDinoStatsFragment () : Fragment() {
             )
 
             CoroutineScope(Dispatchers.IO).launch {
-                dinoStatsDao.insert(dino)
+                dinoStatsRepository.insert(dino)
             }
 
 

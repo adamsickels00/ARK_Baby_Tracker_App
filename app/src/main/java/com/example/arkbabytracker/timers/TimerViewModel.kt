@@ -10,18 +10,18 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TimerViewModel @Inject constructor(var timerDao: TimerDao) : ViewModel(){
+class TimerViewModel @Inject constructor(val timerRepo: TimerRepository) : ViewModel(){
 
     fun getAllTimers(): Flow<List<Timer>> {
-        return timerDao.getAllTimers()
+        return timerRepo.getAllTimers()
     }
 
     fun addTimer(t:Timer){
-        CoroutineScope(Dispatchers.IO).launch { timerDao.insert(t) }
+        CoroutineScope(Dispatchers.IO).launch { timerRepo.insert(t) }
     }
 
     fun deleteTimer(context: Context, t:Timer){
-        CoroutineScope(Dispatchers.IO).launch { timerDao.delete(t) }
+        CoroutineScope(Dispatchers.IO).launch { timerRepo.delete(t) }
         NotificationScheduler.cancelNotification(context,t.id!!.toInt())
     }
 }

@@ -11,12 +11,10 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.core.widget.doAfterTextChanged
-import com.example.arkbabytracker.R
 import com.example.arkbabytracker.databinding.FragmentEditDinoStatsBinding
 import com.example.arkbabytracker.statstracker.data.DinoGender
 import com.example.arkbabytracker.statstracker.data.DinoStats
-import com.example.arkbabytracker.statstracker.data.DinoStatsDao
-import com.example.arkbabytracker.troughtracker.dinos.data.Dino
+import com.example.arkbabytracker.statstracker.data.DinoStatsRepository
 import com.example.arkbabytracker.troughtracker.dinos.data.allDinoList
 import com.example.arkbabytracker.utils.DinoColorUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,7 +31,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class EditDinoStatsFragment : Fragment() {
 
-    @Inject lateinit var dinoStatsDao: DinoStatsDao
+    @Inject lateinit var dinoStatsRepository: DinoStatsRepository
 
     private var _binding: FragmentEditDinoStatsBinding? = null
     val binding get() = _binding!!
@@ -48,7 +46,7 @@ class EditDinoStatsFragment : Fragment() {
     ): View? {
         _binding = FragmentEditDinoStatsBinding.inflate(inflater,container,false)
         CoroutineScope(Dispatchers.IO).launch {
-            val dino = dinoStatsDao.getDinoById(requireArguments().getInt("dinoId"))
+            val dino = dinoStatsRepository.getDinoById(requireArguments().getInt("dinoId"))
             binding.dino = dino
             binding.submitDinoStatsButton.setOnClickListener {
                 updateDino(dino)
@@ -112,7 +110,7 @@ class EditDinoStatsFragment : Fragment() {
         dino.id = d.id
 
         CoroutineScope(Dispatchers.IO).launch {
-            dinoStatsDao.update(dino)
+            dinoStatsRepository.update(dino)
         }
 
 

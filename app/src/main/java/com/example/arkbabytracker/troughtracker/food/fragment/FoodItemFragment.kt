@@ -47,14 +47,15 @@ class FoodItemFragment : Fragment() {
         binding = FragmentFoodItemBinding.inflate(inflater,container,false)
         binding.numStacks.doAfterTextChanged { text ->
             text.toString().toDoubleOrNull()?.let {
-                if(!textBoxesAreSame()) {
-                    val newValue = it
-                    val currentList = data.foodStacks.value!!
-                    currentList[food as Food] = newValue
-                    data.trough = Trough(currentList)
-                    data.foodStacks.value = currentList
+
+                val newValue = it
+                val currentList = data.foodStacks.value!!
+                currentList[food as Food] = newValue
+                data.trough = Trough(currentList)
+                data.foodStacks.value = currentList
+                if(!textBoxesAreSame())
                     binding.totalNumEditText.setText((it * food!!.stackSize).toInt().toString())
-                }
+
             }
         }
         binding.totalNumEditText.doAfterTextChanged { text ->

@@ -26,4 +26,5 @@ class DinoStatsDatabaseModule {
             DinoStatsDatabase::class.java, "dino-stats-database"
         ).fallbackToDestructiveMigration().build()
     }
+
 }
