@@ -67,7 +67,15 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao, val dinoDao: Din
                 run = processSecond(tempBabyList, time,trough)
                 time++
             }
-            tempBabyList.forEach {t-> babyList.value!!.forEach {if(t.uniqueID == it.uniqueID) it.hasEnoughFood = t.hasEnoughFood } }
+            tempBabyList.forEach {
+                    t-> babyList.value!!.forEach {
+                        if(t.uniqueID == it.uniqueID){
+                            it.hasEnoughFood = t.hasEnoughFood
+                            it.food = t.food
+                            it.finalMaxFood = t.currentMaxFood
+                        }
+                    }
+            }
             babyList.value!!.forEach { dino -> if(dino.uniqueID !in tempBabyList.map { it.uniqueID }) dino.hasEnoughFood=true}
         }
 
@@ -151,7 +159,15 @@ class DinoViewModel @Inject constructor(var timerDao: TimerDao, val dinoDao: Din
                 dino.hasEnoughFood = if(dino.food > 0) null else false
                 allGood = allGood && dino.food > 0
             }
-            removeDinos.forEach{tempBabyList.remove(it)}
+            removeDinos.forEach{
+                babyList.value!!.forEach {dino->
+                    if(dino.uniqueID == it.uniqueID) {
+                        dino.food = it.food
+                        dino.finalMaxFood = it.currentMaxFood
+                    }
+                }
+                tempBabyList.remove(it)
+            }
             removeIfSpoiled(time,trough)
         }
         return allGood
