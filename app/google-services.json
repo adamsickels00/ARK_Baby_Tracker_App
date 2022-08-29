@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "542703799173",
+    "project_id": "ark-companion",
+    "storage_bucket": "ark-companion.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:542703799173:android:1a55fb7b21bccbdab692ec",
+        "android_client_info": {
+          "package_name": "com.example.arkbabytracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "542703799173-9bg76jf130mdb2g7mv5isqq1uvlg5evk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPD_dEvGTx-s1EApeTSJ3xQVJH_D4ZRKY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "542703799173-9bg76jf130mdb2g7mv5isqq1uvlg5evk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
