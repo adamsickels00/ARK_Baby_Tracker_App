@@ -21,19 +21,19 @@ fun setDinoGender(t: TextView, g:DinoGender){
 
 @Entity
 data class DinoStats(
-    val type:String,
+    val type:String="",
     @ColumnInfo(defaultValue = "")
-    val name:String,
-    val health:Int,
-    val stamina:Int,
-    val oxygen:Int,
-    val food:Int,
-    val weight:Int,
-    val movementSpeed:Int,
-    val damage:Int,
-    val colorList: List<Int>,
+    val name:String="",
+    val health:Int=0,
+    val stamina:Int=0,
+    val oxygen:Int=0,
+    val food:Int=0,
+    val weight:Int=0,
+    val movementSpeed:Int=0,
+    val damage:Int=0,
+    val colorList: List<Int> = listOf(),
     @ColumnInfo(defaultValue = "Other")
-    val gender:DinoGender
+    val gender:DinoGender = DinoGender.Other
 ){
     @PrimaryKey(autoGenerate = true)
     var id:Int? = null

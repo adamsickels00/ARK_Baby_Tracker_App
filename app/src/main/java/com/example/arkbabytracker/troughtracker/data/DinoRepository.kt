@@ -12,7 +12,9 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import java.time.Instant
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -35,7 +37,7 @@ interface DinoRepository{
     fun deleteAllDinosInGroup(name:String)
 //    @Query("SELECT * FROM Dino")
 //    fun getAll():List<DinoEntity>
-    fun getAllDinos():List<DinoEntity>
+suspend fun getAllDinos():List<DinoEntity>
 }
 
 @Singleton
@@ -62,7 +64,7 @@ class DinoRepositoryRoom @Inject constructor(
         dinoDao.deleteAllInGroup(name)
     }
 
-    override fun getAllDinos(): List<DinoEntity> {
+    override suspend fun getAllDinos(): List<DinoEntity> {
         return dinoDao.getAll()
     }
 
@@ -104,11 +106,13 @@ class DinoRepositoryFirebase @Inject constructor():DinoRepository {
         }
     }
 
-    override fun getAllDinos(): List<DinoEntity> {
+    override suspend fun getAllDinos(): List<DinoEntity> {
         val task = database.child(dinoPath).get()
-        Tasks.await(task)
+        val result = withContext(Dispatchers.IO) {
+            Tasks.await(task)
+        }
         val res = mutableListOf<DinoEntity>()
-        task.result.children.forEach {
+        result.children.forEach {
             it.getValue(DinoEntity::class.java)?.let { it1 -> res.add(it1) }
         }
         return res

@@ -11,18 +11,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.arkbabytracker.utils.MyTheme
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 @Composable
 fun TribeScreen(vm:TribeViewModel = viewModel()){
-    val currentTribe = null // TODO figure this out
-    ShowTribeOrJoinOptions(currentTribe)
+    val currentTribe = vm.getUserTribe()
+    ShowTribeOrJoinOptions(currentTribe,
+        createTribeAction = {vm.createTribe("Test Name",Firebase.auth.currentUser!!.uid)}
+    )
 }
 
 @Composable
-fun ShowTribeOrJoinOptions(currentTribe:String?) {
+fun ShowTribeOrJoinOptions(currentTribe:String?,createTribeAction:()->Unit) {
     Box(modifier=Modifier.fillMaxSize()) {
         if (currentTribe == null) {
-            ShowMakeOrJoinButtons()
+            ShowMakeOrJoinButtons(createTribeAction)
         } else {
             ShowTribe(currentTribe)
         }
@@ -40,10 +44,10 @@ fun ShowTribe(currentTribe: String) {
 }
 
 @Composable
-fun ShowMakeOrJoinButtons() {
+fun ShowMakeOrJoinButtons(createTribeAction:()->Unit) {
     Column {
         Text("Not currently in a tribe", color = MaterialTheme.colors.onBackground)
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = createTribeAction) {
             Text("Create Tribe")
         }
         Button(onClick = { /*TODO*/ }) {
@@ -55,8 +59,9 @@ fun ShowMakeOrJoinButtons() {
 @Preview
 @Composable
 fun PreviewTribeScreen(){
+
     MyTheme(isDarkTheme = true) {
-        ShowTribeOrJoinOptions(currentTribe = null)
+        ShowTribeOrJoinOptions(currentTribe = null, createTribeAction = {})
     }
 
 }
