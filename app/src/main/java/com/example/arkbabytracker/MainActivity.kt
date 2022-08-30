@@ -12,12 +12,23 @@ import com.example.arkbabytracker.databinding.ActivityMainBinding
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
+import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    init {
+        FirebaseApp.initializeApp(/*context=*/this)
+        val firebaseAppCheck = FirebaseAppCheck.getInstance()
+        firebaseAppCheck.installAppCheckProviderFactory(
+            PlayIntegrityAppCheckProviderFactory.getInstance()
+        )
+    }
 
     lateinit var binding:ActivityMainBinding
     private lateinit var navController: NavController
@@ -91,7 +102,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun initializeUI(){
+    private fun initializeUI(){
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
         navController = (supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController

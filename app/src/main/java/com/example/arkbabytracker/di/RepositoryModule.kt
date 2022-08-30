@@ -5,6 +5,7 @@ import com.example.arkbabytracker.statstracker.data.DinoStatsRepositoryRoom
 import com.example.arkbabytracker.timers.TimerRepository
 import com.example.arkbabytracker.timers.TimerRepositoryRoom
 import com.example.arkbabytracker.troughtracker.data.DinoRepository
+import com.example.arkbabytracker.troughtracker.data.DinoRepositoryFirebase
 import com.example.arkbabytracker.troughtracker.data.DinoRepositoryRoom
 import com.example.arkbabytracker.troughtracker.data.database.DinoDao
 import dagger.Binds
@@ -19,7 +20,7 @@ import dagger.hilt.components.SingletonComponent
 abstract class RepositoryModule {
 
     @Binds
-    abstract fun providesDinoRepository(impl: DinoRepositoryRoom): DinoRepository
+    abstract fun providesDinoRepository(impl: DinoRepositoryFirebase): DinoRepository
 
     @Binds
     abstract fun providesTimerRepository(impl:TimerRepositoryRoom):TimerRepository

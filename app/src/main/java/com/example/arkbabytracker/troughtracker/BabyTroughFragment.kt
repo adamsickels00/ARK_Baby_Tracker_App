@@ -27,6 +27,7 @@ import com.example.arkbabytracker.databinding.DinoPopupBinding
 import com.example.arkbabytracker.databinding.FragmentBabyTroughBinding
 import com.example.arkbabytracker.timers.NotificationScheduler
 import com.example.arkbabytracker.timers.Timer
+import com.example.arkbabytracker.troughtracker.data.DinoRepository
 import com.example.arkbabytracker.troughtracker.data.DinoViewModel
 import com.example.arkbabytracker.troughtracker.data.EnvironmentViewModel
 import com.example.arkbabytracker.troughtracker.data.database.DinoDatabase
@@ -69,9 +70,9 @@ class BabyTroughFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var dinoAdapter: DinoAdapter
     private val data by viewModels<DinoViewModel>()
+    @Inject lateinit var dinoRepository:DinoRepository
     private val activityVm by activityViewModels<ActivityViewModel>()
     private val env by viewModels<EnvironmentViewModel>()
-    private lateinit var db: DinoDatabase
     private var needFoodFragment = true
     private var foodCache = mutableSetOf<Food>()
     private var thread: Job? = null
@@ -129,10 +130,6 @@ class BabyTroughFragment : Fragment() {
 
         }
 
-        db = Room.databaseBuilder(
-            activity,
-            DinoDatabase::class.java, "dino-database"
-        ).build()
         CoroutineScope(Dispatchers.IO).launch { data.getFromDatabase(env,group) }
 
         dinoAdapter = DinoAdapter(data, context = requireContext())
@@ -192,7 +189,7 @@ class BabyTroughFragment : Fragment() {
             //Post the list containing the dinos that are not yet finished
             dinoAdapter.submitList(dinoList.filter { (it.elapsedTimeSec < it.maturationTimeSec) }.toMutableList())
             CoroutineScope(Dispatchers.IO).launch {
-                dinoList.filter { it.elapsedTimeSec >= it.maturationTimeSec }.forEach { db.dinoDao().delete(it.uniqueID) }
+                dinoList.filter { it.elapsedTimeSec >= it.maturationTimeSec }.forEach { dinoRepository.deleteDino(it.uniqueID) }
             }
 
         }
@@ -226,7 +223,7 @@ class BabyTroughFragment : Fragment() {
                     newDino.groupName = group
                     newList.add(newDino)
                     CoroutineScope(Dispatchers.IO).launch {
-                        db.dinoDao().add(DinoEntity.fromDino(newDino))
+                        dinoRepository.addDino(DinoEntity.fromDino(newDino))
                     }
                     data.babyList.value = newList
                     popup.dismiss()

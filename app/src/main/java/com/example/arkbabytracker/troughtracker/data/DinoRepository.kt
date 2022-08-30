@@ -1,7 +1,19 @@
 package com.example.arkbabytracker.troughtracker.data
 
+import android.util.Log
 import com.example.arkbabytracker.troughtracker.data.database.DinoDao
 import com.example.arkbabytracker.troughtracker.data.database.DinoEntity
+import com.example.arkbabytracker.troughtracker.dinos.data.Dino
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
+import java.time.Instant
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -52,6 +64,54 @@ class DinoRepositoryRoom @Inject constructor(
 
     override fun getAllDinos(): List<DinoEntity> {
         return dinoDao.getAll()
+    }
+
+}
+
+@Singleton
+class DinoRepositoryFirebase @Inject constructor():DinoRepository {
+    val database = Firebase.database.reference
+    val dinoPath = "dinos"
+    var allDinosList = listOf<DinoEntity>()
+
+
+
+    override fun addDino(d: DinoEntity) {
+        val loc = database.child(dinoPath).child(d.id).setValue(d)
+    }
+
+    override fun addAllDinos(d: List<DinoEntity>) {
+        d.forEach {
+            addDino(it)
+        }
+    }
+
+    override fun deleteDino(id: String) {
+        database.child(dinoPath).child(id).removeValue()
+    }
+
+    override fun deleteAllDinos() {
+        database.child(dinoPath).removeValue()
+    }
+
+    override fun deleteAllDinosInGroup(name:String) {
+        database.child(dinoPath).get().addOnCompleteListener {
+            it.result.children.forEach{
+                if(it.child("groupName").value == name){
+                    it.ref.removeValue()
+                }
+            }
+        }
+    }
+
+    override fun getAllDinos(): List<DinoEntity> {
+        val task = database.child(dinoPath).get()
+        Tasks.await(task)
+        val res = mutableListOf<DinoEntity>()
+        task.result.children.forEach {
+            it.getValue(DinoEntity::class.java)?.let { it1 -> res.add(it1) }
+        }
+        return res
     }
 
 }

@@ -43,7 +43,7 @@ class DinoViewModel @Inject constructor(val timerRepository: TimerRepository, va
     var updateJob: Job? = null
 
 
-    fun getFromDatabase(env:EnvironmentViewModel,group:String):DinoViewModel{
+    suspend fun getFromDatabase(env:EnvironmentViewModel, group:String):DinoViewModel{
         val dList = dinoRepo.getAllDinos().filter { it.groupName == group }.map { DinoEntity.toDino(it,env)!! }.toMutableList()
         val dListWithTimes = dList.map { it.elapsedTimeSec = (Instant.now().epochSecond).toDouble() - it.startTime.epochSecond;it }
         babyList.postValue(dListWithTimes.toMutableList())

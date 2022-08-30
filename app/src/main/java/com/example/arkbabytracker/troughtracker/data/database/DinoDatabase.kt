@@ -29,19 +29,19 @@ class Converters {
 @Entity(tableName = "Dino")
 data class DinoEntity(
     @PrimaryKey
-    val id:String,
-    val name:String,
-    val startTime:Instant,
-    val maxFood:Double,
+    var id:String="",
+    var name:String="",
+    var startTime:Long= Instant.now().epochSecond,
+    var maxFood:Double=0.0,
     @ColumnInfo(defaultValue = "Default")
-    val groupName:String
+    var groupName:String="Default"
 ){
     companion object{
         fun fromDino(dino:Dino):DinoEntity{
             return DinoEntity(
                 dino.uniqueID,
                 dino.name,
-                dino.startTime,
+                dino.startTime.epochSecond,
                 dino.maxFood,
                 dino.groupName
             )
@@ -55,7 +55,7 @@ data class DinoEntity(
                         env
                     )
                     newDino.uniqueID = entity.id
-                    newDino.startTime = entity.startTime
+                    newDino.startTime = Instant.ofEpochSecond(entity.startTime)
                     newDino.groupName = entity.groupName
                     return newDino
                 }
