@@ -3,6 +3,7 @@ package com.example.arkbabytracker.troughtracker
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -129,8 +130,9 @@ class BabyTroughFragment : Fragment() {
 
 
         }
-
-        CoroutineScope(Dispatchers.IO).launch { data.getFromDatabase(env,group) }
+        CoroutineScope(Dispatchers.IO).launch {
+            data.getFromDatabase(env,group)
+        }
 
         dinoAdapter = DinoAdapter(data, context = requireContext())
         binding.dinoAdapter = dinoAdapter
