@@ -62,8 +62,8 @@ class TribeRepositoryFirebase @Inject constructor(@Named(USER_ID_INJECT_STRING) 
         userDb.child(userId).child("tribeUUID").setValue(tribeKey)
     }
 
-    override fun removeUserFromTribe(userID: String, tribeKey: String) {
-        userDb.child(userID).child("tribeUUID").setValue(tribeKey)
+    override fun removeUserFromTribe(userID: String) {
+        userDb.child(userID).child("tribeUUID").removeValue()
     }
 
     override fun createNewTribe(name:String, firstMemberId:String) {

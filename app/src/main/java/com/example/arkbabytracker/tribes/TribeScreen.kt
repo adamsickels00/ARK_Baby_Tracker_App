@@ -18,39 +18,46 @@ import com.google.firebase.ktx.Firebase
 fun TribeScreen(vm:TribeViewModel = viewModel()){
     val currentTribe = vm.getUserTribe()
     ShowTribeOrJoinOptions(currentTribe,
-        createTribeAction = {vm.createTribe("Test Name",Firebase.auth.currentUser!!.uid)}
+        createTribeAction = {vm.createTribe("Test Name")},
+        joinTribeAction = {},
+        leaveTribeAction = {vm.leaveTribe(currentTribe)}
     )
 }
 
 @Composable
-fun ShowTribeOrJoinOptions(currentTribe:String?,createTribeAction:()->Unit) {
+fun ShowTribeOrJoinOptions(
+    currentTribe: String?,
+    createTribeAction: () -> Unit,
+    joinTribeAction: () -> Unit,
+    leaveTribeAction: () -> Unit
+) {
     Box(modifier=Modifier.fillMaxSize()) {
         if (currentTribe == null) {
-            ShowMakeOrJoinButtons(createTribeAction)
+            ShowMakeOrJoinButtons(createTribeAction,joinTribeAction)
         } else {
-            ShowTribe(currentTribe)
+            ShowTribe(currentTribe,leaveTribeAction)
         }
     }
 }
 
 @Composable
-fun ShowTribe(currentTribe: String) {
+fun ShowTribe(currentTribe: String, leaveTribeAction: () -> Unit) {
     Column {
         Text("Currently a member of $currentTribe", color = MaterialTheme.colors.onBackground)
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = leaveTribeAction) {
             Text("Leave")
         }
     }
 }
 
 @Composable
-fun ShowMakeOrJoinButtons(createTribeAction:()->Unit) {
+fun ShowMakeOrJoinButtons(createTribeAction:()->Unit,joinTribeAction: () -> Unit) {
     Column {
         Text("Not currently in a tribe", color = MaterialTheme.colors.onBackground)
         Button(onClick = createTribeAction) {
             Text("Create Tribe")
         }
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = joinTribeAction) {
             Text("Join Tribe")
         }
     }
@@ -61,7 +68,7 @@ fun ShowMakeOrJoinButtons(createTribeAction:()->Unit) {
 fun PreviewTribeScreen(){
 
     MyTheme(isDarkTheme = true) {
-        ShowTribeOrJoinOptions(currentTribe = null, createTribeAction = {})
+        ShowTribeOrJoinOptions(currentTribe = null, createTribeAction = {}, joinTribeAction = {}, leaveTribeAction = {})
     }
 
 }

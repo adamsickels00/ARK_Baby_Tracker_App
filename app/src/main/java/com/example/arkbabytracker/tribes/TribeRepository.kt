@@ -7,7 +7,7 @@ interface TribeRepository {
 
     fun addThisUserToTribe(userId:String, tribeKey:String)
 
-    fun removeUserFromTribe(userID:String, tribeKey: String)
+    fun removeUserFromTribe(userID:String)
 
     fun createNewTribe(name:String, firstMemberId:String)
 
