@@ -177,7 +177,6 @@ fun DinoList(dinoList : List<DinoStats>){
 
 @Composable
 fun SingleDino(dino:DinoStats){
-    /*TODO Show the color regions of the Dino*/
     Column() {
         Text(dino.name,color=MaterialTheme.colors.onBackground)
         Text("Gender: ${dino.gender.name}",color=MaterialTheme.colors.onBackground)

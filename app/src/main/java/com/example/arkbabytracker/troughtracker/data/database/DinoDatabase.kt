@@ -5,6 +5,8 @@ import androidx.room.*
 import com.example.arkbabytracker.troughtracker.data.EnvironmentViewModel
 import com.example.arkbabytracker.troughtracker.dinos.data.Dino
 import com.example.arkbabytracker.troughtracker.dinos.data.allDinoList
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,7 +36,9 @@ data class DinoEntity(
     var startTime:Long= Instant.now().epochSecond,
     var maxFood:Double=0.0,
     @ColumnInfo(defaultValue = "Default")
-    var groupName:String="Default"
+    var groupName:String="Default",
+    var owner:String=Firebase.auth.uid!!,
+    var tribe:String?=null
 ){
     companion object{
         fun fromDino(dino:Dino):DinoEntity{
@@ -87,7 +91,7 @@ interface DinoDao{
 
 }
 
-@Database(entities = [DinoEntity::class], version = 2, autoMigrations = [AutoMigration(from = 1, to = 2)])
+@Database(entities = [DinoEntity::class], version = 3, autoMigrations = [AutoMigration(from = 1, to = 2)])
 @TypeConverters(Converters::class)
 abstract class DinoDatabase : RoomDatabase() {
     abstract fun dinoDao(): DinoDao

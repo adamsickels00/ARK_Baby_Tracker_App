@@ -1,21 +1,14 @@
 package com.example.arkbabytracker.troughtracker.data
 
-import android.util.Log
+import com.example.arkbabytracker.tribes.TribeRepository
 import com.example.arkbabytracker.troughtracker.data.database.DinoDao
 import com.example.arkbabytracker.troughtracker.data.database.DinoEntity
-import com.example.arkbabytracker.troughtracker.dinos.data.Dino
 import com.google.android.gms.tasks.Tasks
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import java.time.Instant
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -29,9 +22,7 @@ interface DinoRepository{
 //    @Query("DELETE FROM Dino WHERE Dino.id=:id")
 //    fun delete(id:String)
     fun deleteDino(id:String)
-//    @Query("DELETE FROM Dino WHERE 1=1")
-//    fun deleteAll()
-    fun deleteAllDinos()
+
 //    @Query("DELETE FROM Dino WHERE Dino.groupName=:groupName")
 //    fun deleteAllInGroup(groupName: String)
     fun deleteAllDinosInGroup(name:String)
@@ -56,10 +47,6 @@ class DinoRepositoryRoom @Inject constructor(
         dinoDao.delete(id)
     }
 
-    override fun deleteAllDinos() {
-        dinoDao.deleteAll()
-    }
-
     override fun deleteAllDinosInGroup(name:String) {
         dinoDao.deleteAllInGroup(name)
     }
@@ -71,7 +58,7 @@ class DinoRepositoryRoom @Inject constructor(
 }
 
 @Singleton
-class DinoRepositoryFirebase @Inject constructor():DinoRepository {
+class DinoRepositoryFirebase @Inject constructor(val tribeRepository: TribeRepository):DinoRepository {
     val database = Firebase.database.reference
     val dinoPath = "dinos"
     var allDinosList = listOf<DinoEntity>()
@@ -79,7 +66,11 @@ class DinoRepositoryFirebase @Inject constructor():DinoRepository {
 
 
     override fun addDino(d: DinoEntity) {
-        val loc = database.child(dinoPath).child(d.id).setValue(d)
+        tribeRepository.getTribeUUIDOnce {
+            d.tribe = it
+            database.child(dinoPath).child(d.id).setValue(d)
+            tribeRepository.addDinoToTribe(d.id)
+        }
     }
 
     override fun addAllDinos(d: List<DinoEntity>) {
@@ -90,17 +81,14 @@ class DinoRepositoryFirebase @Inject constructor():DinoRepository {
 
     override fun deleteDino(id: String) {
         database.child(dinoPath).child(id).removeValue()
-    }
-
-    override fun deleteAllDinos() {
-        database.child(dinoPath).removeValue()
+        tribeRepository.removeDino(id)
     }
 
     override fun deleteAllDinosInGroup(name:String) {
         database.child(dinoPath).get().addOnCompleteListener {
             it.result.children.forEach{
                 if(it.child("groupName").value == name){
-                    it.ref.removeValue()
+                    it.key?.let { it1 -> deleteDino(it1) }
                 }
             }
         }
@@ -111,11 +99,14 @@ class DinoRepositoryFirebase @Inject constructor():DinoRepository {
         val result = withContext(Dispatchers.IO) {
             Tasks.await(task)
         }
-        val res = mutableListOf<DinoEntity>()
+        var res = mutableListOf<DinoEntity>()
         result.children.forEach {
             it.getValue(DinoEntity::class.java)?.let { it1 -> res.add(it1) }
         }
-        return res
+        val taskResult = tribeRepository.getTribeUUIDOnce {  }
+        Tasks.await(taskResult)
+        return res.filter { it.owner == Firebase.auth.uid || it.tribe == taskResult.result.value as String? }
+
     }
 
 }
