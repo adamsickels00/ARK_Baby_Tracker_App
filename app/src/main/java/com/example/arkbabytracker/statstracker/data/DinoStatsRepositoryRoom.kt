@@ -4,8 +4,8 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class DinoStatsRepositoryRoom @Inject constructor(val dinoStatsDao: DinoStatsDao):DinoStatsRepository {
-    override fun insert(d: DinoStats): Long {
-        return dinoStatsDao.insert(d)
+    override fun insert(d: DinoStats) {
+        dinoStatsDao.insert(d)
     }
 
     override fun insertAll(d: List<DinoStats>) {
@@ -26,6 +26,10 @@ class DinoStatsRepositoryRoom @Inject constructor(val dinoStatsDao: DinoStatsDao
 
     override fun getAllDinos(): List<DinoStats> {
         return dinoStatsDao.getAllDinos()
+    }
+
+    override fun getAllUserDinos(): List<DinoStats> {
+        TODO("Not yet implemented")
     }
 
     override fun getAllDinosFlow(): Flow<List<DinoStats>> {

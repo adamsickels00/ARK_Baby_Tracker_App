@@ -12,7 +12,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ImportDinoViewModel @Inject constructor(val dinoStatsRepository: DinoStatsRepository): ViewModel() {
     fun acceptImport(dinoList:List<DinoStats>){
-        dinoList.forEach{it.id = null} // No overlapping keys
         CoroutineScope(Dispatchers.IO).launch {
             dinoStatsRepository.insertAll(dinoList)
         }

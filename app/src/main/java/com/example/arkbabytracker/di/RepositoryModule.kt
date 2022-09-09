@@ -1,6 +1,7 @@
 package com.example.arkbabytracker.di
 
 import com.example.arkbabytracker.statstracker.data.DinoStatsRepository
+import com.example.arkbabytracker.statstracker.data.DinoStatsRepositoryFirebase
 import com.example.arkbabytracker.statstracker.data.DinoStatsRepositoryRoom
 import com.example.arkbabytracker.timers.TimerRepository
 import com.example.arkbabytracker.timers.TimerRepositoryRoom
@@ -28,7 +29,7 @@ abstract class RepositoryModule {
     abstract fun providesTimerRepository(impl:TimerRepositoryRoom):TimerRepository
 
     @Binds
-    abstract fun providesDinoStatsRepo(impl: DinoStatsRepositoryRoom): DinoStatsRepository
+    abstract fun providesDinoStatsRepo(impl: DinoStatsRepositoryFirebase): DinoStatsRepository
 
     @Binds
     abstract fun providesTribeRepo(impl: TribeRepositoryFirebase): TribeRepository

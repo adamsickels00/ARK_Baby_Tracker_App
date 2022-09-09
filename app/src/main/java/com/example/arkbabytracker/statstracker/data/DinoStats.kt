@@ -6,6 +6,7 @@ import androidx.room.*
 import androidx.room.migration.AutoMigrationSpec
 import com.example.arkbabytracker.troughtracker.dinos.data.Dino
 import kotlinx.coroutines.flow.Flow
+import java.util.*
 import javax.annotation.Nullable
 
 enum class DinoGender(){
@@ -35,8 +36,12 @@ data class DinoStats(
     @ColumnInfo(defaultValue = "Other")
     val gender:DinoGender = DinoGender.Other
 ){
-    @PrimaryKey(autoGenerate = true)
-    var id:Int? = null
+    @PrimaryKey()
+    var id:String = UUID.randomUUID().toString()
+    override fun equals(other: Any?): Boolean {
+        if (other !is DinoStats) return false
+        return this.id == other.id
+    }
 }
 class Converters {
     @TypeConverter

@@ -29,6 +29,7 @@ interface DinoRepository{
 //    @Query("SELECT * FROM Dino")
 //    fun getAll():List<DinoEntity>
 suspend fun getAllDinos():List<DinoEntity>
+suspend fun getAllUserDinos():List<DinoEntity>
 }
 
 @Singleton
@@ -37,6 +38,10 @@ class DinoRepositoryRoom @Inject constructor(
 ):DinoRepository {
     override fun addDino(d: DinoEntity) {
         dinoDao.add(d)
+    }
+
+    override suspend fun getAllUserDinos(): List<DinoEntity> {
+        TODO("Not yet implemented")
     }
 
     override fun addAllDinos(d: List<DinoEntity>) {
@@ -61,16 +66,25 @@ class DinoRepositoryRoom @Inject constructor(
 class DinoRepositoryFirebase @Inject constructor(val tribeRepository: TribeRepository):DinoRepository {
     val database = Firebase.database.reference
     val dinoPath = "dinos"
+    val userPath = "users/${Firebase.auth.uid}"
     var allDinosList = listOf<DinoEntity>()
 
 
+    override suspend fun getAllUserDinos(): List<DinoEntity> {
+        val result = Tasks.await(database.child(userPath).child(dinoPath).get())
+        val dinoList = mutableListOf<DinoEntity>()
+        result.children.forEach{
+            val dinoKey = it.key!!
+            val innerTask = database.child(dinoPath).child(dinoKey).get()
+            Tasks.await(innerTask)
+            dinoList.add(innerTask.result.getValue(DinoEntity::class.java) as DinoEntity)
+        }
+        return dinoList
+    }
 
     override fun addDino(d: DinoEntity) {
-        tribeRepository.getTribeUUIDOnce {
-            d.tribe = it
-            database.child(dinoPath).child(d.id).setValue(d)
-            tribeRepository.addDinoToTribe(d.id)
-        }
+        database.child(dinoPath).child(d.id).setValue(d)
+        database.child(userPath).child("dinos").child(d.id).setValue(true)
     }
 
     override fun addAllDinos(d: List<DinoEntity>) {
@@ -81,6 +95,7 @@ class DinoRepositoryFirebase @Inject constructor(val tribeRepository: TribeRepos
 
     override fun deleteDino(id: String) {
         database.child(dinoPath).child(id).removeValue()
+        database.child(userPath).child(dinoPath).child(id).removeValue()
         tribeRepository.removeDino(id)
     }
 
@@ -95,18 +110,17 @@ class DinoRepositoryFirebase @Inject constructor(val tribeRepository: TribeRepos
     }
 
     override suspend fun getAllDinos(): List<DinoEntity> {
-        val task = database.child(dinoPath).get()
-        val result = withContext(Dispatchers.IO) {
-            Tasks.await(task)
+        //Get dinos from user only
+        val dinoList:MutableList<DinoEntity> = mutableListOf()
+        val task = database.child(userPath).child("dinos").get()
+        val result = Tasks.await(task)
+        result.children.forEach{
+            val dinoKey = it.key!!
+            val innerTask = database.child(dinoPath).child(dinoKey).get()
+            Tasks.await(innerTask)
+            dinoList.add(innerTask.result.getValue(DinoEntity::class.java) as DinoEntity)
         }
-        var res = mutableListOf<DinoEntity>()
-        result.children.forEach {
-            it.getValue(DinoEntity::class.java)?.let { it1 -> res.add(it1) }
-        }
-        val taskResult = tribeRepository.getTribeUUIDOnce {  }
-        Tasks.await(taskResult)
-        return res.filter { it.owner == Firebase.auth.uid || it.tribe == taskResult.result.value as String? }
-
+        return dinoList
     }
 
 }

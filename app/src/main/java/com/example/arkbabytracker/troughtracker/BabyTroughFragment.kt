@@ -28,6 +28,7 @@ import com.example.arkbabytracker.databinding.DinoPopupBinding
 import com.example.arkbabytracker.databinding.FragmentBabyTroughBinding
 import com.example.arkbabytracker.timers.NotificationScheduler
 import com.example.arkbabytracker.timers.Timer
+import com.example.arkbabytracker.tribes.TribeRepository
 import com.example.arkbabytracker.troughtracker.data.DinoRepository
 import com.example.arkbabytracker.troughtracker.data.DinoViewModel
 import com.example.arkbabytracker.troughtracker.data.EnvironmentViewModel
@@ -72,6 +73,7 @@ class BabyTroughFragment : Fragment() {
     private lateinit var dinoAdapter: DinoAdapter
     private val data by viewModels<DinoViewModel>()
     @Inject lateinit var dinoRepository:DinoRepository
+    @Inject lateinit var tribeRepository: TribeRepository
     private val activityVm by activityViewModels<ActivityViewModel>()
     private val env by viewModels<EnvironmentViewModel>()
     private var needFoodFragment = true
@@ -225,7 +227,9 @@ class BabyTroughFragment : Fragment() {
                     newDino.groupName = group
                     newList.add(newDino)
                     CoroutineScope(Dispatchers.IO).launch {
-                        dinoRepository.addDino(DinoEntity.fromDino(newDino))
+                        val de = DinoEntity.fromDino(newDino)
+                        dinoRepository.addDino(de)
+                        tribeRepository.addDinoToTribe(de.id)
                     }
                     data.babyList.value = newList
                     popup.dismiss()

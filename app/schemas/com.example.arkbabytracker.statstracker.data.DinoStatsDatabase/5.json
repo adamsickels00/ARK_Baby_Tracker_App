@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 5,
-    "identityHash": "e8f532fc80213f04855e5e7c4cbdec3a",
+    "identityHash": "750e16c6fe287c5ed991d9707292b783",
     "entities": [
       {
         "tableName": "DinoStats",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`type` TEXT NOT NULL, `name` TEXT NOT NULL DEFAULT '', `health` INTEGER NOT NULL, `stamina` INTEGER NOT NULL, `oxygen` INTEGER NOT NULL, `food` INTEGER NOT NULL, `weight` INTEGER NOT NULL, `movementSpeed` INTEGER NOT NULL, `damage` INTEGER NOT NULL, `colorList` TEXT NOT NULL, `gender` TEXT NOT NULL DEFAULT 'Other', `id` INTEGER PRIMARY KEY AUTOINCREMENT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`type` TEXT NOT NULL, `name` TEXT NOT NULL DEFAULT '', `health` INTEGER NOT NULL, `stamina` INTEGER NOT NULL, `oxygen` INTEGER NOT NULL, `food` INTEGER NOT NULL, `weight` INTEGER NOT NULL, `movementSpeed` INTEGER NOT NULL, `damage` INTEGER NOT NULL, `colorList` TEXT NOT NULL, `gender` TEXT NOT NULL DEFAULT 'Other', `id` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "type",
@@ -79,15 +79,15 @@
           {
             "fieldPath": "id",
             "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": false
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
           "columnNames": [
             "id"
           ],
-          "autoGenerate": true
+          "autoGenerate": false
         },
         "indices": [],
         "foreignKeys": []
@@ -96,7 +96,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e8f532fc80213f04855e5e7c4cbdec3a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '750e16c6fe287c5ed991d9707292b783')"
     ]
   }
 }

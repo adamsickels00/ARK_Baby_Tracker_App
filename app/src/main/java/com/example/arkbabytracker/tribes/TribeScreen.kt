@@ -1,6 +1,8 @@
 package com.example.arkbabytracker.tribes
 
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,9 +20,13 @@ import com.example.arkbabytracker.utils.SingleTextBoxWithButton
 @Composable
 fun TribeScreen(vm:TribeViewModel = viewModel()){
     var currentTribe:Tribe? by remember{ mutableStateOf(null)}
-    vm.addTribeStateListener { newTribe-> currentTribe=newTribe }
+    vm.tribeRepository.getTribeOnce { currentTribe = it }
 
-    ShowTribeOrJoinOptions(currentTribe?.name,
+
+    vm.addTribeStateListener { newTribe-> currentTribe=newTribe}
+
+
+    ShowTribeOrJoinOptions(currentTribe,
         createTribeAction = {s->vm.createTribe(s)},
         joinTribeAction = {s->vm.joinTribe(s)},
         leaveTribeAction = {vm.leaveTribe(currentTribe?.name)}
@@ -29,7 +35,7 @@ fun TribeScreen(vm:TribeViewModel = viewModel()){
 
 @Composable
 fun ShowTribeOrJoinOptions(
-    currentTribe: String?,
+    currentTribe: Tribe?,
     createTribeAction: (String) -> Unit,
     joinTribeAction: (String) -> Unit,
     leaveTribeAction: () -> Unit
@@ -44,12 +50,19 @@ fun ShowTribeOrJoinOptions(
 }
 
 @Composable
-fun ShowTribe(currentTribe: String, leaveTribeAction: () -> Unit) {
-    Column {
-        Text("Currently a member of $currentTribe", color = MaterialTheme.colors.onBackground)
+fun ShowTribe(currentTribe: Tribe, leaveTribeAction: () -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("Currently a member of ${currentTribe.name}", color = MaterialTheme.colors.onBackground)
+        Spacer(modifier = Modifier.padding(10.dp))
+        SelectionContainer() {
+            Text("The join code is ${currentTribe.uuid}")
+        }
+        Spacer(modifier = Modifier.padding(10.dp))
         Button(onClick = leaveTribeAction) {
             Text("Leave")
         }
+        Spacer(modifier = Modifier.padding(10.dp))
+
     }
 }
 

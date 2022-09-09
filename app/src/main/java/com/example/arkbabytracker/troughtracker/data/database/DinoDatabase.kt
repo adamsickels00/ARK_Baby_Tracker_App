@@ -67,6 +67,13 @@ data class DinoEntity(
             return null
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        return if(other !is DinoEntity) false
+        else
+            this.id == other.id
+
+    }
 }
 
 @Dao

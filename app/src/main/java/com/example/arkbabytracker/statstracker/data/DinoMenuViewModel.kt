@@ -2,6 +2,7 @@ package com.example.arkbabytracker.statstracker.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.arkbabytracker.tribes.TribeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -9,7 +10,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DinoMenuViewModel @Inject constructor(val dinoStatsRepository: DinoStatsRepository) : ViewModel() {
+class DinoMenuViewModel @Inject constructor(val dinoStatsRepository: DinoStatsRepository, val tribeRepository: TribeRepository) : ViewModel() {
     var liveDinoList = MutableLiveData<MutableList<DinoStats>>(mutableListOf())
     val dinoList get() = liveDinoList.value!!
     val dinoByType:Map<String,List<DinoStats>> get() {
@@ -22,7 +23,9 @@ class DinoMenuViewModel @Inject constructor(val dinoStatsRepository: DinoStatsRe
 
     fun getFromDatabase(){
         CoroutineScope(Dispatchers.IO).launch {
-            liveDinoList.postValue(dinoStatsRepository.getAllDinos()?.toMutableList())
+            val allDinos = dinoStatsRepository.getAllDinos().toMutableList()
+            allDinos.addAll(tribeRepository.getAllDinoStats())
+            liveDinoList.postValue(allDinos.toSet().toMutableList())
         }
     }
 

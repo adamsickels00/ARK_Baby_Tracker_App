@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface DinoStatsRepository {
 
-    fun insert(d : DinoStats):Long
+    fun insert(d : DinoStats)
 
     @Insert
     fun insertAll(d:List<DinoStats>)
@@ -17,6 +17,8 @@ interface DinoStatsRepository {
     fun getDinoById(id:Int):DinoStats
 
     fun getAllDinos():List<DinoStats>
+
+    fun getAllUserDinos():List<DinoStats>
 
     fun getAllDinosFlow(): Flow<List<DinoStats>>
 }

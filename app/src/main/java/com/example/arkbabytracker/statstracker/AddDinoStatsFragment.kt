@@ -15,6 +15,7 @@ import com.example.arkbabytracker.databinding.FragmentAddDinoStatsBinding
 import com.example.arkbabytracker.statstracker.data.DinoGender
 import com.example.arkbabytracker.statstracker.data.DinoStats
 import com.example.arkbabytracker.statstracker.data.DinoStatsRepository
+import com.example.arkbabytracker.tribes.TribeRepository
 import com.example.arkbabytracker.troughtracker.dinos.data.allDinoList
 import com.example.arkbabytracker.utils.DinoColorUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,6 +33,7 @@ import javax.inject.Inject
 class AddDinoStatsFragment () : Fragment() {
 
     @Inject lateinit var dinoStatsRepository: DinoStatsRepository
+    @Inject lateinit var tribeRepository: TribeRepository
     private var _binding: FragmentAddDinoStatsBinding? = null
     val binding get()=_binding!!
 
@@ -104,6 +106,7 @@ class AddDinoStatsFragment () : Fragment() {
 
             CoroutineScope(Dispatchers.IO).launch {
                 dinoStatsRepository.insert(dino)
+                tribeRepository.addStatsDinoToTribe(dino.id)
             }
 
 
