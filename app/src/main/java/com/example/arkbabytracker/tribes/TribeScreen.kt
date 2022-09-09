@@ -23,8 +23,6 @@ fun TribeScreen(vm:TribeViewModel = viewModel()){
     vm.tribeRepository.getTribeOnce { currentTribe = it }
 
 
-    vm.addTribeStateListener { newTribe-> currentTribe=newTribe}
-
 
     ShowTribeOrJoinOptions(currentTribe,
         createTribeAction = {s->vm.createTribe(s)},
