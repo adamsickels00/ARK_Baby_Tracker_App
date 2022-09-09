@@ -18,7 +18,7 @@ class TribeViewModel @Inject constructor(val tribeRepository: TribeRepository, v
     var isAdded = false
 
      fun addTribeStateListener(callback:(Tribe?)->Unit){
-        if(isAdded) {
+        if(!isAdded) {
             tribeRepository.addTribeStateListener(callback)
             isAdded=true
         }
