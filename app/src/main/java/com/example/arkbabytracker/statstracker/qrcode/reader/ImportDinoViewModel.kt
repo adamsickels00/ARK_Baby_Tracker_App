@@ -11,9 +11,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ImportDinoViewModel @Inject constructor(val dinoStatsRepository: DinoStatsRepository): ViewModel() {
-    fun acceptImport(dinoList:List<DinoStats>){
+    fun acceptImport(dino:DinoStats){
         CoroutineScope(Dispatchers.IO).launch {
-            dinoStatsRepository.insertAll(dinoList)
+            dinoStatsRepository.insert(dino)
         }
+
     }
 }

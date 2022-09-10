@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.compose.material.Text
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.navigation.fragment.findNavController
 import com.example.arkbabytracker.R
 import com.example.arkbabytracker.colorsearch.DinoList
 import com.example.arkbabytracker.statstracker.data.DinoStats
@@ -40,15 +41,18 @@ class ReadQrFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val json = arguments?.getString("jsonString")?:"No Luck"
-        val token = object : TypeToken<List<DinoStats>>(){}.type
-        val dinoList = Gson().fromJson<List<DinoStats>>(json,token)
+        val json = arguments?.getString("dino")?:"No Luck"
+        val token = object : TypeToken<DinoStats>(){}.type
+        val dino = Gson().fromJson<DinoStats>(json,token)
+
+        val navigation = ReadQrFragmentDirections.actionReadQrFragmentToDinoStatsFragment()
+        val navFunc = {findNavController().navigate(navigation)}
         // Inflate the layout for this fragment
         return ComposeView(requireActivity()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MyTheme() {
-                    ImportDinoScreen(dinoList = dinoList)
+                    ImportDinoScreen(dino = dino, onImport = navFunc)
                 }
 
             }

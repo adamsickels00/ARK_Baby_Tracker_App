@@ -6,13 +6,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.arkbabytracker.colorsearch.DinoList
+import com.example.arkbabytracker.colorsearch.SingleDino
 import com.example.arkbabytracker.statstracker.data.DinoStats
 
 @Composable
-fun ImportDinoScreen(vm:ImportDinoViewModel = viewModel(),dinoList:List<DinoStats>){
+fun ImportDinoScreen(vm:ImportDinoViewModel = viewModel(),dino:DinoStats, onImport:()->Unit){
     Column{
-        DinoList(dinoList = dinoList)
-        Button(onClick = {vm.acceptImport(dinoList)}) {
+        SingleDino(dino = dino)
+        Button(onClick = {vm.acceptImport(dino); onImport() }) {
             Text("Accept Import")
         }
     }

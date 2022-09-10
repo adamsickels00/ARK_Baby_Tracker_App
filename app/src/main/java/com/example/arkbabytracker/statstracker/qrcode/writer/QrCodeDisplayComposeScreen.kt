@@ -1,7 +1,11 @@
 package com.example.arkbabytracker.statstracker.qrcode.writer
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -23,7 +27,7 @@ fun QrDisplayScreen(dinoList:List<DinoStats>, vm: QrDisplayViewModel = viewModel
     Column(){
         QrTitle(modifier = Modifier.weight(.2f))
         //QR display
-        QrDisplay(modifier=Modifier.weight(1f), bitmap = vm.createQrBitmap(dinoList,1500,1500))
+        QrDisplay(modifier=Modifier.weight(1f), bitmapList = vm.createQrBitmapList(dinoList,1500,1500))
     }
 }
 
@@ -35,10 +39,13 @@ fun QrTitle(modifier: Modifier=Modifier){
 }
 
 @Composable
-fun QrDisplay(modifier: Modifier = Modifier,bitmap: ImageBitmap){
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-        Image(bitmap = bitmap, contentDescription = "QR Code")
+fun QrDisplay(modifier: Modifier = Modifier,bitmapList: List<ImageBitmap>){
+    Column(modifier = Modifier.verticalScroll(rememberScrollState(),enabled = true)) {
+        for(bitmap in bitmapList) {
+                Image(bitmap = bitmap, contentDescription = "QR Code")
+        }
     }
+
 }
 
 @Preview

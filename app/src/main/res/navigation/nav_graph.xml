@@ -67,4 +67,15 @@
         android:id="@+id/tribeScreenFragment"
         android:name="com.example.arkbabytracker.tribes.TribeScreenFragment"
         android:label="Tribe" />
+    <fragment
+        android:id="@+id/readQrFragment"
+        android:name="com.example.arkbabytracker.statstracker.qrcode.reader.ReadQrFragment"
+        android:label="ReadQrFragment">
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="https://arkbabytracker/dinoList/{dino}" />
+        <action
+            android:id="@+id/action_readQrFragment_to_dino_stats_fragment"
+            app:destination="@id/dino_stats_fragment" />
+    </fragment>
 </navigation>

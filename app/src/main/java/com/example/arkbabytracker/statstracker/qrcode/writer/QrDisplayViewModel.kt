@@ -13,8 +13,17 @@ import com.google.zxing.qrcode.QRCodeWriter
 
 
 class QrDisplayViewModel:ViewModel(){
-    fun createQrBitmap(dinoList:List<DinoStats>,width:Int,height:Int):ImageBitmap{
-        val string = Gson().toJson(dinoList)
+
+    fun createQrBitmapList(dinoList:List<DinoStats>,width:Int,height:Int):List<ImageBitmap>{
+        val list = mutableListOf<ImageBitmap>()
+        for(d in dinoList){
+            list.add(createQrBitmap(d,width,height))
+        }
+        return list
+    }
+
+    fun createQrBitmap(dino:DinoStats,width:Int,height:Int):ImageBitmap{
+        val string = Gson().toJson(dino)
         val uri = Uri.Builder()
             .scheme("https")
             .authority("arkbabytracker")
